@@ -56,13 +56,13 @@ class Login extends React.Component {
 		return (
 			<form className="form-horizontal">
 				<div className="form-group">
-					<label for="usuario" className="col-sm-2 control-label">Usuario</label>
+					<label htmlFor="usuario" className="col-sm-2 control-label">Usuario</label>
 					<div className="col-sm-10">
 						<input type="text" className="form-control" id="usuario" placeholder="Usuario" required={true} minLength={6} />
 					</div>
 				</div>
 				<div className="form-group">
-					<label for="password" className="col-sm-2 control-label">Contraseña</label>
+					<label htmlFor="password" className="col-sm-2 control-label">Contraseña</label>
 					<div className="col-sm-10">
 					<input type="password" className="form-control" id="password" placeholder="Contraseña" required={true} minLength={8} />
 					</div>
