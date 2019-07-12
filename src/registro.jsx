@@ -7,6 +7,13 @@ function Distrito(props) {
 class Registro extends React.Component {
 	constructor(props) {
 		super(props);
+		this.state = {dni: '', fullname: '', telefono: '', direccion: ''};
+		this.handleInput = this.handleInput.binthis.handleSubmit.bind(this);
+	}
+
+	handleSubmit(event) {
+
+		event.preventDefault();
 	}
 
 	render() {
@@ -40,7 +47,7 @@ class Registro extends React.Component {
 						<div className="form-group">
 							<label htmlFor="distrito" className="col-sm-2 control-label">DISTRITO</label>
 							<div className="col-sm-10">
-								<input type="text" className="form-control" list="distrito" placeholder="Distrito" />
+								<input type="text" className="form-control" list="distrito" placeholder="Distrito" required={true} />
 								<datalist name="distrito" id="distrito">
 									{distritos}
 								</datalist>
