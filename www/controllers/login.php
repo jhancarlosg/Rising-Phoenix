@@ -19,6 +19,7 @@ if (strtolower(strval($_SERVER['REQUEST_URI'])) != '/controllers/login.php') {
     }
 } else {
     header('HTTP/1.0 404 Not Found');
+    readfile('../404.html');
 }
 
 ?>

@@ -13,7 +13,7 @@ class Conexion extends mysqli
 		parent::__construct(Conexion::$serverdir, Conexion::$username, Conexion::$password, Conexion::$database);
 		if ($this->connect_error) {
 			error_log("Connection failed: " . mysqli_connect_error());
-			exit();
+			die("No se puedo conectar con la base de datos:\n" . mysqli_connect_error());
 		}
 	}
 }

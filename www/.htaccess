@@ -8,3 +8,17 @@ RewriteRule ^login$ /controllers/login.php [L]
 
 RewriteEngine on
 RewriteRule ^login/$ /login [R=301,L]
+
+<FilesMatch "((\.(lock|cache|db|inc))|CHANGELOG.md|README.md|^(.*\.config|.*\.example)(.*?))$">
+	# Apache < 2.3
+	<IfModule !mod_authz_core.c>
+		Order allow,deny
+		Deny from all
+		Satisfy All
+	</IfModule>
+
+	# Apache ≥ 2.3
+	<IfModule mod_authz_core.c>
+		Require all denied
+	</IfModule>
+</FilesMatch>

@@ -42,13 +42,15 @@ class Login extends React.Component {
 		event.preventDefault();
 		if (this.state.email.length && this.state.pass.length) {
 			let xmlhttp = new XMLHttpRequest();
+			let params = `email=${this.state.email}&pass=${this.state.pass}`;
 			xmlhttp.onreadystatechange = function() {
 				if (this.readyState == 4 && this.status == 200) {
 					// document.getElementById("txtHint").innerHTML = this.responseText;
 				}
 			};
-			xmlhttp.open("POST", `/login/?email=${this.state.email}&pass=${this.state.pass}`, true);
-			xmlhttp.send();
+			xmlhttp.open("POST", "/login/", true);
+			xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+			xmlhttp.send(params);
 		}
 	}
 	

@@ -100,14 +100,16 @@ class Registro extends React.Component {
 		console.log("---");
 		if (this.state.dni.length && this.state.fullname.length && this.state.telefono.length && this.state.distrito.length) {
 			let xmlhttp = new XMLHttpRequest();
+			let params = `dni=${this.state.dni}&fullname=${this.state.fullname}&telefono=${this.state.telefono}&distrito=${this.state.distrito}&token_registros=${this.state.token_registros}`;
 			xmlhttp.onreadystatechange = function() {
 				if (this.readyState == 4 && this.status == 200) {
 					event.target.reset();
 					handleSuccess(this.responseText);
 				}
 			};
-			xmlhttp.open("POST", `/registro/?dni=${this.state.dni}&fullname=${this.state.fullname}&telefono=${this.state.telefono}&distrito=${this.state.distrito}&token_registros=${this.state.token_registros}`, true);
-			xmlhttp.send();
+			xmlhttp.open("POST", "/registro/", true);
+			xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+			xmlhttp.send(params);
 		}
 		event.preventDefault();
 	}
