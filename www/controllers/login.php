@@ -4,6 +4,9 @@
 
 session_start();
 
+echo strtolower(strval($_SERVER['REQUEST_URI']));
+echo '/controllers/login.php';
+
 if (strtolower(strval($_SERVER['REQUEST_URI'])) != '/controllers/login.php') {
 
     if (!isset($_SESSION["session_id_user"])) {
