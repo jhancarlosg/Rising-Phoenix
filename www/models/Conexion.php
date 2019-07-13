@@ -1,22 +1,21 @@
 <?php
 
-require("config/index.php")
+require_once("config/index.php");
 
-class Conexion
+class Conexion extends mysqli
 {
 	//TODO: cambiar la dirección del servidor
-	static const $serverdir = "localhost";
-	static const $database = "RegistroDB";
-	static const $user = "mysql";
-	static const $password = "";
-	private $conn;
+	static final $serverdir = "localhost";
+	static final $database = "RegistroDB";
+	static final $user = "root";
+	static final $password = "";
 	public function __construct() {
-		$conn = mysqli_connect($serverdir, $username, $password, $database);
-		if (!$conn) {
-			die("Connection failed: " . mysqli_connect_error());
+		parent::__construct(Conexion::$serverdir, Conexion::$username, Conexion::$password, Conexion::$database);
+		if ($this->connect_error) {
+			error_log("Connection failed: " . mysqli_connect_error());
+			exit();
 		}
 	}
-
 }
 
 
