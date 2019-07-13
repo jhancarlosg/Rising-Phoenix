@@ -22,7 +22,8 @@ class SignIn
         $this->password = $password;
         $this->session = $session;
         $this->ip = $ip;
-        $this->userLogged();
+	$this->userLogged();
+
         if ($this->isLogged() == null && filter_var($this->correo, FILTER_VALIDATE_EMAIL)) {
             $this->login();
         }
@@ -56,8 +57,17 @@ class SignIn
 
     private function login() {
         $db = new Conexion();
-        $sql1 = "SELECT idUsuario FROM Usuario WHERE correo='{$this->correo}' AND password='{$this->hashVal($this->password)}';";
-        $sql2 = "INSERT INTO Sesion (idUsuario, Sesion.session, ip) VALUES ();";
+	$sql1 = "SELECT idUsuario FROM Usuario WHERE correo='{$this->correo}' AND password='{$this->hashVal($this->password)}';";
+	$result = $db->query($sql1);
+	if ($result->num_rows == 1) {
+		$row = $result->fetch_row();
+		$this->session = $this->hashVal(date('YYYY-MM-DD') . $this->correo);
+		$sql2 = "INSERT INTO Sesion (idUsuario, session, ip) VALUES ({$row[0]}, {$this->session}, {$this->ip});";
+		if ($db->query($sql2)) {
+			$this->id_user = $row[0];
+		}
+	}
+
     }
 
     /**
