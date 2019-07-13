@@ -14,7 +14,7 @@ session_start();
 
 echo strtolower(strval($_SERVER['REQUEST_URI']));
 echo "\n" . '/controllers/login.php';
-echo "\n" . __FILE__
+echo "\n" . __FILE__;
 
 
 if (!isset($_SESSION["session_id_user"])) {
