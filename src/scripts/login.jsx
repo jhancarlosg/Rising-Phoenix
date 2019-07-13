@@ -1,7 +1,7 @@
 class Login extends React.Component {
 	constructor(props) {
 		super(props);
-		this.state = {user: '', pass: ''};
+		this.state = {email: '', pass: ''};
 
 		this.handleInput = this.handleInput.bind(this);
 		this.handleSubmit = this.handleSubmit.bind(this);
@@ -13,13 +13,13 @@ class Login extends React.Component {
 		if (len) {
 			let id = event.target.id;
 			grupo.classList.remove("has-success", "has-success", "has-error");
-			if ((id=="usuario" && len>5) || (id="password" && len>7)) {
+			if ((id=="email" && len>5) || (id="password" && len>7)) {
 				// if (!grupo.classList.contains("has-success")) {
 				// 	grupo.classList.remove("has-success", "has-error");
 					grupo.classList.add("has-success");
 					switch (id) {
-						case "usuario":
-							this.setState({user: event.target.value});
+						case "email":
+							this.setState({email: event.target.value});
 							break;
 						case "password":
 							this.setState({pass: event.target.value});
@@ -40,14 +40,14 @@ class Login extends React.Component {
 
 	handleSubmit(event) {
 		event.preventDefault();
-		if (this.state.user.length && this.state.pass.length) {
+		if (this.state.email.length && this.state.pass.length) {
 			let xmlhttp = new XMLHttpRequest();
 			xmlhttp.onreadystatechange = function() {
 				if (this.readyState == 4 && this.status == 200) {
 					// document.getElementById("txtHint").innerHTML = this.responseText;
 				}
 			};
-			xmlhttp.open("POST", `/login/?user=${this.state.user}&pass=${this.state.pass}`);
+			xmlhttp.open("POST", `/login/?email=${this.state.email}&pass=${this.state.pass}`, true);
 			xmlhttp.send();
 		}
 	}
@@ -56,9 +56,9 @@ class Login extends React.Component {
 		return (
 			<form className="form-horizontal">
 				<div className="form-group">
-					<label htmlFor="usuario" className="col-sm-2 control-label">Usuario</label>
+					<label htmlFor="Email" className="col-sm-2 control-label">Email</label>
 					<div className="col-sm-10">
-						<input type="text" className="form-control" id="usuario" placeholder="Usuario" required={true} minLength={6} />
+						<input type="email" className="form-control" id="email" placeholder="Email" required={true} minLength={6} />
 					</div>
 				</div>
 				<div className="form-group">
@@ -71,7 +71,7 @@ class Login extends React.Component {
 					<div className="col-sm-offset-2 col-sm-10">
 					<div className="checkbox">
 						<label>
-						<input type="checkbox" /> Recordarme
+							<input type="checkbox" checked={true} /> Recordarme
 						</label>
 					</div>
 					</div>
