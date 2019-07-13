@@ -1,5 +1,5 @@
 <?php
 
-require_once("../views/login.php");
+echo get_headers();
 
 ?>
