@@ -7,12 +7,12 @@ SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,N
 -- -----------------------------------------------------
 -- Schema RegistroDB
 -- -----------------------------------------------------
-DROP SCHEMA IF EXISTS `RegistroDB` ;
+DROP DATABASE IF EXISTS `RegistroDB` ;
 
 -- -----------------------------------------------------
 -- Schema RegistroDB
 -- -----------------------------------------------------
-CREATE SCHEMA IF NOT EXISTS `RegistroDB` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci ;
+CREATE DATABASE IF NOT EXISTS `RegistroDB` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci ;
 SHOW WARNINGS;
 USE `RegistroDB` ;
 
@@ -22,7 +22,7 @@ USE `RegistroDB` ;
 CREATE TABLE IF NOT EXISTS `RegistroDB`.`Distrito` (
   `idDistrito` SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT,
   `nombre` VARCHAR(50) NOT NULL,
-  PRIMARY KEY (`nombre`))
+  PRIMARY KEY (`idDistrito`))
 ENGINE = InnoDB;
 
 SHOW WARNINGS;
@@ -36,7 +36,7 @@ CREATE TABLE IF NOT EXISTS `RegistroDB`.`Cliente` (
   `telefono` VARCHAR(12) NULL,
   `idDistrito` SMALLINT UNSIGNED NOT NULL,
   PRIMARY KEY (`DNI`),
-  INDEX `fk_Cliente_Distrito1_idx` (`idDistrito` ASC) VISIBLE,
+  INDEX `fk_Cliente_Distrito1_idx` (`idDistrito` ASC) ,
   CONSTRAINT `fk_Cliente_Distrito1`
     FOREIGN KEY (`idDistrito`)
     REFERENCES `RegistroDB`.`Distrito` (`idDistrito`)
@@ -66,8 +66,8 @@ CREATE TABLE IF NOT EXISTS `RegistroDB`.`Atencion` (
   `DNI` CHAR(8) NOT NULL,
   `idAsesorVentas` SMALLINT UNSIGNED NULL,
   PRIMARY KEY (`idAtencion`),
-  INDEX `fk_Atencion_Cliente_idx` (`DNI` ASC) VISIBLE,
-  INDEX `fk_Atencion_AsesorVentas1_idx` (`idAsesorVentas` ASC) VISIBLE,
+  INDEX `fk_Atencion_Cliente_idx` (`DNI` ASC) ,
+  INDEX `fk_Atencion_AsesorVentas1_idx` (`idAsesorVentas` ASC) ,
   CONSTRAINT `fk_Atencion_Cliente`
     FOREIGN KEY (`DNI`)
     REFERENCES `RegistroDB`.`Cliente` (`DNI`)
@@ -101,8 +101,8 @@ CREATE TABLE IF NOT EXISTS `RegistroDB`.`UsuarioAsesores` (
   `idAsesorVentas` SMALLINT UNSIGNED NOT NULL,
   `idUsuario` SMALLINT UNSIGNED NOT NULL,
   PRIMARY KEY (`idAsesorVentas`, `idUsuario`),
-  INDEX `fk_AsesorVentas_has_Usuario_Usuario1_idx` (`idUsuario` ASC) VISIBLE,
-  INDEX `fk_AsesorVentas_has_Usuario_AsesorVentas1_idx` (`idAsesorVentas` ASC) VISIBLE,
+  INDEX `fk_AsesorVentas_has_Usuario_Usuario1_idx` (`idUsuario` ASC) ,
+  INDEX `fk_AsesorVentas_has_Usuario_AsesorVentas1_idx` (`idAsesorVentas` ASC) ,
   CONSTRAINT `fk_AsesorVentas_has_Usuario_AsesorVentas1`
     FOREIGN KEY (`idAsesorVentas`)
     REFERENCES `RegistroDB`.`AsesorVentas` (`idAsesorVentas`)
@@ -127,7 +127,7 @@ CREATE TABLE IF NOT EXISTS `RegistroDB`.`Sesion` (
   `ip` VARCHAR(15) NOT NULL,
   `lastConexion` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`idSesion`),
-  INDEX `fk_Sesion_Usuario1_idx` (`idUsuario` ASC) VISIBLE,
+  INDEX `fk_Sesion_Usuario1_idx` (`idUsuario` ASC) ,
   CONSTRAINT `fk_Sesion_Usuario1`
     FOREIGN KEY (`idUsuario`)
     REFERENCES `RegistroDB`.`Usuario` (`idUsuario`)
@@ -167,13 +167,23 @@ SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
 
 -- -----------------------------------------------------
+-- Data for table `RegistroDB`.`Distrito`
+-- -----------------------------------------------------
+START TRANSACTION;
+USE `RegistroDB`;
+INSERT INTO `RegistroDB`.`Distrito` (`idDistrito`, `nombre`) VALUES (DEFAULT, 'SMP');
+
+COMMIT;
+
+
+-- -----------------------------------------------------
 -- Data for table `RegistroDB`.`Cliente`
 -- -----------------------------------------------------
 START TRANSACTION;
 USE `RegistroDB`;
-INSERT INTO `RegistroDB`.`Cliente` (`DNI`, `nombreCompleto`, `telefono`, `idDistrito`) VALUES ('47774578', 'IVAN CAMILOAGA COLLANA', '987236016', DEFAULT);
-INSERT INTO `RegistroDB`.`Cliente` (`DNI`, `nombreCompleto`, `telefono`, `idDistrito`) VALUES ('70767502', 'DIEGO GUERRA', '944237777', DEFAULT);
-INSERT INTO `RegistroDB`.`Cliente` (`DNI`, `nombreCompleto`, `telefono`, `idDistrito`) VALUES ('47499790', 'NILA CARRASCO QUEVEDO', '997599757', DEFAULT);
+INSERT INTO `RegistroDB`.`Cliente` (`DNI`, `nombreCompleto`, `telefono`, `idDistrito`) VALUES ('47774578', 'IVAN CAMILOAGA COLLANA', '987236016', 1);
+INSERT INTO `RegistroDB`.`Cliente` (`DNI`, `nombreCompleto`, `telefono`, `idDistrito`) VALUES ('70767502', 'DIEGO GUERRA', '944237777', 1);
+INSERT INTO `RegistroDB`.`Cliente` (`DNI`, `nombreCompleto`, `telefono`, `idDistrito`) VALUES ('47499790', 'NILA CARRASCO QUEVEDO', '997599757', 1);
 
 COMMIT;
 
