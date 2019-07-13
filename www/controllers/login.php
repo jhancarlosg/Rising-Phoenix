@@ -14,7 +14,7 @@ if (strtolower(strval($_SERVER['REQUEST_URI'])) != '/controllers/login.php') {
 
         } else {
             include('../models/SignIn.php');
-
+            
         }
     }
 } else {

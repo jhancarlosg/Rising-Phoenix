@@ -1,7 +1,5 @@
 <?php
 
-require_once("config/index.php");
-
 class Conexion extends mysqli
 {
 	//TODO: cambiar la dirección del servidor
