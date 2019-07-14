@@ -24,8 +24,8 @@ function setSuccess(e) {
 
 function Alerta(props) {
 	return (
-		`<div className=${"alert alert-"+props.tipo+" alert-dismissible"} role="alert">`+
-			'<button type="button" className="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>'+
+		`<div class=${"alert alert-"+props.tipo+" alert-dismissible"} role="alert">`+
+			'<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>'+
 			`<strong>${props.msg}</strong>`+
 		'</div>'
 	);
