@@ -1,5 +1,7 @@
 function setValidator(e, newTipo) {
-	let grupo = e.target.closest(".group-form");
+	console.log(e, e.target);
+	
+	let grupo = e.target.closest(".form-group");
 	const tipos = ['success', "warming", "error"];
 	tipos.forEach(tipo => {
 		if (tipo != newTipo) {
