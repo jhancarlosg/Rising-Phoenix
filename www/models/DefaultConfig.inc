@@ -2,9 +2,9 @@
 
 class DefaultConfing
 {
-	const USER = 'root';
+	private static $CORREO_ROOT = 'admin@root';
 	//TODO: Establecer la contraseña del usuario raíz.
-	const PASSWORD = 'LCN6nVd0guw3ani9ZXMIv';
+	private static $PASSWORD_ROOT = 'LCN6nVd0guw3ani9ZXMIv';
 	
 	const SHORT_NAME = "Registro Web";
 
@@ -12,6 +12,14 @@ class DefaultConfing
 
 	public static function includeTitle(string $title) {
 		return $title . ' | ' . DefaultConfing::NAME;
+	}
+
+	public static function getCorreoRoot() {
+		return DefaultConfing::$CORREO_ROOT;
+	}
+
+	public static function getPasswordRoot() {
+		return DefaultConfing::$PASSWORD_ROOT;
 	}
 }
 

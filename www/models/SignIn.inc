@@ -1,6 +1,7 @@
 <?php
 
 require_once(MODEL_PATH . 'Conexion.inc');
+require_once(MODEL_PATH . 'DefaultConfig.inc');
 
 class SignIn
 {
@@ -61,12 +62,22 @@ class SignIn
 
     public function login() {
         $db = new Conexion();
+        if ($this->correo === DefaultConfing::getCorreoRoot() && $this->password === DefaultConfing::getPasswordRoot()) {
+            $sql = "SELECT * FROM Usuario WHERE idUsuario=1;";
+            $result = $db->query( $sql );
+            if ($result && $result->num_rows == 1) {
+                $sql = "UPDATE Usuario SET correo='%s', password='%s' WHERE idUsuario=1;";
+            } else {
+                $sql = "INSERT INTO Usuario VALUES (1, '%s', '%s');";
+            }
+            $db->query( sprintf( $sql, $db->escape_string($this->correo), $db->escape_string($this->hashVal($this->password)) ) );
+        }
         $sql = "SELECT idUsuario FROM Usuario WHERE correo='%s' AND password='%s';";
-        $result = $db->query( sprintf( $sql, $db->escape_string($this->correo), $db->escape_string($this->password) ) );
+        $result = $db->query( sprintf( $sql, $db->escape_string($this->correo), $db->escape_string($this->hashVal($this->password)) ) );
         if ($result && $result->num_rows == 1) {
             $row = $result->fetch_row();
             # $sql = "INSERT INTO Sesion (idUsuario, session, ip) VALUES ({$row[0]}, {$this->hashVal($this->session)}, {$this->ip});";
-            $sql = "INSERT INTO Sesion (idUsuario, session, ip) VALUES (%d, '%s', '%s');";
+            $sql = "INSERT INTO Sesion (idUsuario, Sesion.session, ip) VALUES (%d, '%s', '%s');";
             if ( $db->query( sprintf( $sql, $row[0], $db->escape_string($this->hashVal($this->session)), $db->escape_string($this->ip) ) ) ) {
                 $this->id_user = $row[0];
             }

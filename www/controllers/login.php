@@ -31,7 +31,7 @@ function getIdUser()
 }
 
 
-if ( !isLogged() && isset($_COOKIE['RSU']) && isset($_COOKIE['RCU']) && !empty($_COOKIE['RSU']) && !empty($_COOKIE['RCU']) ) {
+if ( !isLogged() && isset($_COOKIE['RSU']) && isset($_COOKIE['RCU']) && !empty(trim($_COOKIE['RSU'])) && !empty(trim($_COOKIE['RCU'])) ) {
 	include_once(MODEL_PATH . 'SignIn.inc');
 	$correo = $_COOKIE["RCU"];
 	$pass = "";
@@ -57,33 +57,37 @@ if ( preg_match("/^\/login/", $_SERVER['REQUEST_URI']) ) { # cuando están o uti
 	switch ($_SERVER['REQUEST_METHOD']) {
 		case 'POST':
 			if ( isset($_POST["email"]) && isset($_POST["pass"]) ) {
-				header('Content-type:application/json;charset=utf-8');
-				if (!empty($_POST["email"]) && !empty($_POST["pass"])) {
-					include_once(MODEL_PATH . 'SignIn.inc');
-					$correo = $_POST["email"];
-					$pass = $_POST["pass"];
-					$ip = getUserIP();
-					$sesion = $correo . $pass . $ip . strval(time());
-					$login = new SignIn($correo, $pass, $sesion, $ip);
-					$login->login();
-					if ($login->isLogged()) {
-						$_SESSION["session_id_user"] = $login->getIdUser();
+				if (!isLogged()) {
+					header('Content-type:application/json;charset=utf-8');
+					if (!empty(trim($_POST["email"])) && !empty(trim($_POST["pass"]))) {
+						include_once(MODEL_PATH . 'SignIn.inc');
+						$correo = $_POST["email"];
+						$pass = $_POST["pass"];
+						$ip = getUserIP();
+						$sesion = $correo . $pass . $ip . strval(time());
+						$login = new SignIn($correo, $pass, $sesion, $ip);
+						$login->login();
+						if ($login->isLogged()) {
+							$_SESSION["session_id_user"] = $login->getIdUser();
 
-						$save = isset($_POST['save']) ? (is_bool($_POST['save']) ? $_POST['save'] : $_POST['save'] == 'true') : false;
-						$time = $save ? time() + (60*60*24*183) : 0;
+							$save = isset($_POST['save']) ? (is_bool($_POST['save']) ? $_POST['save'] : $_POST['save'] == 'true') : false;
+							$time = $save ? time() + (60*60*24*183) : 0;
 
-						setcookie('RSU', $login->getSession(), $time);
-						setcookie('RCU', $login->getCorreoHashed(), $time);
+							setcookie('RSU', $login->getSession(), $time);
+							setcookie('RCU', $login->getCorreoHashed(), $time);
 
-						unset($save, $time);
+							unset($save, $time);
 
-						$data = setDataJSONMsg('success','Ingreso exitoso');
+							$data = setDataJSONMsg('success','Ingreso exitoso');
+						} else {
+							$data = setDataJSONMsg('warning','Credenciales incorrectas');
+						}
+						unset($correo, $pass, $sesion, $ip, $login);
 					} else {
-						$data = setDataJSONMsg('warning','Credenciales incorrectas');
+						$data = setDataJSONMsg('warning','Campos vacíos');
 					}
-					unset($correo, $pass, $sesion, $ip, $login);
 				} else {
-					$data = setDataJSONMsg('warning','Campos vacíos');
+					$data = setDataJSONMsg('danger','Ya has iniciado sesión con una cuenta');
 				}
 			} else {
 				# $data = '{"data": {"tipo": "error", "mensaje": "Datos "}}';

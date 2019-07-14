@@ -24,7 +24,7 @@ function setSuccess(e) {
 
 function Alerta(props) {
 	return (
-		<div className={"alert alert-"+props.alert+" alert-dismissible"} role="alert">
+		<div className={"alert alert-"+props.tipo+" alert-dismissible"} role="alert">
 			<button type="button" className="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 			<strong>{props.msg}</strong>
 		</div>
@@ -84,8 +84,8 @@ class Login extends React.Component {
 			xmlhttp.onreadystatechange = function() {
 				if (this.readyState == 4 && this.status == 200) {
 					// document.getElementById("txtHint").innerHTML = this.responseText;
-					var data = xmlhttp.response;
-					console.log(data);
+					var data = JSON.parse(xmlhttp.response);
+					this.setState({alert: <Alerta {...data} key={"T"+(new Date().toJSON())} />});
 				}
 			};
 			xmlhttp.open("POST", "/login", true);

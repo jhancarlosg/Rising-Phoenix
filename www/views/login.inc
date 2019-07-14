@@ -1,6 +1,6 @@
 <?php 
 
-require_once('../models/DefaultConfig.inc');
+require_once(MODEL_PATH . 'DefaultConfig.inc');
 
 include_once(VIEW_PATH . "head.inc");
 
