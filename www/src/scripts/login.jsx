@@ -24,10 +24,10 @@ function setSuccess(e) {
 
 function Alerta(props) {
 	return (
-		<div className={"alert alert-"+props.tipo+" alert-dismissible"} role="alert">
-			<button type="button" className="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-			<strong>{props.msg}</strong>
-		</div>
+		`<div className=${"alert alert-"+props.tipo+" alert-dismissible"} role="alert">`+
+			'<button type="button" className="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>'+
+			`<strong>${props.msg}</strong>`+
+		'</div>'
 	);
 }
 
@@ -86,7 +86,8 @@ class Login extends React.Component {
 				if (this.readyState == 4 && this.status == 200) {
 					// document.getElementById("txtHint").innerHTML = this.responseText;
 					var data = JSON.parse(xmlhttp.response);
-					tmp_this.setState({alert: <Alerta {...data} key={"T"+(new Date().toJSON())} />});
+					$('.alert').alert('close');
+					$("#login-form").prepend(Alerta(data));
 				}
 			};
 			xmlhttp.open("POST", "/login", true);
@@ -97,7 +98,7 @@ class Login extends React.Component {
 	
 	render() {
 		return (
-			<div>
+			<div id="login-form">
 				{this.state.alert}
 				<div className="panel panel-default">
 					<div className="panel-body">
