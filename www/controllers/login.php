@@ -6,7 +6,7 @@
 # if (strtolower(strval($_SERVER['REQUEST_URI'])) != '/controllers/login.php') {
 require_once('./Funciones.inc');
 
-notFound('/controllers/login.php');
+notFound('\/controllers\/login.php');
 
 session_start();
 
