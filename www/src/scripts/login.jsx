@@ -35,13 +35,14 @@ class Login extends React.Component {
 			if ((id=="email" && this.isEmail(event.target.value)) || (id="password" && len>7)) {
 				// if (!grupo.classList.contains("has-success")) {
 				// 	grupo.classList.remove("has-success", "has-error");
-					grupo.classList.add("has-success");
 					switch (id) {
-						case "email":
-							this.setState({email: event.target.value});
-							break;
 						case "password":
 							this.setState({pass: event.target.value});
+							grupo.classList.add("has-success");
+							break;
+						case "email":
+							this.setState({email: event.target.value});
+							grupo.classList.add("has-success");
 							break;
 					}
 				// }
@@ -87,7 +88,7 @@ class Login extends React.Component {
 							<div className="form-group">
 								<label htmlFor="Email" className="col-sm-2 control-label">Email</label>
 								<div className="col-sm-10">
-									<input type="email" className="form-control" id="email" placeholder="Email" required={true} minLength={6} onChange={this.handleInput} />
+									<input type="email" className="form-control" id="email" placeholder="Email" required={true} onChange={this.handleInput} />
 								</div>
 							</div>
 							<div className="form-group">
