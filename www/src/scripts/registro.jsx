@@ -1,29 +1,3 @@
-function setValidator(e, newTipo) {
-	let grupo = e.target.closest(".group-form");
-	const tipos = ['success', "warming", "error"];
-	tipos.forEach(tipo => {
-		if (tipo != newTipo) {
-			grupo.classList.remove("has-"+tipo);
-		} else {
-			grupo.classList.add("has-"+newTipo);
-		}
-	});
-}
-
-function setWarming(e) {
-	setValidator(e, "warming");
-}
-
-function setError(e) {
-	setValidator(e, "error");
-}
-
-function setSuccess(e) {
-	setValidator(e, "success");
-}
-
-// AFTER IMPORT
-
 function Distrito(props) {
 	return (
 		<option value={props.val}>props.nombre</option>
