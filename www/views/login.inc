@@ -5,7 +5,7 @@ require_once(MODEL_PATH . 'DefaultConfig.inc');
 include_once(VIEW_PATH . "head.inc");
 
 ?>
-	<title><?php echo DefaultConfing::includeTitle('Login') ?></title>
+	<title><?php echo DefaultConfing::includeTitle('Iniciar sesión') ?></title>
 	<script src="/src/scripts/login.jsx" type="text/babel"></script>
 </head>
 <body>

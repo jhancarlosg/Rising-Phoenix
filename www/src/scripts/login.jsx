@@ -56,6 +56,7 @@ class Login extends React.Component {
 					var data = JSON.parse(xmlhttp.response);
 					$('.alert').alert('close');
 					$("#login-form").prepend(Alerta(data));
+					if (data.tipo == "success") location.href = "/";
 					//tmp_this.setState({tipo: data.tipo});
 				}
 			};

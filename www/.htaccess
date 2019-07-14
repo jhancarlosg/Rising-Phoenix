@@ -21,6 +21,18 @@ RewriteRule ^registro$ /controllers/registro.php [L]
 RewriteEngine on
 RewriteRule ^registro/$ /registro [R=301,L]
 
+RewriteEngine on
+RewriteRule ^logout$ /controllers/logout.php [L]
+
+RewriteEngine on
+RewriteRule ^logout/$ /logout [R=301,L]
+
+RewriteEngine on
+RewriteRule ^settings$ /controllers/settings.php [L]
+
+RewriteEngine on
+RewriteRule ^settings/$ /settings [R=301,L]
+
 <FilesMatch "((\.(lock|cache|db|inc))|CHANGELOG.md|README.md|^(.*\.config|.*\.example)(.*?))$">
 	# Apache < 2.3
 	<IfModule !mod_authz_core.c>

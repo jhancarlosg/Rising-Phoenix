@@ -1,11 +1,16 @@
 class Navbar extends React.Component {
 	constructor(props) {
 		super(props);
+		this.state = {navs: null};
+	}
+
+	componentDidMount() {
+		getDataNavs(this);
 	}
 
 	render() {
 		return (
-			<nav class="navbar navbar-default">
+			<nav class="navbar navbar-default navbar-fixed-top">
 				<div class="container-fluid">
 					<div class="navbar-header">
 						<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#nav-collapse" aria-expanded="false">
@@ -14,14 +19,14 @@ class Navbar extends React.Component {
 							<span class="icon-bar"></span>
 							<span class="icon-bar"></span>
 						</button>
-						<a class="navbar-brand" href="#">Brand</a>
 					</div>
 					<div class="collapse navbar-collapse" id="nav-collapse">
-						<p class="navbar-text">{this.props.correo}</p>
-						<button href="/logout" type="button" class="btn btn-default navbar-btn navbar-right">Cerrar sesión</button>
+						{this.state.navs}
 					</div>
 				</div>
 			</nav>
 		);
 	}
 }
+
+ReactDOM.render(<Navbar />, document.querySelector("header"));
