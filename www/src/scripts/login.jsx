@@ -81,11 +81,12 @@ class Login extends React.Component {
 			let xmlhttp = new XMLHttpRequest();
 
 			let params = `email=${this.state.email}&pass=${this.state.pass}&save=${this.state.save}`;
+			var tmp_this = this;
 			xmlhttp.onreadystatechange = function() {
 				if (this.readyState == 4 && this.status == 200) {
 					// document.getElementById("txtHint").innerHTML = this.responseText;
 					var data = JSON.parse(xmlhttp.response);
-					this.setState({alert: <Alerta {...data} key={"T"+(new Date().toJSON())} />});
+					tmp_this.setState({alert: <Alerta {...data} key={"T"+(new Date().toJSON())} />});
 				}
 			};
 			xmlhttp.open("POST", "/login", true);
