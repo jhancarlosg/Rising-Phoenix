@@ -47,7 +47,7 @@ else:
 
 ?>
 
-<script src=""></script>
+<script src="/src/scripts/navbar.jsx"></script>
 
 <?php
 
