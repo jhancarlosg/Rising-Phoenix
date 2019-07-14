@@ -1,4 +1,6 @@
-function setValidator(e, newTipo) {
+import {setWarning, setError, setSuccess, Alerta} from './funciones.js';
+
+/* function setValidator(e, newTipo) {
 	let grupo = e.target.closest(".form-group");
 	const tipos = ['success', "warning", "error"];
 	tipos.forEach(tipo => {
@@ -29,12 +31,12 @@ function Alerta(props) {
 			`<strong>${props.msg}</strong>`+
 		'</div>'
 	);
-}
+} */
 
 class Login extends React.Component {
 	constructor(props) {
 		super(props);
-		this.state = {email: '', pass: '', save: true, tipo: 'default'};
+		this.state = {email: '', pass: '', save: true, tipo: 'info'};
 
 		this.handleInput = this.handleInput.bind(this);
 		this.handleSave = this.handleSave.bind(this);
@@ -81,14 +83,14 @@ class Login extends React.Component {
 			let xmlhttp = new XMLHttpRequest();
 
 			let params = `email=${this.state.email}&pass=${this.state.pass}&save=${this.state.save}`;
-			var tmp_this = this;
+			//var tmp_this = this;
 			xmlhttp.onreadystatechange = function() {
 				if (this.readyState == 4 && this.status == 200) {
 					// document.getElementById("txtHint").innerHTML = this.responseText;
 					var data = JSON.parse(xmlhttp.response);
 					$('.alert').alert('close');
 					$("#login-form").prepend(Alerta(data));
-					tmp_this.setState({tipo: data.tipo});
+					//tmp_this.setState({tipo: data.tipo});
 				}
 			};
 			xmlhttp.open("POST", "/login", true);
@@ -102,8 +104,8 @@ class Login extends React.Component {
 			<div id="login-form">
 				{this.state.alert}
 				<div className={"panel panel-"+this.state.tipo}>
-					<div class="panel-heading">
-						<h3 class="panel-title">Inicio de sesión</h3>
+					<div className="panel-heading">
+						<h3 className="panel-title">Inicio de sesión</h3>
 					</div>
 					<div className="panel-body">
 						<form className="form-horizontal" onSubmit={this.handleSubmit} action="/login">

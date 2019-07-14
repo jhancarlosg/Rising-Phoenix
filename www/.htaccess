@@ -15,6 +15,12 @@ RewriteRule ^inicio$ /controllers/inicio.php [L]
 RewriteEngine on
 RewriteRule ^inicio/$ /inicio [R=301,L]
 
+RewriteEngine on
+RewriteRule ^registro$ /controllers/registro.php [L]
+
+RewriteEngine on
+RewriteRule ^registro/$ /registro [R=301,L]
+
 <FilesMatch "((\.(lock|cache|db|inc))|CHANGELOG.md|README.md|^(.*\.config|.*\.example)(.*?))$">
 	# Apache < 2.3
 	<IfModule !mod_authz_core.c>
