@@ -127,8 +127,14 @@ class Registro extends React.Component {
 						</div>
 					</div>
 					<div className="panel-footer">
-						<button type="reset" id="reset-form">LIMPIAR</button>
-						<button type="submit" className="btn btn-default">GRABAR</button>
+						<div className="btn-group btn-group-justified" role="group" aria-label="...">
+							<div className="btn-group" role="group">
+								<button type="reset" id="reset-form" className="btn btn-default">LIMPIAR</button>
+							</div>
+							<div className="btn-group" role="group">
+								<button type="submit" className="btn btn-default">GRABAR</button>
+							</div>
+						</div>
 					</div>
 				</div>
 			</form>
