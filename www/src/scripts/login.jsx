@@ -24,7 +24,7 @@ function setSuccess(e) {
 
 function Alerta(props) {
 	return (
-		`<div class=${"alert alert-"+props.tipo+" alert-dismissible"} role="alert">`+
+		`<div class="${'alert alert-'+props.tipo+' alert-dismissible'}" role="alert">`+
 			'<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>'+
 			`<strong>${props.msg}</strong>`+
 		'</div>'
@@ -101,6 +101,9 @@ class Login extends React.Component {
 			<div id="login-form">
 				{this.state.alert}
 				<div className="panel panel-default">
+					<div class="panel-heading">
+						<h3 class="panel-title">Inicio de sesión</h3>
+					</div>
 					<div className="panel-body">
 						<form className="form-horizontal" onSubmit={this.handleSubmit} action="/login">
 							<div className="form-group">
