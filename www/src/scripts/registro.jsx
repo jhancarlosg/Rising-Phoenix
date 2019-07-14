@@ -23,7 +23,7 @@ class Registro extends React.Component {
 		switch (event.target.id) {
 			case "dni":
 				if (len) {
-					if (event.target.value.test(patterns.dni)) {
+					if (new RegExp(patterns.dni).test(event.target.value)) {
 						setSuccess(event);
 						this.setState({dni: event.target.value});
 					} else {
@@ -47,7 +47,7 @@ class Registro extends React.Component {
 				break;
 			case "telefono":
 				if (len) {
-					if (event.target.value.test(patterns.telefono)) {
+					if (new RegExp(patterns.telefono).test(event.target.value)) {
 						setSuccess(event);
 						this.setState({telefono: event.target.value});
 					} else {
