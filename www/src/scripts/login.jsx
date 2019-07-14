@@ -1,6 +1,4 @@
 function setValidator(e, newTipo) {
-	console.log(e, e.target);
-	
 	let grupo = e.target.closest(".form-group");
 	const tipos = ['success', "warming", "error"];
 	tipos.forEach(tipo => {
@@ -79,7 +77,6 @@ class Login extends React.Component {
 
 	handleSubmit(event) {
 		event.preventDefault();
-		console.log("log", this.state.email, this.state.pass, this.state.email.length, this.state.email.length && this.state.pass.length);
 		if (this.state.email.length && this.state.pass.length) {
 			let xmlhttp = new XMLHttpRequest();
 
@@ -91,7 +88,7 @@ class Login extends React.Component {
 					console.log(data);
 				}
 			};
-			xmlhttp.open("POST", "/login/", true);
+			xmlhttp.open("POST", "/login", true);
 			xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 			xmlhttp.send(params);
 		}
