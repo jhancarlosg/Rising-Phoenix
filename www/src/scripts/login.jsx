@@ -1,3 +1,27 @@
+function setValidator(e, newTipo) {
+	let grupo = e.target.closest(".group-form");
+	const tipos = ['success', "warming", "error"];
+	tipos.forEach(tipo => {
+		if (tipo != newTipo) {
+			grupo.classList.remove("has-"+tipo);
+		} else {
+			grupo.classList.add("has-"+newTipo);
+		}
+	});
+}
+
+function setWarming(e) {
+	setValidator(e, "warming");
+}
+
+function setError(e) {
+	setValidator(e, "error");
+}
+
+function setSuccess(e) {
+	setValidator(e, "success");
+}
+
 function Alerta(props) {
 	return (
 		<div className={"alert alert-"+props.alert+" alert-dismissible"} role="alert">
@@ -27,34 +51,27 @@ class Login extends React.Component {
 	}
 
 	handleInput(event) {
-		let grupo = event.target.closest(".form-group");
 		let len = event.target.value.length;
 		if (len) {
 			let id = event.target.id;
-			grupo.classList.remove("has-success", "has-warning", "has-error");
-			if ((id=="email" && this.isEmail(event.target.value)) || (id="password" && len>7)) {
+			if ((id=="email" && this.isEmail(event.target.value)) || (id=="password" && len>7)) {
 				// if (!grupo.classList.contains("has-success")) {
 				// 	grupo.classList.remove("has-success", "has-error");
+				setSuccess(e);
 					switch (id) {
 						case "password":
 							this.setState({pass: event.target.value});
-							grupo.classList.add("has-success");
 							break;
 						case "email":
 							this.setState({email: event.target.value});
-							grupo.classList.add("has-success");
 							break;
 					}
 				// }
 			} else {
-				// if (!grupo.classList.contains("has-error")) {
-				// 	grupo.classList.remove("has-success", "has-warming");
-					grupo.classList.add("has-error");
-				// }
+				setError(e);
 			}
 		} else {
-			grupo.classList.remove("has-success", "has-error");
-			grupo.classList.add("has-warning");
+			setWarming(e);
 		}
 	}
 
@@ -101,7 +118,7 @@ class Login extends React.Component {
 								<div className="col-sm-offset-2 col-sm-10">
 								<div className="checkbox">
 									<label>
-										<input type="checkbox" checked={true} onChange={this.handleSave} /> Recordarme
+										<input type="checkbox" onChange={this.handleSave} /> Recordarme
 									</label>
 								</div>
 								</div>
