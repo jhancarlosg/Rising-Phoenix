@@ -33,7 +33,7 @@ function Distrito(props) {
 class Registro extends React.Component {
 	constructor(props) {
 		super(props);
-		this.state = {dni: '', fullname: '', telefono: '', distrito: '', token_registros: props.token};
+		this.state = {dni: '', fullname: '', telefono: '', distrito: '', token_registros: props.token_inicial};
 		this.handleInput = this.handleInput.bind(this);
 		this.handleSubmit = this.handleSubmit.bind(this);
 		this.handleSuccess = this.handleSuccess.bind(this);
@@ -107,7 +107,7 @@ class Registro extends React.Component {
 					handleSuccess(this.responseText);
 				}
 			};
-			xmlhttp.open("POST", "/registro/", true);
+			xmlhttp.open("POST", "/registro", true);
 			xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 			xmlhttp.send(params);
 		}
@@ -161,3 +161,22 @@ class Registro extends React.Component {
 		);
 	}
 }
+
+class RegistroManager extends React.Component {
+	constructor(props) {
+		super(props);
+		this.state = {distritos: [], token_inicial: ''};
+	}
+
+	componentDidMount() {
+
+	}
+
+	render() {
+		return (
+			<Registro {...this.state} />
+		);
+	}
+}
+
+ReactDOM.render(<RegistroManager />, document.querySelector("#registro-cnt"));

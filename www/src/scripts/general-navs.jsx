@@ -1,8 +1,8 @@
 function Navs(props) {
     return (
         <React.Fragment>
-            <p class="navbar-text">{props.correo}</p>
-			<button href="/logout" type="button" class="btn btn-default navbar-btn navbar-right">Cerrar sesión</button>
+            <p className="navbar-text">{props.correo}</p>
+			<button href="/logout" type="button" className="btn btn-default navbar-btn navbar-right">Cerrar sesión</button>
         </React.Fragment>
     );
 }
