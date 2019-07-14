@@ -1,7 +1,16 @@
+function Alerta(props) {
+	return (
+		<div className={"alert alert-"+props.alert+" alert-dismissible"} role="alert">
+			<button type="button" className="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+			<strong>{props.msg}</strong>
+		</div>
+	);
+}
+
 class Login extends React.Component {
 	constructor(props) {
 		super(props);
-		this.state = {email: '', pass: '', save: true, msg: '', alert: 'info'};
+		this.state = {email: '', pass: '', save: true, alert: null};
 
 		this.handleInput = this.handleInput.bind(this);
 		this.handleSave = this.handleSave.bind(this);
@@ -13,7 +22,7 @@ class Login extends React.Component {
 	}
 
 	handleInput(event) {
-		let grupo = event.target.cloests(".form-group");
+		let grupo = event.target.closest(".form-group");
 		let len = event.target.value.length;
 		if (len) {
 			let id = event.target.id;
@@ -64,38 +73,41 @@ class Login extends React.Component {
 	
 	render() {
 		return (
-			<form className="form-horizontal" onSubmit={this.handleSubmit} action="/login">
-				<div className={"alert alert-"+this.state.alert+" alert-dismissible"} role="alert">
-					<button type="button" className="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-					<strong>{this.state.msg}</strong>
-				</div>
-				<div className="form-group">
-					<label htmlFor="Email" className="col-sm-2 control-label">Email</label>
-					<div className="col-sm-10">
-						<input type="email" className="form-control" id="email" placeholder="Email" required={true} minLength={6} onChange={this.handleInput} />
+			<div>
+				{this.state.alert}
+				<div class="panel panel-default">
+					<div class="panel-body">
+						<form className="form-horizontal" onSubmit={this.handleSubmit} action="/login">
+							<div className="form-group">
+								<label htmlFor="Email" className="col-sm-2 control-label">Email</label>
+								<div className="col-sm-10">
+									<input type="email" className="form-control" id="email" placeholder="Email" required={true} minLength={6} onChange={this.handleInput} />
+								</div>
+							</div>
+							<div className="form-group">
+								<label htmlFor="password" className="col-sm-2 control-label">Contraseña</label>
+								<div className="col-sm-10">
+								<input type="password" className="form-control" id="password" placeholder="Contraseña" required={true} minLength={8} onChange={this.handleInput} />
+								</div>
+							</div>
+							<div className="form-group">
+								<div className="col-sm-offset-2 col-sm-10">
+								<div className="checkbox">
+									<label>
+										<input type="checkbox" checked={true} onChange={this.handleSave} /> Recordarme
+									</label>
+								</div>
+								</div>
+							</div>
+							<div className="form-group">
+								<div className="col-sm-offset-2 col-sm-10">
+								<button type="submit" className="btn btn-default">Iniciar Sesión</button>
+								</div>
+							</div>
+						</form>
 					</div>
 				</div>
-				<div className="form-group">
-					<label htmlFor="password" className="col-sm-2 control-label">Contraseña</label>
-					<div className="col-sm-10">
-					<input type="password" className="form-control" id="password" placeholder="Contraseña" required={true} minLength={8} onChange={this.handleInput} />
-					</div>
-				</div>
-				<div className="form-group">
-					<div className="col-sm-offset-2 col-sm-10">
-					<div className="checkbox">
-						<label>
-							<input type="checkbox" checked={true} onChange={this.handleSave} /> Recordarme
-						</label>
-					</div>
-					</div>
-				</div>
-				<div className="form-group">
-					<div className="col-sm-offset-2 col-sm-10">
-					<button type="submit" className="btn btn-default">Iniciar Sesión</button>
-					</div>
-				</div>
-			</form>
+			</div>
 		);
 	}
 }
