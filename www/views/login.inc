@@ -9,6 +9,6 @@ include_once(VIEW_PATH . "head.inc");
 	<script src="/src/scripts/login.jsx" type="text/babel"></script>
 </head>
 <body>
-	
+	<section id="login-cnt"></section>
 </body>
 </html>

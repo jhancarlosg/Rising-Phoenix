@@ -99,3 +99,5 @@ class Login extends React.Component {
 		);
 	}
 }
+
+ReactDOM.render(<Login />, document.querySelector('#login-cnt'))
