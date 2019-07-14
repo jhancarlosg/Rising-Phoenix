@@ -25,7 +25,7 @@ class Registro extends React.Component {
 						setError(event);
 					}
 				} else {
-					setWarming(event);
+					setWarning(event);
 				}
 				break;
 			case "fullname":
@@ -37,7 +37,7 @@ class Registro extends React.Component {
 						setError(event);
 					}
 				} else {
-					setWarming(event);
+					setWarning(event);
 				}
 				break;
 			case "telefono":
@@ -49,7 +49,7 @@ class Registro extends React.Component {
 						setError(event);
 					}
 				} else {
-					setWarming(event);
+					setWarning(event);
 				}
 				break;
 			case "distrito":
@@ -67,11 +67,6 @@ class Registro extends React.Component {
 	}
 
 	handleSubmit(event) {
-		console.log(this.state.dni);
-		console.log(this.state.fullname);
-		console.log(this.state.telefono);
-		console.log(this.state.distrito);
-		console.log("---");
 		if (this.state.dni.length && this.state.fullname.length && this.state.telefono.length && this.state.distrito.length) {
 			let xmlhttp = new XMLHttpRequest();
 			let params = `dni=${this.state.dni}&fullname=${this.state.fullname}&telefono=${this.state.telefono}&distrito=${this.state.distrito}&token_registros=${this.state.token_registros}`;
@@ -92,16 +87,16 @@ class Registro extends React.Component {
 		let distritos = this.props.distritos.map(distrito => <Distrito val={distrito.pos} nombre={distrito.nombre} />);
 		// distritos.unshift(<Distrito val={0} nombre="Seleccione un distrito" />)
 		return (
-			<form className="form-horizontal">
+			<form className="form-horizontal" onSubmit={this.handleSubmit}>
 				<div className="panel panel-default">
 					<div className="panel-heading">
-						<h3 className="panel-title">BIENVENIDO</h3>
+						<h3 className="panel-title text-center text-uppercase">BIENVENIDO</h3>
 					</div>
 					<div className="panel-body">
 						<div className="form-group">
 							<label htmlFor="dni" className="col-sm-2 control-label">DNI</label>
 							<div className="col-sm-10">
-								<input type="text" pattern="([0-9]{8}" className="form-control" id="dni" placeholder="Ingresa el DNI" minLength={8} maxLength={8} required={true} />
+								<input type="text" pattern="[0-9]{8}" className="form-control" id="dni" placeholder="Ingresa el DNI" minLength={8} maxLength={8} required={true} />
 							</div>
 						</div>
 						<div className="form-group">
