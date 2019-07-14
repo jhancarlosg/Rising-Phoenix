@@ -29,21 +29,83 @@ function getIdUser()
 	return $id_user;
 }
 
-if (!isLogged()):
-	if (isset($_COOKIE["RSU"]) && isset($_COOKIE["RCU"])) {
-		include_once('../models/SignIn.php');
-		$correo = $_COOKIE["RCU"];
-		$pass = "";
-		$sesion = $_COOKIE["RSU"];
-		$ip = getUserIP();
-		$login = new SignIn($correo, $pass, $sesion, $ip);
-		if ($login->isLogged()) {
-			$_SESSION["session_id_user"] = $login->getIdUser();
-		}
+
+if ( !isLogged() && isset($_COOKIE['RSU']) && isset($_COOKIE['RCU']) && !empty($_COOKIE['RSU']) && !empty($_COOKIE['RCU']) ) {
+	include_once('../models/SignIn.php');
+	$correo = $_COOKIE["RCU"];
+	$pass = "";
+	$sesion = $_COOKIE["RSU"];
+	$ip = getUserIP();
+	$login = new SignIn($correo, $pass, $sesion, $ip);
+	$login->userLogged();
+	if ($login->isLogged()) {
+		$_SESSION["session_id_user"] = $login->getIdUser();
 	} else {
-		
+		setcookie('RSU', '', time()-100);
+		setcookie('RCU', '', time()-100);
+		unset($_COOKIE['RSU'], $_COOKIE['RCU']);
 	}
-else:
+	unset($correo, $pass, $sesion, $ip, $login);
+}
+
+function setDataJSONMsg(string $tipo, string $msg) {
+	return ['tipo' => $tipo, 'msg' => $msg];
+}
+
+if ( preg_match("/^\/login/", $_SERVER['REQUEST_URI']) ) { # cuando están o utilizan directamente /login
+	switch ($_SERVER['REQUEST_METHOD']) {
+		case 'POST':
+			if ( isset($_POST["email"]) && isset($_POST["pass"]) ) {
+				header('Content-type:application/json;charset=utf-8');
+				if (!empty($_POST["email"]) && !empty($_POST["pass"])) {
+					$correo = $_POST["email"];
+					$pass = $_POST["pass"];
+					$ip = getUserIP();
+					$sesion = $correo . $pass . $ip . strval(time());
+					$login = new SignIn($correo, $pass, $sesion, $ip);
+					$login->login();
+					if ($login->isLogged()) {
+						$_SESSION["session_id_user"] = $login->getIdUser();
+
+						$save = isset($_POST['save']) ? (is_bool($_POST['save']) ? $_POST['save'] : $_POST['save'] == 'true') : false;
+						$time = $save ? time() + (60*60*24*183) : 0;
+
+						setcookie('RSU', $login->getSession(), $time);
+						setcookie('RCU', $login->getCorreoHashed(), $time);
+
+						unset($save, $time);
+
+						$data = setDataJSONMsg('success','Ingreso exitoso');
+					} else {
+						$data = setDataJSONMsg('warming','Credenciales incorrectas');
+					}
+					unset($correo, $pass, $sesion, $ip, $login);
+				} else {
+					$data = setDataJSONMsg('warming','Campos vacíos');
+				}
+			} else {
+				# $data = '{"data": {"tipo": "error", "mensaje": "Datos "}}';
+				$data = setDataJSONMsg('danger','Envía de datos incorrectos');
+			}
+			echo json_encode($data);
+			exit();
+			break;
+		case 'GET':
+		default:
+			if (isLogged()) {
+				header('Location: /');
+			} else {
+				//TODO: retornar el código de la página
+			}
+			break;
+	}
+}
+
+
+
+
+/*
+if (preg_match("/^\/inicio/", $_SERVER['REQUEST_URI']) && isLogged()):
 
 ?>
 
@@ -52,5 +114,8 @@ else:
 <?php
 
 endif;
+
+*/
+
 
 ?>

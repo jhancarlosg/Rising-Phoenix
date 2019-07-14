@@ -9,6 +9,12 @@ RewriteRule ^login$ /controllers/login.php [L]
 RewriteEngine on
 RewriteRule ^login/$ /login [R=301,L]
 
+RewriteEngine on
+RewriteRule ^inicio$ /controllers/inicio.php [L]
+
+RewriteEngine on
+RewriteRule ^inicio/$ /inicio [R=301,L]
+
 <FilesMatch "((\.(lock|cache|db|inc))|CHANGELOG.md|README.md|^(.*\.config|.*\.example)(.*?))$">
 	# Apache < 2.3
 	<IfModule !mod_authz_core.c>

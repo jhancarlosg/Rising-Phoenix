@@ -1,5 +1,5 @@
 <?php
 
-include('./controllers/login.php');
+header("Location: /inicio")
 
 ?>

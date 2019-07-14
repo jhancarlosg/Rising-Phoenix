@@ -20,13 +20,14 @@ class SignIn
         # $this->correo = mysqli::escape_string($correo) ;
         $this->correo = $correo;
         $this->password = $password;
-        $this->session = $session;
+        $this->session = $this->hashVal($session);
         $this->ip = $ip;
-	$this->userLogged();
+        $this->id_user = null;
+	    /* $this->userLogged();
 
         if ($this->isLogged() == null && filter_var($this->correo, FILTER_VALIDATE_EMAIL)) {
             $this->login();
-        }
+        } */
     }
 
     /**
@@ -38,16 +39,19 @@ class SignIn
         return hash("sha256", $valor);
     }
 
-    private function userLogged()
+    public function userLogged()
     {
         $user = null;
         $db = new Conexion();
-        $sql = "SELECT S.idUsuario, U.correo FROM Usuario U, Sesion S WHERE S.session='{$this->session}' AND S.ip='{$this->ip}' AND S.idUsuario = U.idUsuario;";
-        $result = $db->query($sql);
-        if ($result->num_rows > 0) {
+        $sql = "SELECT S.idUsuario, U.correo, S.idSesion FROM Usuario U, Sesion S WHERE S.session='%s' AND S.ip='%s' AND S.idUsuario = U.idUsuario;";
+        $result = $db->query( sprintf( $sql, $db->escape_string($this->session), $db->escape_string($this->ip) ) );
+        if ($result && $result->num_rows > 0) {
             $row=$result->fetch_row();
-            if ($this->hashVal($row[0].$row[1])==$this->correo) {
+            if ( $this->correoHashedMethod($row[0], $row[1]) == $this->correo ) {
                 $user = $row[0];
+                $sql = "UPDATE Sesion SET lastConexion='%s' WHERE idSesion=%d;";
+                $fecha = date('Y-m-d H:i:s');
+                $db->query( sprintf( $sql, $db->escape_string($fecha), $row[3] ) );
             }
             $result->free();
         }
@@ -55,19 +59,20 @@ class SignIn
         $db->close();
     }
 
-    private function login() {
+    public function login() {
         $db = new Conexion();
-	$sql1 = "SELECT idUsuario FROM Usuario WHERE correo='{$this->correo}' AND password='{$this->hashVal($this->password)}';";
-	$result = $db->query($sql1);
-	if ($result->num_rows == 1) {
-		$row = $result->fetch_row();
-		$this->session = $this->hashVal(date('YYYY-MM-DD') . $this->correo);
-		$sql2 = "INSERT INTO Sesion (idUsuario, session, ip) VALUES ({$row[0]}, {$this->session}, {$this->ip});";
-		if ($db->query($sql2)) {
-			$this->id_user = $row[0];
-		}
-	}
-
+        $sql = "SELECT idUsuario FROM Usuario WHERE correo='%s' AND password='%s';";
+        $result = $db->query( sprintf( $sql, $db->escape_string($this->correo), $db->escape_string($this->password) ) );
+        if ($result && $result->num_rows == 1) {
+            $row = $result->fetch_row();
+            # $sql = "INSERT INTO Sesion (idUsuario, session, ip) VALUES ({$row[0]}, {$this->hashVal($this->session)}, {$this->ip});";
+            $sql = "INSERT INTO Sesion (idUsuario, session, ip) VALUES (%d, '%s', '%s');";
+            if ( $db->query( sprintf( $sql, $row[0], $db->escape_string($this->hashVal($this->session)), $db->escape_string($this->ip) ) ) ) {
+                $this->id_user = $row[0];
+            }
+            $result->free();
+        }
+        $db->close();
     }
 
     /**
@@ -81,6 +86,19 @@ class SignIn
     public function getIdUser()
     {
         return $this->id_user;
+    }
+
+    private function correoHashedMethod($val1, $val2) {
+        return $this->hashVal($val1 . $val2);
+    }
+
+    public function getCorreoHashed()
+    {
+        return $this->correoHashedMethod($this->id_user, $this->correo);
+    }
+
+    public function getSession() {
+        return $this->session;
     }
 }
 

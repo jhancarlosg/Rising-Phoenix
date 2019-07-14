@@ -1,10 +1,15 @@
 class Login extends React.Component {
 	constructor(props) {
 		super(props);
-		this.state = {email: '', pass: ''};
+		this.state = {email: '', pass: '', save: true, msg: '', alert: 'info'};
 
 		this.handleInput = this.handleInput.bind(this);
+		this.handleSave = this.handleSave.bind(this);
 		this.handleSubmit = this.handleSubmit.bind(this);
+	}
+
+	handleSave(e) {
+		this.setState({save: e.target.checked});
 	}
 
 	handleInput(event) {
@@ -42,10 +47,13 @@ class Login extends React.Component {
 		event.preventDefault();
 		if (this.state.email.length && this.state.pass.length) {
 			let xmlhttp = new XMLHttpRequest();
-			let params = `email=${this.state.email}&pass=${this.state.pass}`;
+
+			let params = `email=${this.state.email}&pass=${this.state.pass}&save=${this.state.save}`;
 			xmlhttp.onreadystatechange = function() {
 				if (this.readyState == 4 && this.status == 200) {
 					// document.getElementById("txtHint").innerHTML = this.responseText;
+					var data = xmlhttp.response;
+					console.log(data);
 				}
 			};
 			xmlhttp.open("POST", "/login/", true);
@@ -57,6 +65,10 @@ class Login extends React.Component {
 	render() {
 		return (
 			<form className="form-horizontal">
+				<div className={"alert alert-"+this.state.alert+" alert-dismissible"} role="alert">
+					<button type="button" className="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+					<strong>{this.state.msg}</strong>
+				</div>
 				<div className="form-group">
 					<label htmlFor="Email" className="col-sm-2 control-label">Email</label>
 					<div className="col-sm-10">
@@ -73,7 +85,7 @@ class Login extends React.Component {
 					<div className="col-sm-offset-2 col-sm-10">
 					<div className="checkbox">
 						<label>
-							<input type="checkbox" checked={true} /> Recordarme
+							<input type="checkbox" checked={true} onChange={this.handleSave} /> Recordarme
 						</label>
 					</div>
 					</div>
