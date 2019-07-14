@@ -4,6 +4,11 @@ function Distrito(props) {
 	);
 }
 
+let patterns = {
+	dni: "[0-9]{8}",
+	telefono: "(|[0-9]{2}|[0-9]{5})[0-9]{7}"
+}
+
 class Registro extends React.Component {
 	constructor(props) {
 		super(props);
@@ -18,7 +23,7 @@ class Registro extends React.Component {
 		switch (event.target.id) {
 			case "dni":
 				if (len) {
-					if (len==8) {
+					if (event.target.value.test(patterns.dni)) {
 						setSuccess(event);
 						this.setState({dni: event.target.value});
 					} else {
@@ -42,7 +47,7 @@ class Registro extends React.Component {
 				break;
 			case "telefono":
 				if (len) {
-					if (len==7 || len==9 || len==12) {
+					if (event.target.value.test(patterns.telefono)) {
 						setSuccess(event);
 						this.setState({telefono: event.target.value});
 					} else {
@@ -96,7 +101,7 @@ class Registro extends React.Component {
 						<div className="form-group">
 							<label htmlFor="dni" className="col-sm-2 control-label">DNI</label>
 							<div className="col-sm-10">
-								<input type="text" pattern="[0-9]{8}" onChange={this.handleInput} className="form-control" id="dni" placeholder="Ingresa el DNI" minLength={8} maxLength={8} required={true} />
+								<input type="text" pattern={patterns.dni} onChange={this.handleInput} className="form-control" id="dni" placeholder="Ingresa el DNI" minLength={8} maxLength={8} required={true} />
 							</div>
 						</div>
 						<div className="form-group">
@@ -108,7 +113,7 @@ class Registro extends React.Component {
 						<div className="form-group">
 							<label htmlFor="telefono" className="col-sm-2 control-label">TELÉFONO</label>
 							<div className="col-sm-10">
-								<input type="text" onChange={this.handleInput} className="form-control" id="telefono" placeholder="Digita el número (opcional)" pattern="(|[0-9]{2}|[0-9]{5})[0-9]{7}" minLength={7} maxLength={12} />
+								<input type="text" onChange={this.handleInput} className="form-control" id="telefono" placeholder="Digita el número (opcional)" pattern={patterns.telefono} minLength={7} maxLength={12} />
 							</div>
 						</div>
 						<div className="form-group">
