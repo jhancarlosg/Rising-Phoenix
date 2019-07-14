@@ -96,25 +96,25 @@ class Registro extends React.Component {
 						<div className="form-group">
 							<label htmlFor="dni" className="col-sm-2 control-label">DNI</label>
 							<div className="col-sm-10">
-								<input type="text" pattern="[0-9]{8}" className="form-control" id="dni" placeholder="Ingresa el DNI" minLength={8} maxLength={8} required={true} />
+								<input type="text" pattern="[0-9]{8}" onChange={this.handleInput} className="form-control" id="dni" placeholder="Ingresa el DNI" minLength={8} maxLength={8} required={true} />
 							</div>
 						</div>
 						<div className="form-group">
 							<label htmlFor="fullname" className="col-sm-2 control-label">NOMBRE Y APELLIDO</label>
 							<div className="col-sm-10">
-								<input type="text" className="form-control" id="fullname" placeholder="Escribe un nombre" required={true} />
+								<input type="text" onChange={this.handleInput} className="form-control" id="fullname" placeholder="Escribe un nombre" required={true} />
 							</div>
 						</div>
 						<div className="form-group">
 							<label htmlFor="telefono" className="col-sm-2 control-label">TELÉFONO</label>
 							<div className="col-sm-10">
-								<input type="text" className="form-control" id="telefono" placeholder="Digita el número (opcional)" pattern="(|[0-9]{2}|[0-9]{5})[0-9]{7}" minLength={7} maxLength={12} />
+								<input type="text" onChange={this.handleInput} className="form-control" id="telefono" placeholder="Digita el número (opcional)" pattern="(|[0-9]{2}|[0-9]{5})[0-9]{7}" minLength={7} maxLength={12} />
 							</div>
 						</div>
 						<div className="form-group">
 							<label htmlFor="distrito" className="col-sm-2 control-label">DISTRITO</label>
 							<div className="col-sm-10">
-								<input type="text" className="form-control" list="distritos" id="distrito" placeholder="Distrito" required={true} />
+								<input type="text" onChange={this.handleInput} className="form-control" list="distritos" id="distrito" placeholder="Distrito" required={true} />
 								<datalist name="distritos" id="distritos">
 									{distritos}
 								</datalist>
