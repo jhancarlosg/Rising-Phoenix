@@ -21,13 +21,18 @@ class Login extends React.Component {
 		this.setState({save: e.target.checked});
 	}
 
+	isEmail(val) {
+		var reg = new RegExp("^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$");
+		return reg.test(val);
+	}
+
 	handleInput(event) {
 		let grupo = event.target.closest(".form-group");
 		let len = event.target.value.length;
 		if (len) {
 			let id = event.target.id;
-			grupo.classList.remove("has-success", "has-success", "has-error");
-			if ((id=="email" && len>5) || (id="password" && len>7)) {
+			grupo.classList.remove("has-success", "has-warning", "has-error");
+			if ((id=="email" && this.isEmail(event.target.value)) || (id="password" && len>7)) {
 				// if (!grupo.classList.contains("has-success")) {
 				// 	grupo.classList.remove("has-success", "has-error");
 					grupo.classList.add("has-success");
@@ -48,12 +53,13 @@ class Login extends React.Component {
 			}
 		} else {
 			grupo.classList.remove("has-success", "has-error");
-			grupo.classList.add("has-warming");
+			grupo.classList.add("has-warning");
 		}
 	}
 
 	handleSubmit(event) {
 		event.preventDefault();
+		console.log("log", this.state.email, this.state.pass, this.state.email.length, this.state.email.length && this.state.pass.length);
 		if (this.state.email.length && this.state.pass.length) {
 			let xmlhttp = new XMLHttpRequest();
 
@@ -75,8 +81,8 @@ class Login extends React.Component {
 		return (
 			<div>
 				{this.state.alert}
-				<div class="panel panel-default">
-					<div class="panel-body">
+				<div className="panel panel-default">
+					<div className="panel-body">
 						<form className="form-horizontal" onSubmit={this.handleSubmit} action="/login">
 							<div className="form-group">
 								<label htmlFor="Email" className="col-sm-2 control-label">Email</label>
