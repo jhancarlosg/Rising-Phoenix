@@ -95,7 +95,7 @@ if ( preg_match("/^\/login/", $_SERVER['REQUEST_URI']) ) { # cuando están o uti
 			if (isLogged()) {
 				header('Location: /');
 			} else {
-				//TODO: retornar el código de la página
+				include_once('../views/login.inc');
 			}
 			break;
 	}
