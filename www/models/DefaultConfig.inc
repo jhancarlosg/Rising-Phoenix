@@ -2,16 +2,16 @@
 
 class DefaultConfing
 {
-	public static final $USER = 'root';
+	const USER = 'root';
 	//TODO: Establecer la contraseña del usuario raíz.
-	public static final $PASSWORD = 'LCN6nVd0guw3ani9ZXMIv';
+	const PASSWORD = 'LCN6nVd0guw3ani9ZXMIv';
 	
-	public static final $SHORT_NAME = "Registro Web";
+	const SHORT_NAME = "Registro Web";
 
-	public static final $NAME = "Registro Web | IDAT";
+	const NAME = "Registro Web | IDAT";
 
 	public static function includeTitle(string $title) {
-		return $title . ' | ' . DefaultConfing::$NAME;
+		return $title . ' | ' . DefaultConfing::NAME;
 	}
 }
 
