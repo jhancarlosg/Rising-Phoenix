@@ -1,6 +1,6 @@
 <?php
 
-require_once('./Conexion.inc');
+require_once(MODEL_PATH . 'Conexion.inc');
 
 class SignIn
 {
