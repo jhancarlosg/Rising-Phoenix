@@ -32,7 +32,7 @@ function getIdUser()
 
 
 if ( !isLogged() && isset($_COOKIE['RSU']) && isset($_COOKIE['RCU']) && !empty($_COOKIE['RSU']) && !empty($_COOKIE['RCU']) ) {
-	include_once('../models/SignIn.php');
+	include_once(MODEL_PATH . 'SignIn.inc');
 	$correo = $_COOKIE["RCU"];
 	$pass = "";
 	$sesion = $_COOKIE["RSU"];
@@ -59,7 +59,7 @@ if ( preg_match("/^\/login/", $_SERVER['REQUEST_URI']) ) { # cuando están o uti
 			if ( isset($_POST["email"]) && isset($_POST["pass"]) ) {
 				header('Content-type:application/json;charset=utf-8');
 				if (!empty($_POST["email"]) && !empty($_POST["pass"])) {
-					include_once('../models/SignIn.php');
+					include_once(MODEL_PATH . 'SignIn.inc');
 					$correo = $_POST["email"];
 					$pass = $_POST["pass"];
 					$ip = getUserIP();
@@ -97,7 +97,7 @@ if ( preg_match("/^\/login/", $_SERVER['REQUEST_URI']) ) { # cuando están o uti
 			if (isLogged()) {
 				header('Location: /');
 			} else {
-				include_once('../views/login.inc');
+				include_once(VIEW_PATH . 'login.inc');
 			}
 			break;
 	}
