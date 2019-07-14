@@ -7,6 +7,6 @@ function Navs(props) {
     );
 }
 
-function getDataNavs(r_ele) {
+var getDataNavs = function(r_ele) {
     console.log(r_ele.state.navs);
 }
