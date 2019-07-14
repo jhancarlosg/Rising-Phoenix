@@ -1,6 +1,6 @@
 function setValidator(e, newTipo) {
 	let grupo = e.target.closest(".form-group");
-	const tipos = ['success', "warming", "error"];
+	const tipos = ['success', "warning", "error"];
 	tipos.forEach(tipo => {
 		if (tipo != newTipo) {
 			grupo.classList.remove("has-"+tipo);
@@ -10,7 +10,7 @@ function setValidator(e, newTipo) {
 	});
 }
 
-function setWarming(e) {
+function setWarning(e) {
 	setValidator(e, "warning");
 }
 
@@ -34,7 +34,7 @@ function Alerta(props) {
 class Login extends React.Component {
 	constructor(props) {
 		super(props);
-		this.state = {email: '', pass: '', save: true, alert: null};
+		this.state = {email: '', pass: '', save: true, tipo: 'default'};
 
 		this.handleInput = this.handleInput.bind(this);
 		this.handleSave = this.handleSave.bind(this);
@@ -71,7 +71,7 @@ class Login extends React.Component {
 				setError(event);
 			}
 		} else {
-			setWarming(event);
+			setWarning(event);
 		}
 	}
 
@@ -88,6 +88,7 @@ class Login extends React.Component {
 					var data = JSON.parse(xmlhttp.response);
 					$('.alert').alert('close');
 					$("#login-form").prepend(Alerta(data));
+					tmp_this.setState({tipo: data.tipo});
 				}
 			};
 			xmlhttp.open("POST", "/login", true);
@@ -100,7 +101,7 @@ class Login extends React.Component {
 		return (
 			<div id="login-form">
 				{this.state.alert}
-				<div className="panel panel-default">
+				<div className={"panel panel-"+this.state.tipo}>
 					<div class="panel-heading">
 						<h3 class="panel-title">Inicio de sesión</h3>
 					</div>
