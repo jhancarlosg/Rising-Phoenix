@@ -1,4 +1,4 @@
-export function setValidator(e, newTipo) {
+function setValidator(e, newTipo) {
 	let grupo = e.target.closest(".form-group");
 	const tipos = ['success', "warning", "error"];
 	tipos.forEach(tipo => {
@@ -10,19 +10,19 @@ export function setValidator(e, newTipo) {
 	});
 }
 
-export function setWarning(e) {
+function setWarning(e) {
 	setValidator(e, "warning");
 }
 
-export function setError(e) {
+function setError(e) {
 	setValidator(e, "error");
 }
 
-export function setSuccess(e) {
+function setSuccess(e) {
 	setValidator(e, "success");
 }
 
-export function Alerta(props) {
+function Alerta(props) {
 	return (
 		`<div class="${'alert alert-'+props.tipo+' alert-dismissible'}" role="alert">`+
 			'<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>'+
