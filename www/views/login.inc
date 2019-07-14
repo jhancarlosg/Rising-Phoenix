@@ -2,7 +2,7 @@
 
 require_once('../models/DefaultConfig.inc');
 
-include_once('./head.inc');
+include_once(VIEW_PATH . "PersonaDao.php");
 
 ?>
 	<title><?php echo DefaultConfing::includeTitle('Login') ?></title>
