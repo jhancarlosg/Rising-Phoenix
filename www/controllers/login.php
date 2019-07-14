@@ -4,7 +4,7 @@
 
 
 # if (strtolower(strval($_SERVER['REQUEST_URI'])) != '/controllers/login.php') {
-require_once($_SERVER['DOCUMENT_ROOT'].'/dirs.php');
+require_once($_SERVER['DOCUMENT_ROOT'].'/dirs.inc');
 require_once('./Funciones.inc');
 
 notFound('\/controllers\/login.php');
