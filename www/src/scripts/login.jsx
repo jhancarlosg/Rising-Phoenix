@@ -64,7 +64,7 @@ class Login extends React.Component {
 	
 	render() {
 		return (
-			<form className="form-horizontal">
+			<form className="form-horizontal" onSubmit={this.handleSubmit} action="/login">
 				<div className={"alert alert-"+this.state.alert+" alert-dismissible"} role="alert">
 					<button type="button" className="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 					<strong>{this.state.msg}</strong>
@@ -72,13 +72,13 @@ class Login extends React.Component {
 				<div className="form-group">
 					<label htmlFor="Email" className="col-sm-2 control-label">Email</label>
 					<div className="col-sm-10">
-						<input type="email" className="form-control" id="email" placeholder="Email" required={true} minLength={6} />
+						<input type="email" className="form-control" id="email" placeholder="Email" required={true} minLength={6} onChange={this.handleInput} />
 					</div>
 				</div>
 				<div className="form-group">
 					<label htmlFor="password" className="col-sm-2 control-label">Contraseña</label>
 					<div className="col-sm-10">
-					<input type="password" className="form-control" id="password" placeholder="Contraseña" required={true} minLength={8} />
+					<input type="password" className="form-control" id="password" placeholder="Contraseña" required={true} minLength={8} onChange={this.handleInput} />
 					</div>
 				</div>
 				<div className="form-group">
