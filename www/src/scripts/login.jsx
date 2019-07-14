@@ -11,7 +11,7 @@ function setValidator(e, newTipo) {
 }
 
 function setWarming(e) {
-	setValidator(e, "warming");
+	setValidator(e, "warning");
 }
 
 function setError(e) {
@@ -57,7 +57,7 @@ class Login extends React.Component {
 			if ((id=="email" && this.isEmail(event.target.value)) || (id=="password" && len>7)) {
 				// if (!grupo.classList.contains("has-success")) {
 				// 	grupo.classList.remove("has-success", "has-error");
-				setSuccess(e);
+				setSuccess(event);
 					switch (id) {
 						case "password":
 							this.setState({pass: event.target.value});
@@ -68,10 +68,10 @@ class Login extends React.Component {
 					}
 				// }
 			} else {
-				setError(e);
+				setError(event);
 			}
 		} else {
-			setWarming(e);
+			setWarming(event);
 		}
 	}
 

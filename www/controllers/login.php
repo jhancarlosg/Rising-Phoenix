@@ -78,11 +78,11 @@ if ( preg_match("/^\/login/", $_SERVER['REQUEST_URI']) ) { # cuando están o uti
 
 						$data = setDataJSONMsg('success','Ingreso exitoso');
 					} else {
-						$data = setDataJSONMsg('warming','Credenciales incorrectas');
+						$data = setDataJSONMsg('warning','Credenciales incorrectas');
 					}
 					unset($correo, $pass, $sesion, $ip, $login);
 				} else {
-					$data = setDataJSONMsg('warming','Campos vacíos');
+					$data = setDataJSONMsg('warning','Campos vacíos');
 				}
 			} else {
 				# $data = '{"data": {"tipo": "error", "mensaje": "Datos "}}';
