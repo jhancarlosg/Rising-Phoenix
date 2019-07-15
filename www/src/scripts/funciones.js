@@ -23,8 +23,12 @@ function setSuccess(e) {
 }
 
 function Alerta(props) {
+	let id = "Alert_T"+(new Date().getTime());
+	setTimeout(() => {
+		$("#"+id).alert('close');
+	}, 4000);
 	return (
-		`<div class="${'alert alert-'+props.tipo+' alert-dismissible'}" role="alert">`+
+		`<div class="${'alert alert-'+props.tipo+' alert-dismissible'}" id="${id}" role="alert">`+
 			'<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>'+
 			`<strong>${props.msg}</strong>`+
 		'</div>'
