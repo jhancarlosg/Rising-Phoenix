@@ -13,7 +13,7 @@ if (isLogged()) {
 		switch ($_SERVER['REQUEST_METHOD']) {
 			case 'POST':
 				if(isset($_POST["export_data"]) && $_POST["export_data"] == 'true') {
-					$filename = "Datos registro - ".date('Y-m-d H:i') . ".xls";
+					$filename = "Datos registro - ".date('Y-m-d h:i:s') . ".xls";
 					header("Content-type: application/vnd.ms-excel; name='excel'");
 					header("Content-Disposition: attachment; filename=\"$filename\"");
 					header("Pragma: no-cache");
@@ -24,7 +24,7 @@ if (isLogged()) {
 					if(!empty($data)) {
 						foreach ($data as $row) {
 							if (! $show_coloumn) {
-								echo implode("\t", array_keys($row)) . "\n";
+								echo implode("\t", ['FECHA - HORA', 'DNI', 'NOMBRE Y APELLIDO', 'TELEFONO', 'DIRECCION', 'ATENDIDO POR', 'USUARIO']) . "\n";
 								$show_coloumn = true;
 							}
 							echo implode("\t", array_values($row)) . "\n";
