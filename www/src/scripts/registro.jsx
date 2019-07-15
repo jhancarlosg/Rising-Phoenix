@@ -96,12 +96,8 @@ class Registro extends React.Component {
 		event.preventDefault();
 	}
 
-	handleReset() {
+	handleReset(e) {
 		$(".form-group").removeClass("has-warning has-error has-success");
-	}
-
-	componentDidMount() {
-		this.setState({token_registros: this.props.token_inicial});
 	}
 
 	render() {
@@ -147,7 +143,7 @@ class Registro extends React.Component {
 						<div className="btn-group btn-group-justified" role="group" aria-label="...">
 							<div className="btn-group" role="group">
 								<input type="hidden" name="toke_inicial" value={this.props.token_inicial} />
-								<button type="reset" id="reset-form" className="btn btn-default">LIMPIAR</button>
+								<button type="reset" id="reset-form" onClick={this.handleReset} className="btn btn-default">LIMPIAR</button>
 							</div>
 							<div className="btn-group" role="group">
 								<button type="submit" className="btn btn-default">GRABAR</button>
@@ -181,7 +177,7 @@ class RegistroManager extends React.Component {
 
 	render() {
 		return (
-			<Registro {...this.state} />
+			<Registro {...this.state} key={this.state.token_inicial} />
 		);
 	}
 }
