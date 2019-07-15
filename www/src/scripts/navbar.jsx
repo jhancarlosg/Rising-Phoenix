@@ -1,7 +1,7 @@
 class Navbar extends React.Component {
 	constructor(props) {
 		super(props);
-		this.state = {navs: null, navbar_props: {}};
+		this.state = {navbar_props: {}};
 		this.handleClick = this.handleClick.bind(this);
 	}
 
@@ -16,7 +16,6 @@ class Navbar extends React.Component {
 		};
 		xmlhttp.open("GET", "/registro?navbar_props=get&json=true", true);
 		xmlhttp.send();
-		getDataNavs(this);
 	}
 
 	handleClick(e) {
@@ -37,7 +36,7 @@ class Navbar extends React.Component {
 						</button>
 					</div>
 					<div className="collapse navbar-collapse" id="nav-collapse" >
-						{this.state.navs}
+						<Navs {...this.state.navbar_props} />
 					</div>
 				</div>
 			</nav>

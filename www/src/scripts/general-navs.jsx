@@ -18,6 +18,8 @@ function AsesorOption(props) {
     return <option id={props.asesor}>{props.asesor}</option>
 }
 
-var getDataNavs = function(r_ele) {
+/* var getDataNavs = function(r_ele) {
     r_ele.setState({navs: <GenNavs {...r_ele.state.navbar_props} />});
-}
+} */
+
+var Navs = GenNavs;
