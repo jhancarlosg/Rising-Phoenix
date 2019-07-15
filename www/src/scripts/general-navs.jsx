@@ -21,9 +21,10 @@ class GenNavs extends React.Component {
         if (REGISTRO_FER.current) REGISTRO_FER.current.handleAsesorChange(e);
     }
     render () {
+        const asesores = typeof props.asesores == 'object' ? props.asesores.map((asesor) => <AsesorOption asesor={asesor} key={asesor} />) : null;
         return (
             <React.Fragment>
-                <p className="navbar-text">{props.correo}</p>
+                <p className="navbar-text">{this.props.correo}</p>
                 <button href="/logout" type="button" className="btn btn-default navbar-btn navbar-right">Cerrar sesión</button>
                 <div className="navbar-form navbar-right" role="search">
                     <div className="form-group">
