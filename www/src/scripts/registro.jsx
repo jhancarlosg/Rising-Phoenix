@@ -1,6 +1,6 @@
 function Distrito(props) {
 	return (
-		<option value={props.val}>props.nombre</option>
+		<option value={props.nombre} />
 	);
 }
 
