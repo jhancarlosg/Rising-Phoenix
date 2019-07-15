@@ -20,7 +20,8 @@ class Navbar extends React.Component {
 	}
 
 	handleClick(e) {
-
+		console.log(this.state.navbar_props);
+		
 	}
 
 	render() {
