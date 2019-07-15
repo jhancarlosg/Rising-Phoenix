@@ -96,6 +96,13 @@ class Data
 		}
 		return $return;
 	}
+
+	public static function logout() {
+		if(isLogged() && isset($_COOKIE['RSU'])) {
+			$db = new Conexion();
+			$sql = "UPDATE Sesion SET session='' WHERE session='%s';";
+			$db->query(sprintf($sql, $db->escape_string($_COOKIE['RSU'])));
+		}
 }
 
 
