@@ -80,6 +80,22 @@ class Data
 		}
 		return $return;
 	}
+
+	public static function getDataRows($rows) {
+		$return = [];
+		if (isLogged()) {
+			$db = new Conexion();
+			$sql = "SELECT A.fechaHora, C.DNI, C.nombreCompleto, C.telefono, D.nombre, AV.nombreCompleto, U.correo FROM Atencion A, Cliente C, Distrito D, AsesorVentas AV, Usuario U WHERE A.DNI=C.DNI AND C.idDistrito=D.idDistrito AND A.idAsesorVentas=AV.idAsesorVentas AND A.idUsuario=U.idUsuario LIMIT %d;";
+			$result = $db->query( sprintf($sql, $rows) );
+			if ($result && $result->num_rows>0) {
+				while ($row = $result->fetch_row()) {
+					$return[] = $row;
+				}
+				$result->free();
+			}
+		}
+		return $return;
+	}
 }
 
 

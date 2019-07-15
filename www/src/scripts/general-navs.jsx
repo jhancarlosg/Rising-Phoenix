@@ -28,6 +28,9 @@ class GenNavs extends React.Component {
                     <select className="form-control" ref={this.props.asesor_ref}>{asesores}</select>
                     </div>
                 </div>
+                <ul className="nav navbar-nav navbar-right">
+                    <li className=""><a href="/datos">Datos<span className="sr-only">(current)</span></a></li>
+                </ul>
             </React.Fragment>
         );
     }
