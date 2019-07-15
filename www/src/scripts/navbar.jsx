@@ -10,7 +10,7 @@ class Navbar extends React.Component {
 
 	render() {
 		return (
-			<nav className="navbar navbar-default navbar-fixed-top">
+			<nav className="navbar navbar-default">
 				<div className="container-fluid">
 					<div className="navbar-header">
 						<button type="button" className="navbar-toggle collapsed" data-toggle="collapse" data-target="#nav-collapse" aria-expanded="false">
