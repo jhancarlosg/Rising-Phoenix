@@ -19,7 +19,7 @@ if (isLogged()) {
 					header("Pragma: no-cache");
 					header("Expires: 0");
 					$show_coloumn = false;
-					$rows = isset($_POST['rows']) ? $_POST['rows'] : 50;
+					$rows = isset($_POST['rows']) ? int($_POST['rows']) : 50;
 					$data = Data::getDataRows($rows);
 					if(!empty($data)) {
 						foreach ($data as $row) {
