@@ -40,7 +40,7 @@ class Registro extends React.Component {
 
 	iniciar() {
 		console.log(this.dni.current);
-		$("#dni, #telefono, #fullname, #distrito").val("");
+		document.getElementById("form-registro").reset();
 		$("#telefono, #fullname, #distrito").hide();
 	}
 
@@ -78,7 +78,6 @@ class Registro extends React.Component {
 					if (new RegExp(patterns.telefono).test(event.target.value)) {
 						setSuccess(event);
 						this.setState({telefono: event.target.value});
-						$("#telefono").show();
 					} else {
 						setError(event);
 					}
@@ -91,6 +90,7 @@ class Registro extends React.Component {
 					this.setState({distrito: event.target.value});
 					if (this.props.distritos.some((dist) => event.target.value == dist)) {
 						setSuccess(event);
+						$("#telefono").show();
 					} else {
 						setWarning(event);
 					}
@@ -119,7 +119,7 @@ class Registro extends React.Component {
 					$("#registro-cnt").prepend(Alerta(data));
 					tmp_this.setState({token_registros: data.token});
 					if (data.tipo == 'success') {
-						document.getElementById("form-registro").reset();
+						this.iniciar();
 					}
 				}
 			};
