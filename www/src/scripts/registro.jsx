@@ -98,7 +98,7 @@ class Registro extends React.Component {
 			<form id="form-registro" className="form-horizontal" onSubmit={this.handleSubmit}>
 				<div className="panel panel-default">
 					<div className="panel-heading">
-						<h3 className="panel-title text-center text-uppercase">BIENVENIDO - {this.props.token_registros}</h3>
+						<h3 className="panel-title text-center text-uppercase">BIENVENIDO - {this.props.token_inicial}</h3>
 					</div>
 					<div className="panel-body">
 						<div className="form-group">
