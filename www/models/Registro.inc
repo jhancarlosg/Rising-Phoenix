@@ -38,7 +38,7 @@ class Registro
         if ($this->hasPrivilegios() && $this->checkToken() && $this->manageCliente()) {
             $sql = "INSERT INTO Atencion (DNI, idAsesorVentas, idUsuario, token) VALUES ('%s', %d, %d, '%s');";
             $result = $this->db->query( sprintf($sql, $this->db->escape_string($this->dni), $this->idAsesor, $this->idUser, $this->db->escape_string($this->token) ) );
-            $this->respuesta = [$result, sprintf($sql, $this->db->escape_string($this->dni), $this->idAsesor, $this->idUser, $this->db->escape_string($this->token) )];
+            $this->respuesta = [$result, 'REGISTRO EXISTOSO' ];
         } else {
             $this->respuesta = [$result, 'NO SE PUDO COMPLETAR EL REGISTRO'];
         }
