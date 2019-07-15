@@ -16,6 +16,7 @@ class Registro extends React.Component {
 		this.handleInput = this.handleInput.bind(this);
 		this.handleSubmit = this.handleSubmit.bind(this);
 		this.handleSuccess = this.handleSuccess.bind(this);
+		console.log(props.token_inicial);
 	}
 
 	handleInput(event) {
@@ -152,7 +153,16 @@ class RegistroManager extends React.Component {
 	}
 
 	componentDidMount() {
-
+		let xmlhttp = new XMLHttpRequest();
+		let tmp_this = this;
+		xmlhttp.onreadystatechange = function() {
+			if (this.readyState == 4 && this.status == 200) {
+				let data = JSON.parse(this.responseText);
+				tmp_this.setState({token_inicial: data.token});
+			}
+		};
+		xmlhttp.open("GET", "/registro?token=true", true);
+		xmlhttp.send();
 	}
 
 	render() {
