@@ -38,7 +38,7 @@ if (isLogged()) {
 					$mod_cliente = isset($_POST['mod_cliente']) ? (is_bool($_POST['mod_cliente']) ? $_POST['mod_cliente'] : (trim($_POST['mod_cliente']) == 'true')) : null;
 					if (testData($dni, $token_registros, $fullname, $telefono, $distrito, $mod_cliente, $asesor)) {
 						include_once(MODEL_PATH . 'Registro.inc');
-						$registro = new Registro(getIdUser(), $dni, $fullname, $telefono, $distrito, $token, $asesor, $mod_cliente);
+						$registro = new Registro(getIdUser(), $dni, $fullname, $telefono, $distrito, $token_registros, $asesor, $mod_cliente);
 						if ($registro->registrar()) {
 							$data = setDataJSONMsgRegistro("success", "REGISTRO EXITOSO");
 						} else {

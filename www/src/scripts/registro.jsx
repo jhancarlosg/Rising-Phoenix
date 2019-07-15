@@ -115,7 +115,7 @@ class Registro extends React.Component {
 						<div className="form-group">
 							<label htmlFor="dni" className="col-sm-2 control-label">DNI</label>
 							<div className="col-sm-10">
-								<input type="text" pattern={patterns.dni} onChange={this.handleInput} className="form-control" id="dni" name="dni" placeholder="Ingresa el DNI" minLength={8} maxLength={8} required={true} />
+								<input type="text" pattern={patterns.dni} onChange={this.handleInput} className="form-control" id="dni" name="dni" placeholder="Ingresa el DNI (i.e. 87654321)" minLength={8} maxLength={8} required={true} />
 							</div>
 						</div>
 						<div className="form-group">

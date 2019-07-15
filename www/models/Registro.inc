@@ -16,7 +16,7 @@ class Registro
     private $idAsesor;
     private $db;
 
-    public function __construct(string $idUser, string $dni, string $fullname, string $telefono, string $distrito, string $token, string $asesor, $mod_cliente) {
+    public function __construct(int $idUser, string $dni, string $fullname, string $telefono, string $distrito, string $token, string $asesor, $mod_cliente) {
         $this->idUser = $idUser;
         $this->dni = $dni;
         $this->fullname = $fullname;
