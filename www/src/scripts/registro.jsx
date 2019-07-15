@@ -50,7 +50,13 @@ class Registro extends React.Component {
 					$("#distrito").val(data.distrito);
 					$("#telefono").val(data.telefono);
 					$("#telefono, #fullname, #distrito").show();
+					$("#telefono, #fullname, #distrito").attr("disabled", "true");
 				} else {
+					if (typeof this.state.mod_cliente == 'boolean') {
+						tmp_this.setState({mod_cliente: null});
+						$("#telefono, #fullname, #distrito").val("");
+						$("#telefono, #fullname, #distrito").removeAttr("disabled");
+					}
 					$("#fullname").show();
 				}
 			}
@@ -152,19 +158,15 @@ class Registro extends React.Component {
 		}
 	}
 
-	handleReset(e) {
-		$(".form-group").removeClass("has-warning has-error has-success");
-	}
-
 	componentDidMount () {
-		this.iniciar()
+		this.iniciar();
 	}
 
 	render() {
 		let distritos = this.props.distritos.map(distrito => <Distrito nombre={distrito} key={distrito} />);
 		// distritos.unshift(<Distrito val={0} nombre="Seleccione un distrito" />)
 		return (
-			<form id="form-registro" className="form-horizontal" onSubmit={this.handleSubmit} onReset={this.handleReset}>
+			<form id="form-registro" className="form-horizontal" onSubmit={this.handleSubmit} onReset={this.iniciar}>
 				<div className="panel panel-default">
 					<div className="panel-heading">
 						<h3 className="panel-title text-center text-uppercase">BIENVENIDO</h3>
