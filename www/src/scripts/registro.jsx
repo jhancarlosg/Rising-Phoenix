@@ -57,7 +57,9 @@ class Registro extends React.Component {
 						$("#telefono, #fullname, #distrito").val("");
 						$("#telefono, #fullname, #distrito").removeAttr("disabled");
 					}
-					$("#fullname").show();
+					if ($("#fullname").val()) $("#fullname").show();
+					if ($("#distrito").val()) $("#distrito").show();
+					if ($("#telefono").val()) $("#telefono").show();
 				}
 			}
 		};
