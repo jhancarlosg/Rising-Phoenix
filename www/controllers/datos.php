@@ -15,21 +15,19 @@ if (isLogged()) {
 				if(isset($_POST["export_data"]) && $_POST["export_data"] == 'true') {
 					$filename = "Datos registro - ".date('Y-m-d H:i') . ".xls";
 					header("Content-type: application/vnd.ms-excel; name='excel'");
-					header("Content-Disposition: filename=ficheroExcel.xls");
+					header("Content-Disposition: attachment; filename=\"$filename\"");
 					header("Pragma: no-cache");
 					header("Expires: 0");
 					$show_coloumn = false;
 					$rows = isset($_POST['rows']) ? $_POST['rows'] : 50;
 					$data = Data::getDataRows($rows);
-					if(!empty($developer_records)) {
-						foreach($data as $row) {
-							if(!$show_coloumn) {
-							// display field/column names in first row
-								#echo implode("t", ['FECHA - HORA', 'DNI', 'NOMBRE Y APELLIDO', 'TELEFONO', 'DIRECCION', 'ATENDIDO POR', 'USUARIO']) . "n";
-								echo implode("t", array_keys($data)) . "n";
+					if(!empty($data)) {
+						foreach ($data as $row) {
+							if (! $show_coloumn) {
+								echo implode("\t", array_keys($row)) . "\n";
 								$show_coloumn = true;
 							}
-							echo implode("t", array_values($row)) . "n";
+							echo implode("\t", array_values($row)) . "\n";
 						}
 					}
 					exit;
