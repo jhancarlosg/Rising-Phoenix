@@ -20,7 +20,7 @@ function isLogged()
 }
 
 /**
- * @return string El ID del usuario logueado
+ * @return int El ID del usuario logueado
  * @return null Si no hay un usuario logueado
  */
 function getIdUser()
