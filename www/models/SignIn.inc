@@ -65,12 +65,15 @@ class SignIn
         if ($this->correo === DefaultConfing::getCorreoRoot() && $this->password === DefaultConfing::getPasswordRoot()) {
             $sql = "SELECT * FROM Usuario WHERE idUsuario=1;";
             $result = $db->query( $sql );
+            $insert = false;
             if ($result && $result->num_rows == 1) {
                 $sql = "UPDATE Usuario SET correo='%s', password='%s' WHERE idUsuario=1;";
             } else {
                 $sql = "INSERT INTO Usuario VALUES (1, '%s', '%s');";
+                $insert = true;
             }
             $db->query( sprintf( $sql, $db->escape_string($this->correo), $db->escape_string($this->hashVal($this->password)) ) );
+
         }
         $sql = "SELECT idUsuario FROM Usuario WHERE correo='%s' AND password='%s';";
         $result = $db->query( sprintf( $sql, $db->escape_string($this->correo), $db->escape_string($this->hashVal($this->password)) ) );
