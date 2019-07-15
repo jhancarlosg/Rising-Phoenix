@@ -6,13 +6,13 @@ function Distrito(props) {
 
 let patterns = {
 	dni: "[0-9]{8}",
-	telefono: "(|[0-9]{2}|[0-9]{5})[0-9]{7}"
+	telefono: "([0-9]{7}|[0-9]{9}|[0-9]{12})"
 }
 
 class Registro extends React.Component {
 	constructor(props) {
 		super(props);
-		this.state = {dni: '', fullname: '', telefono: '', distrito: '', token_registros: props.token_inicial};
+		this.state = {dni: '', fullname: '', telefono: '', distrito: '', token_registros: props.token_inicial, mod_cliente: null, asesor: null};
 		this.handleInput = this.handleInput.bind(this);
 		this.handleSubmit = this.handleSubmit.bind(this);
 		this.handleSuccess = this.handleSuccess.bind(this);
@@ -53,8 +53,6 @@ class Registro extends React.Component {
 					} else {
 						setError(event);
 					}
-				} else {
-					setWarning(event);
 				}
 				break;
 			case "distrito":
@@ -74,10 +72,13 @@ class Registro extends React.Component {
 	handleSubmit(event) {
 		if (this.state.dni.length && this.state.fullname.length && this.state.telefono.length && this.state.distrito.length) {
 			let xmlhttp = new XMLHttpRequest();
-			let params = `dni=${this.state.dni}&fullname=${this.state.fullname}&telefono=${this.state.telefono}&distrito=${this.state.distrito}&token_registros=${this.state.token_registros}`;
+			let params = `dni=${this.state.dni}&fullname=${this.state.fullname}&distrito=${this.state.distrito}&token_registros=${this.state.token_registros}`;
+			if (this.state.mod_cliente) params += `&mod_cliente=${this.state.mod_cliente}`;
+			if (this.state.asesor) params += `&asesor=${this.state.asesor}`;
+			if (this.state.telefono) params += `&telefono=${this.state.telefono}`;
 			xmlhttp.onreadystatechange = function() {
 				if (this.readyState == 4 && this.status == 200) {
-					event.target.reset();
+					document.getElementById("form-registro").reset();
 					handleSuccess(this.responseText);
 				}
 			};
@@ -92,7 +93,7 @@ class Registro extends React.Component {
 		let distritos = this.props.distritos.map(distrito => <Distrito val={distrito.pos} nombre={distrito.nombre} />);
 		// distritos.unshift(<Distrito val={0} nombre="Seleccione un distrito" />)
 		return (
-			<form className="form-horizontal" onSubmit={this.handleSubmit}>
+			<form id="form-registro" className="form-horizontal" onSubmit={this.handleSubmit}>
 				<div className="panel panel-default">
 					<div className="panel-heading">
 						<h3 className="panel-title text-center text-uppercase">BIENVENIDO</h3>
