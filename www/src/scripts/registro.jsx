@@ -25,6 +25,12 @@ class Registro extends React.Component {
 		this.state = {dni: '', fullname: '', telefono: '', distrito: '', token_registros: props.token_inicial, mod_cliente: null, asesor: null};
 		this.handleInput = this.handleInput.bind(this);
 		this.handleSubmit = this.handleSubmit.bind(this);
+		this.handleAsesorChange = this.handleAsesorChange.bind(this);
+	}
+
+	handleAsesorChange(event) {
+		this.setState({asesor: event.target.value});
+		console.log(event.target.value, event);
 	}
 
 	handleInput(event) {
@@ -192,7 +198,7 @@ class RegistroManager extends React.Component {
 
 	render() {
 		return (
-			<Registro {...this.state} key={this.state.token_inicial} />
+			<Registro {...this.state} key={this.state.token_inicial} ref={REGISTRO_FER} />
 		);
 	}
 }

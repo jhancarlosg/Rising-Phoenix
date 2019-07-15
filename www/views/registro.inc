@@ -9,6 +9,9 @@ require_once(CONTROLLER_PATH . 'login.php');
 ?>
     <title><?php echo DefaultConfing::includeTitle('Registro') ?></title>
     <script src="/src/scripts/general-navs.jsx" type="text/babel"></script>
+    <script>
+        var REGISTRO_FER = React.createRef();
+    </script>
 <?php
 if ( getIdUser() == 1 ):
 ?>
