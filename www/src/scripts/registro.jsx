@@ -16,7 +16,6 @@ class Registro extends React.Component {
 		this.handleInput = this.handleInput.bind(this);
 		this.handleSubmit = this.handleSubmit.bind(this);
 		this.handleSuccess = this.handleSuccess.bind(this);
-		console.log(props.token_inicial);
 	}
 
 	handleInput(event) {
@@ -99,7 +98,7 @@ class Registro extends React.Component {
 			<form id="form-registro" className="form-horizontal" onSubmit={this.handleSubmit}>
 				<div className="panel panel-default">
 					<div className="panel-heading">
-						<h3 className="panel-title text-center text-uppercase">BIENVENIDO</h3>
+						<h3 className="panel-title text-center text-uppercase">BIENVENIDO - {this.props.token_registros}</h3>
 					</div>
 					<div className="panel-body">
 						<div className="form-group">
