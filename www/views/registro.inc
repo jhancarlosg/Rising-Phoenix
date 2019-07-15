@@ -7,15 +7,12 @@ include_once(VIEW_PATH . "head.inc");
 require_once(CONTROLLER_PATH . 'login.php');
 
 ?>
-	<title><?php echo DefaultConfing::includeTitle('Registro') ?></title>
+    <title><?php echo DefaultConfing::includeTitle('Registro') ?></title>
+    <script src="/src/scripts/general-navs.jsx" type="text/babel"></script>
 <?php
 if ( getIdUser() == 1 ):
 ?>
     <script src="/src/scripts/setting-navs.jsx" type="text/babel"></script>
-<?php
-else:
-?>
-    <script src="/src/scripts/general-navs.jsx" type="text/babel"></script>
 <?php
 endif;
 ?>

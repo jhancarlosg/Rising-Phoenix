@@ -1,7 +1,9 @@
-function Navs(props) {
-    return null;
+function SettNavs(props) {
+    return (
+        <GenNavs />
+    );
 }
 
 var getDataNavs = function(r_ele) {
-    console.log(r_ele.state.navs);
+    r_ele.setState({navs: <SettNavs />});
 }

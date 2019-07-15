@@ -1,4 +1,4 @@
-function Navs(props) {
+function GenNavs(props) {
     return (
         <React.Fragment>
             <p className="navbar-text">{props.correo}</p>
@@ -8,5 +8,5 @@ function Navs(props) {
 }
 
 var getDataNavs = function(r_ele) {
-    console.log(r_ele.state.navs);
+    r_ele.setState({navs: <GenNavs />});
 }
