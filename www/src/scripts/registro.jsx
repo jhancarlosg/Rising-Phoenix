@@ -39,13 +39,13 @@ class Registro extends React.Component {
 	}
 
 	iniciar() {
-		this.dni.value = "";
-		this.fullname.value = "";
-		this.fullname.disable = true;
-		this.telefono.value = "";
-		this.telefono.disable = true;
-		this.distrito.value = "";
-		this.distrito.disable = true;
+		this.dni.current.value = "";
+		this.fullname.current.value = "";
+		this.fullname.current.disable = true;
+		this.telefono.current.value = "";
+		this.telefono.current.disable = true;
+		this.distrito.current.value = "";
+		this.distrito.current.disable = true;
 
 	}
 
