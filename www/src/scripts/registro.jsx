@@ -53,6 +53,8 @@ class Registro extends React.Component {
 					} else {
 						setError(event);
 					}
+				} else {
+					setValidator(event, "");
 				}
 				break;
 			case "distrito":
@@ -94,7 +96,7 @@ class Registro extends React.Component {
 	}
 
 	componentDidMount() {
-		this.setState({token_registros: this.props.token_inicial});
+		this.setState((s, props)=>({token_registros: props.token_inicial}));
 	}
 
 	render() {
