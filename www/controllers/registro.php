@@ -73,7 +73,11 @@ if (isLogged() && Data::isRegister()) {
 					}
 					if (isset($_GET['client'], $_GET['dni']) && $_GET['client'] == 'get' && strlen($_GET['dni']) == 8) {
 						$json = true;
-						$data = Data::getClientData($_GET['dni']);
+						$tmp = Data::getClientData($_GET['dni']);
+						$data['dni'] = $tmp[0];
+						$data['fullname'] = $tmp[1];
+						$data['telefono'] = $tmp[2];
+						$data['distrito'] = $tmp[3];
 					}
 					header('Content-type:application/json;charset=utf-8');
 					echo json_encode($data);

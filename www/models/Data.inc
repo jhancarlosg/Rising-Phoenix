@@ -71,7 +71,7 @@ class Data
 		$return = [];
 		if (isLogged()) {
 			$db = new Conexion();
-			$sql = "SELECT * FROM Cliente WHERE DNI='%s';";
+			$sql = "SELECT C.DNI, C.nombreCompleto, C.telefono, D.nombre FROM Cliente C, Distrito D WHERE C.idDistrito=D.idDistrito AND DNI='%s';";
 			$result = $db->query( sprintf($sql, $dni) );
 			if ($result && $result->num_rows>0) {
 				$return = $result->fetch_row();
