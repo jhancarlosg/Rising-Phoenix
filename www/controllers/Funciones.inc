@@ -37,4 +37,8 @@ function getUserIP()
     return $ip;
 }
 
+function setDataJSONMsg(string $tipo, string $msg) {
+	return ['tipo' => $tipo, 'msg' => $msg];
+}
+
 ?>

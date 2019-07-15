@@ -49,10 +49,6 @@ if ( !isLogged() && isset($_COOKIE['RSU']) && isset($_COOKIE['RCU']) && !empty(t
 	unset($correo, $pass, $sesion, $ip, $login);
 }
 
-function setDataJSONMsg(string $tipo, string $msg) {
-	return ['tipo' => $tipo, 'msg' => $msg];
-}
-
 if ( preg_match("/^\/login/", $_SERVER['REQUEST_URI']) ) { # cuando están o utilizan directamente /login
 	switch ($_SERVER['REQUEST_METHOD']) {
 		case 'POST':

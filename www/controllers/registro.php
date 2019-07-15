@@ -7,10 +7,6 @@ notFound('\/controllers\/registro.php');
 
 require_once(CONTROLLER_PATH . 'login.php');
 
-function setDataJSONMsg(string $tipo, string $msg) {
-	return ['tipo' => $tipo, 'msg' => $msg];
-}
-
 function newToken() {
 	return hash('adler32', strval(getIdUser()) . time() . date('Y-m-h-i-s') );
 }
