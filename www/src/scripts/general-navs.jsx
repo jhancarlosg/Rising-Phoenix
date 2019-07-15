@@ -4,12 +4,12 @@ function GenNavs(props) {
     return (
         <React.Fragment>
             <p className="navbar-text">{props.correo}</p>
+			<button href="/logout" type="button" className="btn btn-default navbar-btn navbar-right">Cerrar sesión</button>
             <div className="navbar-form navbar-right" role="search">
                 <div className="form-group">
                 <select className="form-control">{props.asesores}</select>
                 </div>
             </div>
-			<button href="/logout" type="button" className="btn btn-default navbar-btn navbar-right">Cerrar sesión</button>
         </React.Fragment>
     );
 }
