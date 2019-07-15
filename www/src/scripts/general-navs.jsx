@@ -6,7 +6,7 @@ function GenNavs(props) {
             <p className="navbar-text">{props.correo}</p>
             <div className="navbar-form navbar-left" role="search">
                 <div className="form-group">
-                <select className="form-control">{asesores}</select>
+                <select className="form-control">{props.asesores}</select>
                 </div>
                 <button type="submit" className="btn btn-default">Submit</button>
             </div>
