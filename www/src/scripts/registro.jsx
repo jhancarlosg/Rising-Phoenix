@@ -68,7 +68,6 @@ class Registro extends React.Component {
 	}
 
 	iniciar() {
-		console.log(this.dni.current);
 		document.getElementById("form-registro").reset();
 		$("#telefono, #fullname, #distrito").hide();
 	}
