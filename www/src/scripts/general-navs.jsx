@@ -21,7 +21,7 @@ class GenNavs extends React.Component {
         if (REGISTRO_FER.current) REGISTRO_FER.current.handleAsesorChange(e);
     }
     render () {
-        const asesores = typeof props.asesores == 'object' ? props.asesores.map((asesor) => <AsesorOption asesor={asesor} key={asesor} />) : null;
+        const asesores = typeof this.props.asesores == 'object' ? this.props.asesores.map((asesor) => <AsesorOption asesor={asesor} key={asesor} />) : null;
         return (
             <React.Fragment>
                 <p className="navbar-text">{this.props.correo}</p>
