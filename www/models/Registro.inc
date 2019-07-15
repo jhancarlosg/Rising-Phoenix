@@ -69,6 +69,8 @@ class Registro
             $this->idAsesor = $row[0];
             $result->free();
             $this->respuesta = [true, 'getIdAsesor true'];
+        } else {
+            $this->respuesta = [false, 'getIdAsesor falla sql'];
         }
         return !is_null($this->idAsesor);
     }
