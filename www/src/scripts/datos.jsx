@@ -52,8 +52,8 @@ class Datos extends React.Component {
 				<form className="form-inline" onSubmit={this.exportarExcel} method="POST">
 					<input type="hidden" name="export_data" value="true"/>
 					<button type="submit" className="btn btn-default btn-lg">EXPORTAR <i className="glyphicon glyphicon-file"></i></button>
-					<div className="form-group">
-                    	<select className="form-control pull-right" ref={this.row_opcion} onChange={this.handleChange}>
+					<div className="form-group pull-right">
+                    	<select className="form-control" ref={this.row_opcion} onChange={this.handleChange}>
 							<option value="10">10</option>
 							<option value="20">20</option>
 							<option value="30">30</option>
