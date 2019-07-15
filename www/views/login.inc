@@ -10,6 +10,6 @@ include_once(VIEW_PATH . "head.inc");
 </head>
 <body>
 	<header></header>
-	<section id="login-cnt" class="col-xs-10 col-sm-8"></section>
+	<section id="login-cnt"></section>
 </body>
 </html>
