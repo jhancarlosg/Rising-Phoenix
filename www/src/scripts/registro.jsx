@@ -52,6 +52,7 @@ class Registro extends React.Component {
 					if (new RegExp(patterns.dni).test(event.target.value)) {
 						setSuccess(event);
 						this.setState({dni: event.target.value});
+						$("#fullname").show();
 					} else {
 						setError(event);
 					}
@@ -64,6 +65,7 @@ class Registro extends React.Component {
 					if (len>=3) {
 						setSuccess(event);
 						this.setState({fullname: event.target.value});
+						$("#distrito").show();
 					} else {
 						setError(event);
 					}
@@ -76,6 +78,7 @@ class Registro extends React.Component {
 					if (new RegExp(patterns.telefono).test(event.target.value)) {
 						setSuccess(event);
 						this.setState({telefono: event.target.value});
+						$("#telefono").show();
 					} else {
 						setError(event);
 					}
