@@ -19,13 +19,12 @@ class Navbar extends React.Component {
 	}
 
 	handleClick(e) {
-		console.log(this.state.navbar_props);
 		
 	}
 
 	render() {
 		return (
-			<nav className="navbar navbar-default" onClick={this.handleClick}>
+			<nav className="navbar navbar-default">
 				<div className="container-fluid">
 					<div className="navbar-header">
 						<button type="button" className="navbar-toggle collapsed" data-toggle="collapse" data-target="#nav-collapse" aria-expanded="false">
