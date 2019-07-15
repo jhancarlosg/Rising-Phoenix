@@ -124,6 +124,7 @@ class Registro extends React.Component {
 						$("#telefono").show();
 					} else {
 						setWarning(event);
+						$("#telefono").show();
 					}
 				} else {
 					setError(event);
