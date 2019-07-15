@@ -38,22 +38,31 @@ class Data
 	public static function getNavbarProps() {
 		$return = [];
 		if (isLogged()) {
+			$gen_props = [];
 			$db = new Conexion();
 			$sql = "SELECT correo FROM Usuario WHERE idUsuario=%d;";
 			$result = $db->query( sprintf($sql, getIdUser()) );
 			if ($result && $result->num_rows>0) {
 				$row = $result->fetch_row();
-				$return['correo'] = $row[0];
+				$gen_props['correo'] = $row[0];
 				$result->free();
 			}
 			$sql = "SELECT A.nombreCompleto FROM UsuarioAsesores U, AsesorVentas A WHERE A.idAsesorVentas=U.idAsesorVentas AND A.nombreCompleto!='' AND U.idUsuario=%s;";
 			$result = $db->query( sprintf($sql, getIdUser()) );
 			if ($result && $result->num_rows>0) {
-				$return['asesores'] = [];
+				$gen_props['asesores'] = [];
 				while ($row = $result->fetch_row()) {
-					$return['asesores'][] = $row[0];
+					$gen_props['asesores'][] = $row[0];
 				}
 				$result->free();
+			}
+
+			# sett_props
+			if (getIdUser() == 1) {
+				$sett_props = ['gen_props' => $gen_props];
+				$return = $sett_props;
+			} else {
+				$return = $gen_props;
 			}
 		}
 		return $return;

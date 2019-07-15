@@ -1,7 +1,6 @@
 function SettNavs(props) {
-    const {correo, asesores, asesor_ref} = props;
     return (
-        <GenNavs correo={correo} asesores={asesores} asesores={asesor_ref} />
+        <GenNavs {...props.gen_props} />
     );
 }
 
