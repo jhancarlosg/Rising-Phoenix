@@ -6,7 +6,7 @@ class Datos extends React.Component {
 
 	componentDidMount() {
 		let xmlhttp = new XMLHttpRequest();
-		// let tmp_this = this;
+		let tmp_this = this;
 		let params = `export_data=true`;
 		xmlhttp.onreadystatechange = function() {
 			if (this.readyState == 4 && this.status == 200) {
@@ -20,7 +20,6 @@ class Datos extends React.Component {
 
 	exportarExcel() {
 		let xmlhttp = new XMLHttpRequest();
-		let tmp_this = this;
 		xmlhttp.onreadystatechange = function() {
 			if (this.readyState == 4 && this.status == 200) {
 				let data = JSON.parse(this.responseText);
