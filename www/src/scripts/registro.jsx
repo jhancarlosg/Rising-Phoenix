@@ -26,11 +26,11 @@ class Registro extends React.Component {
 		this.handleInput = this.handleInput.bind(this);
 		this.handleSubmit = this.handleSubmit.bind(this);
 		this.handleAsesorChange = this.handleAsesorChange.bind(this);
+		this.asesor_ref = ASESOR_REF;
 	}
 
-	handleAsesorChange(event) {
-		this.setState({asesor: event.target.value});
-		console.log(event.target.value, event);
+	handleAsesorChange(value) {
+		this.setState({asesor: value});
 	}
 
 	handleInput(event) {
@@ -90,13 +90,12 @@ class Registro extends React.Component {
 	handleSubmit(event) {
 		if (this.state.dni.length && this.state.fullname.length && this.state.telefono.length && this.state.distrito.length) {
 			let xmlhttp = new XMLHttpRequest();
-			let params = `dni=${this.state.dni}&token_registros=${this.state.token_registros}`;
+			let params = `dni=${this.state.dni}&token_registros=${this.state.token_registros}&asesor=${this.asesor_ref.current.value}`;
 			if (this.state.fullname) params += `&fullname=${this.state.fullname}`;
 			if (this.state.telefono) params += `&telefono=${this.state.telefono}`;
 			if (this.state.distrito) params += `&distrito=${this.state.distrito}`;
 			if (this.state.mod_cliente) params += `&mod_cliente=${this.state.mod_cliente}`;
-			if (this.state.asesor) params += `&asesor=${this.state.asesor}`;
-
+			//if (this.state.asesor) params += `&asesor=${this.state.asesor}`;
 			let tmp_this = this;
 			xmlhttp.onreadystatechange = function() {
 				if (this.readyState == 4 && this.status == 200) {
@@ -198,7 +197,7 @@ class RegistroManager extends React.Component {
 
 	render() {
 		return (
-			<Registro {...this.state} key={this.state.token_inicial} ref={REGISTRO_FER} />
+			<Registro {...this.state} key={this.state.token_inicial} ref={REGISTRO_REF} />
 		);
 	}
 }

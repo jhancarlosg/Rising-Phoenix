@@ -1,3 +1,6 @@
+
+var ASESOR_REF = React.createRef();
+
 class Navbar extends React.Component {
 	constructor(props) {
 		super(props);
@@ -35,7 +38,7 @@ class Navbar extends React.Component {
 						</button>
 					</div>
 					<div className="collapse navbar-collapse" id="nav-collapse" >
-						<Navs {...this.state.navbar_props} />
+						<Navs {...this.state.navbar_props} asesor_ref={ASESOR_REF} />
 					</div>
 				</div>
 			</nav>

@@ -1,7 +1,7 @@
 function SettNavs(props) {
-    const {correo, asesores} = props;
+    const {correo, asesores, asesor_ref} = props;
     return (
-        <GenNavs {...props} key={Object.keys(props).join("")+"gennav"} />
+        <GenNavs ref={GEN_NAVS_REF} {...props} key={Object.keys(props).join("")+"gennav"} />
     );
 }
 
