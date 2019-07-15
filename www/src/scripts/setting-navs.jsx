@@ -1,6 +1,6 @@
 function SettNavs(props) {
     return (
-        <GenNavs {...props.gen_props} />
+        <GenNavs {...props.gen_props} asesor_ref={props.asesor_ref} />
     );
 }
 
