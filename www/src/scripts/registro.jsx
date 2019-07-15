@@ -80,6 +80,7 @@ class Registro extends React.Component {
 					}
 				} else {
 					setWarning(event);
+					$("#telefono, #fullname, #distrito").hide();
 				}
 				break;
 			case "fullname":
