@@ -94,7 +94,7 @@ class Registro extends React.Component {
 	}
 
 	componentDidMount() {
-		
+		this.setState({token_registros: this.props.token_inicial});
 	}
 
 	render() {
