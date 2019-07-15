@@ -8,13 +8,14 @@ let patterns = {
 	dni: "[0-9]{8}",
 	telefono: "([0-9]{7}|[0-9]{9}|[0-9]{12})",
 	distrito: function (val) {
-		let result = false;
+		/* let result = false;
 		let datalist = document.getElementById("distritos");
 		for (let i = 0; i < datalist.options.length; i++) {
 			result =  val == datalist.options[i].value;
 			if(result) break;
 		}
-		return result;
+		return result; */
+		return this.props.distritos.some((dist) => val == dist);
 	}
 }
 

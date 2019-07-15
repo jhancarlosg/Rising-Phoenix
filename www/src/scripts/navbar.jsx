@@ -1,11 +1,21 @@
 class Navbar extends React.Component {
 	constructor(props) {
 		super(props);
-		this.state = {navs: null};
+		this.state = {navs: null, navbar_props: {}};
 	}
 
 	componentDidMount() {
 		getDataNavs(this);
+		let xmlhttp = new XMLHttpRequest();
+		let tmp_this = this;
+		xmlhttp.onreadystatechange = function() {
+			if (this.readyState == 4 && this.status == 200) {
+				let data = JSON.parse(this.responseText);
+				tmp_this.setState({ navbar_props: data.navbar_props});
+			}
+		};
+		xmlhttp.open("GET", "/registro?navbar_props=get&json=true", true);
+		xmlhttp.send();
 	}
 
 	render() {

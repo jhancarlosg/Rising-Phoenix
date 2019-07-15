@@ -66,6 +66,10 @@ if (isLogged() && Data::isRegister()) {
 						$json = true;
 						$data['distritos'] = Data::getDistritos();
 					}
+					if (isset($_GET['navbar_props']) && $_GET['navbar_props'] == 'get') {
+						$json = true;
+						$data['navbar_props'] = Data::getNavbarProps();
+					}
 					header('Content-type:application/json;charset=utf-8');
 					echo json_encode($data);
 					exit();
