@@ -35,7 +35,7 @@ class Datos extends React.Component {
 	render () {
 		const rows = this.state.rows.map((row, id) => <Row key={"row"+id} cols={row} />);
 		return (
-			<React.Frament>
+			<React.Fragment>
 				<button onClick={this.exportarExcel} type="button" className="btn btn-default btn-lg">EXPORTAR <i className="glyphicon glyphicon-file"></i></button>
 				<table className="table table-hover">
 					<thead>
@@ -53,7 +53,7 @@ class Datos extends React.Component {
 						{rows}
 					</tbody>
 				</table>
-			</React.Frament>
+			</React.Fragment>
 		);
 	}
 }
