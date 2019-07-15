@@ -40,10 +40,10 @@ if (isLogged() && Data::isRegister()) {
 					if (testData($dni, $token_registros, $fullname, $telefono, $distrito, $mod_cliente, $asesor)) {
 						include_once(MODEL_PATH . 'Registro.inc');
 						$registro = new Registro(getIdUser(), $dni, $fullname, $telefono, $distrito, $token_registros, $asesor, $mod_cliente);
-						if ($registro->registrar()) {
-							$data = setDataJSONMsgRegistro("success", "REGISTRO EXITOSO");
+						if ($registro->registrar()[0]) {
+							$data = setDataJSONMsgRegistro("success", $registro->registrar()[1]);
 						} else {
-							$data = setDataJSONMsgRegistro("danger", "NO SE PUEDO GUARDAR EL REGISTRO");
+							$data = setDataJSONMsgRegistro("danger", $registro->registrar()[1]);
 						}
 					} else {
 						$data = setDataJSONMsgRegistro("danger", "Envíe los datos necesarios o complete los espacios correctamente");

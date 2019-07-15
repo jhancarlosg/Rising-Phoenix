@@ -15,6 +15,7 @@ class Registro
     private $idDistrito;
     private $idAsesor;
     private $db;
+    private $respuesta;
 
     public function __construct(int $idUser, string $dni, string $fullname, string $telefono, string $distrito, string $token, string $asesor, $mod_cliente) {
         $this->idUser = $idUser;
@@ -32,52 +33,61 @@ class Registro
 
     public function registrar() {
         $result = false;
-
+        $this->respuesta = [$result, 'init'];
         if ($this->hasPrivilegios() && $this->checkToken() && $this->manageCliente()) {
             $sql = "INSERT INTO Atencion (DNI, idAsesorVentas, idUsuario, token) VALUES ('%s', %d, %d, '%s');";
             $result = $this->db->query( sprintf($sql, $this->db->escape_string($this->dni), $this->idAsesor, $this->idUser, $this->db->escape_string($this->token) ) );
         }
         $this->db->close();
-        return $result;
+        return $this->respuesta;
     }
 
     # PRIVATE FUNCTIONS
 
     private function hasPrivilegios() {
         $return = false;
+        $this->respuesta = [$return, 'hasPrivilegios init'];
         if ($this->getIdAsesor()) {
+            $this->respuesta = [$return, 'hasPrivilegios getIdAsesor init'];
             $sql = "SELECT * FROM UsuarioAsesores WHERE idAsesorVentas=%d AND idUsuario=%d;";
             $result = $this->db->query( sprintf( $sql, $this->idAsesor, $this->idUser ) );
             if ($result && $result->num_rows > 0) {
                 $return = true;
                 $result->free();
+                $this->respuesta = [$return, 'hasPrivilegios true tenemos privilegios'];
             }
         }
         return $return;
     }
 
     private function getIdAsesor() {
+        $this->respuesta = [false, 'getIdAsesor init'];
         $sql = "SELECT idAsesorVentas FROM AsersorVentas WHERE nombreCompleto = '%s';";
         $result = $this->db->query( sprintf($sql, $this->db->escape_string($this->asesor)) );
         if ($result && $result->num_rows > 0) {
             $row = $result->fetch_row();
             $this->idAsesor = $row[0];
             $result->free();
+            $this->respuesta = [true, 'getIdAsesor true'];
         }
         return !is_null($this->idAsesor);
     }
 
     private function checkToken() {
         $return = false;
+        $this->respuesta = [$return, 'checkToken init'];
         $sql = "SELECT idUsario, idAsesorVentas FROM Atencion WHERE token='%s';";
         $result = $this->db->query( sprintf($sql, $this->db->escape_string($this->token)) );
-        if ($result) {
+        if ($result && $result->num_rows>0) {
+            $this->respuesta = [$return, 'checkToken result init mismo token'];
             $row = $result->fetch_row();
-            if ($row && ($row[0]!=$this->idUser || $row[1]!=$this->idAsesor)) {
+            if ($row[0]!=$this->idUser || $row[1]!=$this->idAsesor) {
                 $return = true;
-            } else {
-                $return = true;
+                $this->respuesta = [$return, 'checkToken result true mismo token diferente usuario asesor'];
             }
+        } else {
+            $return = true;
+            $this->respuesta = [$return, 'checkToken result true diferente token'];
         }
         return $return;
     }
