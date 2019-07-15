@@ -78,7 +78,6 @@ class Registro extends React.Component {
 				}
 				break;
 		}
-		console.log(this.state.token_registros);
 	}
 
 	handleSubmit(event) {
