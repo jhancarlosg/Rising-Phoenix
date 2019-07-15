@@ -22,7 +22,7 @@ class GenNavs extends React.Component {
         return (
             <React.Fragment>
                 <p className="navbar-text">{this.props.correo}</p>
-                <button href="/logout" type="button" className="btn btn-default navbar-btn navbar-right">Cerrar sesión</button>
+                <a href="/logout" className="btn btn-default navbar-btn navbar-right">Cerrar sesión</a>
                 <div className="navbar-form navbar-right" role="search">
                     <div className="form-group">
                     <select className="form-control" ref={this.props.asesor_ref}>{asesores}</select>
