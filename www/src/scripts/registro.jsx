@@ -15,7 +15,7 @@ let patterns = {
 			if(result) break;
 		}
 		return result; */
-		return this.props.distritos.some((dist) => val == dist);
+		//return this.props.distritos.some((dist) => val == dist);
 	}
 }
 
@@ -69,7 +69,7 @@ class Registro extends React.Component {
 			case "distrito":
 				if (len) {
 					this.setState({distrito: event.target.value});
-					if (patterns.distrito(event.target.value)) {
+					if (this.props.distritos.some((dist) => event.target.value == dist)) {
 						setSuccess(event);
 					} else {
 						setWarning(event);
