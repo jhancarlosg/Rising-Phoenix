@@ -16,6 +16,7 @@ class Registro extends React.Component {
 		this.handleInput = this.handleInput.bind(this);
 		this.handleSubmit = this.handleSubmit.bind(this);
 		this.handleSuccess = this.handleSuccess.bind(this);
+		this.setState((state, props) => ({token_registros: props.token_inicial}));
 	}
 
 	handleInput(event) {
@@ -88,15 +89,16 @@ class Registro extends React.Component {
 			xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 			xmlhttp.send(params);
 		}
+		console.log(this.state.token_registros);
+		
 		event.preventDefault();
 	}
 
 	componentDidMount() {
-		this.setState((state, props) => ({token_registros: props.token_inicial}));
+		
 	}
 
 	render() {
-		console.log(this.state.token_registros);
 		let distritos = this.props.distritos.map(distrito => <Distrito val={distrito.pos} nombre={distrito.nombre} />);
 		// distritos.unshift(<Distrito val={0} nombre="Seleccione un distrito" />)
 		return (
