@@ -103,7 +103,7 @@ class Registro extends React.Component {
 
 	handleSubmit(event) {
 		event.preventDefault();
-		if (this.state.dni.length && this.state.fullname.length && this.state.telefono.length && this.state.distrito.length) {
+		if (this.state.dni.length && this.state.fullname.length && this.state.distrito.length) {
 			let xmlhttp = new XMLHttpRequest();
 			let params = `dni=${this.state.dni}&token_registros=${this.state.token_registros}&asesor=${this.asesor_ref.current.value}`;
 			if (this.state.fullname) params += `&fullname=${this.state.fullname}`;
@@ -119,7 +119,7 @@ class Registro extends React.Component {
 					$("#registro-cnt").prepend(Alerta(data));
 					tmp_this.setState({token_registros: data.token});
 					if (data.tipo == 'success') {
-						this.iniciar();
+						tmp_this.iniciar();
 					}
 				}
 			};
