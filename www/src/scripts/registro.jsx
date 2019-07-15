@@ -12,7 +12,7 @@ let patterns = {
 class Registro extends React.Component {
 	constructor(props) {
 		super(props);
-		this.state = {dni: '', fullname: '', telefono: '', distrito: '', token_registros: props.token_inicial, mod_cliente: null, asesor: null};
+		this.state = {dni: '', fullname: '', telefono: '', distrito: '', token_registros: '', mod_cliente: null, asesor: null};
 		this.handleInput = this.handleInput.bind(this);
 		this.handleSubmit = this.handleSubmit.bind(this);
 		this.handleSuccess = this.handleSuccess.bind(this);
@@ -92,13 +92,15 @@ class Registro extends React.Component {
 	}
 
 	render() {
+		this.setState((state, props) => ({token_registros: props.token_inicial}));
+		console.log(this.state.token_registros);
 		let distritos = this.props.distritos.map(distrito => <Distrito val={distrito.pos} nombre={distrito.nombre} />);
 		// distritos.unshift(<Distrito val={0} nombre="Seleccione un distrito" />)
 		return (
 			<form id="form-registro" className="form-horizontal" onSubmit={this.handleSubmit}>
 				<div className="panel panel-default">
 					<div className="panel-heading">
-						<h3 className="panel-title text-center text-uppercase">BIENVENIDO - {this.props.token_inicial}</h3>
+						<h3 className="panel-title text-center text-uppercase">BIENVENIDO</h3>
 					</div>
 					<div className="panel-body">
 						<div className="form-group">
