@@ -69,8 +69,9 @@ class Registro extends React.Component {
 		console.log(this.state.token_registros);
 	}
 
-	handleSuccess(token) {
-		this.setState({dni: '', fullname: '', telefono: '', distrito: '', token_registros: token});
+	handleData(data) {
+		$('.alert').alert('close');
+		$("#registro-cnt").prepend(Alerta(data));
 	}
 
 	handleSubmit(event) {
@@ -82,10 +83,12 @@ class Registro extends React.Component {
 			if (this.state.distrito) params += `&distrito=${this.state.distrito}`;
 			if (this.state.mod_cliente) params += `&mod_cliente=${this.state.mod_cliente}`;
 			if (this.state.asesor) params += `&asesor=${this.state.asesor}`;
+
+			let tmp_this = this;
 			xmlhttp.onreadystatechange = function() {
 				if (this.readyState == 4 && this.status == 200) {
 					document.getElementById("form-registro").reset();
-					handleSuccess(this.responseText);
+					tmp_this.handleData(JSON.parse(this.responseText));
 				}
 			};
 			xmlhttp.open("POST", "/registro", true);
@@ -104,7 +107,7 @@ class Registro extends React.Component {
 		let distritos = this.props.distritos.map(distrito => <Distrito val={distrito.pos} nombre={distrito.nombre} />);
 		// distritos.unshift(<Distrito val={0} nombre="Seleccione un distrito" />)
 		return (
-			<form id="form-registro" className="form-horizontal" onSubmit={this.handleSubmit}>
+			<form id="form-registro" className="form-horizontal" onSubmit={this.handleSubmit} onReset={this.handleReset} method="POST" >
 				<div className="panel panel-default">
 					<div className="panel-heading">
 						<h3 className="panel-title text-center text-uppercase">BIENVENIDO</h3>
@@ -113,26 +116,26 @@ class Registro extends React.Component {
 						<div className="form-group">
 							<label htmlFor="dni" className="col-sm-2 control-label">DNI</label>
 							<div className="col-sm-10">
-								<input type="text" pattern={patterns.dni} onChange={this.handleInput} className="form-control" id="dni" placeholder="Ingresa el DNI" minLength={8} maxLength={8} required={true} />
+								<input type="text" pattern={patterns.dni} onChange={this.handleInput} className="form-control" id="dni" name="dni" placeholder="Ingresa el DNI" minLength={8} maxLength={8} required={true} />
 							</div>
 						</div>
 						<div className="form-group">
 							<label htmlFor="fullname" className="col-sm-2 control-label">NOMBRE Y APELLIDO</label>
 
 							<div className="col-sm-10">
-								<input type="text" onChange={this.handleInput} className="form-control" id="fullname" placeholder="Escribe un nombre" required={true} />
+								<input type="text" onChange={this.handleInput} className="form-control" id="fullname" name="fullname" placeholder="Escribe un nombre" required={true} />
 							</div>
 						</div>
 						<div className="form-group">
 							<label htmlFor="telefono" className="col-sm-2 control-label">TELÉFONO</label>
 							<div className="col-sm-10">
-								<input type="text" onChange={this.handleInput} className="form-control" id="telefono" placeholder="Digita el número (opcional)" pattern={patterns.telefono} minLength={7} maxLength={12} />
+								<input type="text" onChange={this.handleInput} className="form-control" id="telefono" name="telefono" placeholder="Digita el número (opcional)" pattern={patterns.telefono} minLength={7} maxLength={12} />
 							</div>
 						</div>
 						<div className="form-group">
 							<label htmlFor="distrito" className="col-sm-2 control-label">DISTRITO</label>
 							<div className="col-sm-10">
-								<input type="text" onChange={this.handleInput} className="form-control" list="distritos" id="distrito" placeholder="Distrito" required={true} />
+								<input type="text" onChange={this.handleInput} className="form-control" list="distritos" id="distrito" name="distrito"  placeholder="Distrito" required={true} />
 								<datalist name="distritos" id="distritos">
 									{distritos}
 								</datalist>
@@ -142,8 +145,8 @@ class Registro extends React.Component {
 					<div className="panel-footer">
 						<div className="btn-group btn-group-justified" role="group" aria-label="...">
 							<div className="btn-group" role="group">
-								<input type="hidden" name="toke_inicial" value={this.props.token_inicial} />
-								<button type="reset" id="reset-form" onClick={this.handleReset} className="btn btn-default">LIMPIAR</button>
+								<input type="hidden" name="toke_inicial" name="token" value={this.state.token_registros} />
+								<button type="reset" id="reset-form" className="btn btn-default">LIMPIAR</button>
 							</div>
 							<div className="btn-group" role="group">
 								<button type="submit" className="btn btn-default">GRABAR</button>

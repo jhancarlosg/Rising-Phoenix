@@ -69,7 +69,6 @@ class Login extends React.Component {
 	render() {
 		return (
 			<div id="login-form">
-				{this.state.alert}
 				<div className={"panel panel-"+this.state.tipo}>
 					<div className="panel-heading">
 						<h3 className="panel-title">Inicio de sesión</h3>
