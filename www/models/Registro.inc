@@ -38,7 +38,6 @@ class Registro
             $sql = "INSERT INTO Atencion (DNI, idAsesorVentas, idUsuario, token) VALUES ('%s', %d, %d, '%s');";
             $result = $this->db->query( sprintf($sql, $this->db->escape_string($this->dni), $this->idAsesor, $this->idUser, $this->db->escape_string($this->token) ) );
         }
-        $this->db->close();
         return $this->respuesta;
     }
 
@@ -61,6 +60,7 @@ class Registro
     }
 
     private function getIdAsesor() {
+        $this->db->init();
         $this->respuesta = [false, 'getIdAsesor init'];
         $sql = "SELECT idAsesorVentas FROM AsersorVentas WHERE nombreCompleto = '%s';";
         $result = $this->db->query( sprintf($sql, $this->db->escape_string($this->asesor)) );
