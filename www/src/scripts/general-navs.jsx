@@ -1,10 +1,11 @@
 function GenNavs(props) {
+    const asesores = typeof props.asesores != 'undefined' ? props.asesores.map((val) => <AsesorOption val={val} key={val} />) : null;
     return (
         <React.Fragment>
             <p className="navbar-text">{props.correo}</p>
             <div className="navbar-form navbar-left" role="search">
                 <div className="form-group">
-                <select class="form-control">{props.asesores.map((val) => {{<AsesorOption val={val} key={val} />}})}</select>
+                <select class="form-control">{asesores}</select>
                 </div>
                 <button type="submit" className="btn btn-default">Submit</button>
             </div>
