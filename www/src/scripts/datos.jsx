@@ -28,14 +28,14 @@ class Datos extends React.Component {
 		xmlhttp.open("POST", "/datos", true);
 		xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 		xmlhttp.send(params);
-		e.preventDefault();
 	}
 
 	render () {
 		const rows = this.state.rows.map((row, id) => <Row key={"row"+id} cols={row} />);
 		return (
 			<React.Fragment>
-				<form className="form-inline" onSubmit={this.exportarExcel}>
+				<form className="form-inline" onSubmit={this.exportarExcel} method="POST">
+					<input type="hidden" name="export_data" value="true"/>
 					<button type="submit" className="btn btn-default btn-lg">EXPORTAR <i className="glyphicon glyphicon-file"></i></button>
 				</form>
 				<table className="table table-hover">

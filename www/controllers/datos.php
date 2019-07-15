@@ -23,7 +23,8 @@ if (isLogged()) {
 						foreach($data as $row) {
 							if(!$show_coloumn) {
 							// display field/column names in first row
-								echo implode("t", ['FECHA - HORA', 'DNI', 'NOMBRE Y APELLIDO', 'TELEFONO', 'DIRECCION', 'ATENDIDO POR', 'USUARIO']) . "n";
+								#echo implode("t", ['FECHA - HORA', 'DNI', 'NOMBRE Y APELLIDO', 'TELEFONO', 'DIRECCION', 'ATENDIDO POR', 'USUARIO']) . "n";
+								echo implode("t", array_keys($data)) . "n";
 								$show_coloumn = true;
 							}
 							echo implode("t", array_values($row)) . "n";
