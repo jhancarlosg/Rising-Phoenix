@@ -60,6 +60,7 @@ class Registro extends React.Component {
 			case "distrito":
 				if (len) {
 					this.setState({distrito: event.target.value});
+					setValidator(event, "");
 				} else {
 					setError(event);
 				}
@@ -95,8 +96,12 @@ class Registro extends React.Component {
 		event.preventDefault();
 	}
 
+	handleReset() {
+		$(".form-group").removeClass("has-warning has-error has-success");
+	}
+
 	componentDidMount() {
-		this.setState((s, props)=>({token_registros: props.token_inicial}));
+		this.setState({token_registros: props.token_inicial});
 	}
 
 	render() {
@@ -141,6 +146,7 @@ class Registro extends React.Component {
 					<div className="panel-footer">
 						<div className="btn-group btn-group-justified" role="group" aria-label="...">
 							<div className="btn-group" role="group">
+								<input type="hidden" name="toke_inicial" value={this.props.token_inicial} />
 								<button type="reset" id="reset-form" className="btn btn-default">LIMPIAR</button>
 							</div>
 							<div className="btn-group" role="group">
