@@ -14,8 +14,10 @@ if (isLogged()) {
 			case 'POST':
 				if(isset($_POST["export_data"]) && $_POST["export_data"] == 'true') {
 					$filename = "Datos registro - ".date('Y-m-d H:i') . ".xls";
-					header("Content-Type: application/vnd.ms-excel");
-					header("Content-Disposition: attachment; filename=" . $filename . "");
+					header("Content-type: application/vnd.ms-excel; name='excel'");
+					header("Content-Disposition: filename=ficheroExcel.xls");
+					header("Pragma: no-cache");
+					header("Expires: 0");
 					$show_coloumn = false;
 					$rows = isset($_POST['rows']) ? $_POST['rows'] : 50;
 					$data = Data::getDataRows($rows);
