@@ -6,7 +6,16 @@ function Distrito(props) {
 
 let patterns = {
 	dni: "[0-9]{8}",
-	telefono: "([0-9]{7}|[0-9]{9}|[0-9]{12})"
+	telefono: "([0-9]{7}|[0-9]{9}|[0-9]{12})",
+	distrito: function (val) {
+		let result = false;
+		let datalist = document.getElementById("distritos");
+		for (let i = 0; i < datalist.options.length; i++) {
+			result =  val == datalist.options[i].value;
+			if(result) break;
+		}
+		return result;
+	}
 }
 
 class Registro extends React.Component {
@@ -59,7 +68,11 @@ class Registro extends React.Component {
 			case "distrito":
 				if (len) {
 					this.setState({distrito: event.target.value});
-					setValidator(event, "");
+					if (patterns.distrito(event.target.value)) {
+						setSuccess(event);
+					} else {
+						setWarning(event);
+					}
 				} else {
 					setError(event);
 				}
