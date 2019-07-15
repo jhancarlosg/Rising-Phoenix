@@ -5,7 +5,6 @@ class Navbar extends React.Component {
 	}
 
 	componentDidMount() {
-		getDataNavs(this);
 		let xmlhttp = new XMLHttpRequest();
 		let tmp_this = this;
 		xmlhttp.onreadystatechange = function() {
@@ -16,6 +15,7 @@ class Navbar extends React.Component {
 		};
 		xmlhttp.open("GET", "/registro?navbar_props=get&json=true", true);
 		xmlhttp.send();
+		getDataNavs(this);
 	}
 
 	render() {
