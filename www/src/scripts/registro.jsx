@@ -26,11 +26,27 @@ class Registro extends React.Component {
 		this.handleInput = this.handleInput.bind(this);
 		this.handleSubmit = this.handleSubmit.bind(this);
 		this.handleAsesorChange = this.handleAsesorChange.bind(this);
+		this.iniciar = this.iniciar.bind(this);
 		this.asesor_ref = ASESOR_REF;
+		this.dni = React.createRef();
+		this.fullname = React.createRef();
+		this.telefono = React.createRef();
+		this.distrito = React.createRef();
 	}
 
 	handleAsesorChange(value) {
 		this.setState({asesor: value});
+	}
+
+	iniciar() {
+		this.dni.value = "";
+		this.fullname.value = "";
+		this.fullname.disable = true;
+		this.telefono.value = "";
+		this.telefono.disable = true;
+		this.distrito.value = "";
+		this.distrito.disable = true;
+
 	}
 
 	handleInput(event) {
@@ -119,6 +135,10 @@ class Registro extends React.Component {
 		$(".form-group").removeClass("has-warning has-error has-success");
 	}
 
+	componentDidMount () {
+		this.iniciar()
+	}
+
 	render() {
 		let distritos = this.props.distritos.map(distrito => <Distrito nombre={distrito} key={distrito} />);
 		// distritos.unshift(<Distrito val={0} nombre="Seleccione un distrito" />)
@@ -132,26 +152,26 @@ class Registro extends React.Component {
 						<div className="form-group">
 							<label htmlFor="dni" className="col-sm-2 control-label">DNI</label>
 							<div className="col-sm-10">
-								<input type="text" pattern={patterns.dni} onChange={this.handleInput} className="form-control" id="dni" name="dni" placeholder="Ingresa el DNI (i.e. 87654321)" minLength={8} maxLength={8} required={true} />
+								<input type="text" pattern={patterns.dni} onChange={this.handleInput} className="form-control" ref={this.dni} id="dni" name="dni" placeholder="Ingresa el DNI (i.e. 87654321)" minLength={8} maxLength={8} required={true} />
 							</div>
 						</div>
 						<div className="form-group">
 							<label htmlFor="fullname" className="col-sm-2 control-label">NOMBRE Y APELLIDO</label>
 
 							<div className="col-sm-10">
-								<input type="text" onChange={this.handleInput} className="form-control" id="fullname" name="fullname" placeholder="Escribe un nombre" required={true} />
+								<input type="text" onChange={this.handleInput} className="form-control" ref={this.fullname} id="fullname" name="fullname" placeholder="Escribe un nombre" required={true} />
 							</div>
 						</div>
 						<div className="form-group">
 							<label htmlFor="telefono" className="col-sm-2 control-label">TELÉFONO</label>
 							<div className="col-sm-10">
-								<input type="text" onChange={this.handleInput} className="form-control" id="telefono" name="telefono" placeholder="Digita el número (opcional)" pattern={patterns.telefono} minLength={7} maxLength={12} />
+								<input type="text" onChange={this.handleInput} className="form-control" ref={this.telefono} id="telefono" name="telefono" placeholder="Digita el número (opcional)" pattern={patterns.telefono} minLength={7} maxLength={12} />
 							</div>
 						</div>
 						<div className="form-group">
 							<label htmlFor="distrito" className="col-sm-2 control-label">DISTRITO</label>
 							<div className="col-sm-10">
-								<input type="text" onChange={this.handleInput} className="form-control" list="distritos" id="distrito" name="distrito"  placeholder="¿Dónde vives?" required={true} />
+								<input type="text" onChange={this.handleInput} className="form-control" list="distritos" ref={this.telefono} id="distrito" name="distrito"  placeholder="¿Dónde vives?" required={true} />
 								<datalist name="distritos" id="distritos">
 									{distritos}
 								</datalist>
