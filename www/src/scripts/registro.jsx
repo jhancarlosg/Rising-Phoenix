@@ -73,7 +73,7 @@ class Registro extends React.Component {
 					if (new RegExp(patterns.dni).test(event.target.value)) {
 						setSuccess(event);
 						this.setState({dni: event.target.value});
-						searchDNI();
+						this.searchDNI();
 					} else {
 						setError(event);
 						$("#telefono, #fullname, #distrito").hide();
