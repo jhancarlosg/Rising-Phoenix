@@ -52,7 +52,7 @@ class Registro extends React.Component {
 					$("#telefono, #fullname, #distrito").show();
 					$("#telefono, #fullname, #distrito").attr("disabled", "true");
 				} else {
-					if (typeof this.state.mod_cliente == 'boolean') {
+					if (typeof tmp_this.state.mod_cliente == 'boolean') {
 						tmp_this.setState({mod_cliente: null});
 						$("#telefono, #fullname, #distrito").val("");
 						$("#telefono, #fullname, #distrito").removeAttr("disabled");
