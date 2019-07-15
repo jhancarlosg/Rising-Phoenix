@@ -88,6 +88,7 @@ class Registro extends React.Component {
 	}
 
 	handleSubmit(event) {
+		event.preventDefault();
 		if (this.state.dni.length && this.state.fullname.length && this.state.telefono.length && this.state.distrito.length) {
 			let xmlhttp = new XMLHttpRequest();
 			let params = `dni=${this.state.dni}&token_registros=${this.state.token_registros}&asesor=${this.asesor_ref.current.value}`;
@@ -112,8 +113,6 @@ class Registro extends React.Component {
 			xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 			xmlhttp.send(params);
 		}
-		
-		event.preventDefault();
 	}
 
 	handleReset(e) {
@@ -124,7 +123,7 @@ class Registro extends React.Component {
 		let distritos = this.props.distritos.map(distrito => <Distrito nombre={distrito} key={distrito} />);
 		// distritos.unshift(<Distrito val={0} nombre="Seleccione un distrito" />)
 		return (
-			<form id="form-registro" className="form-horizontal" onSubmit={this.handleSubmit} onReset={this.handleReset} method="POST" >
+			<form id="form-registro" className="form-horizontal" onSubmit={this.handleSubmit} onReset={this.handleReset}>
 				<div className="panel panel-default">
 					<div className="panel-heading">
 						<h3 className="panel-title text-center text-uppercase">BIENVENIDO</h3>
@@ -197,7 +196,7 @@ class RegistroManager extends React.Component {
 
 	render() {
 		return (
-			<Registro {...this.state} key={this.state.token_inicial} ref={REGISTRO_REF} />
+			<Registro {...this.state} key={this.state.token_inicial} />
 		);
 	}
 }
