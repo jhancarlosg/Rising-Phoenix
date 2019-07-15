@@ -56,8 +56,7 @@ if (isLogged() && Data::isRegister()) {
 				break;
 			case 'GET':
 			default:
-				if ($_SERVER['QUERY_STRING']) {
-					$json = false;
+				if ($_SERVER['QUERY_STRING'] && isset($_GET['json']) && $_GET['json']=='true') {
 					$data = [];
 					if (isset($_GET['token']) && $_GET['token'] == 'get') {
 						$json = true;
@@ -65,16 +64,11 @@ if (isLogged() && Data::isRegister()) {
 					}
 					if (isset($_GET['distritos']) && $_GET['distritos'] == 'get') {
 						$json = true;
-						$data['distritos'] = newToken();
+						$data['distritos'] = Data::getDistritos();
 					}
-					if ($json) {
-						header('Content-type:application/json;charset=utf-8');
-						echo json_encode($data);
-						exit();
-					} else {
-						include_once(VIEW_PATH . 'registro.inc');
-					}
-					
+					header('Content-type:application/json;charset=utf-8');
+					echo json_encode($data);
+					exit();
 				} else {
 					include_once(VIEW_PATH . 'registro.inc');
 				}

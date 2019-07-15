@@ -170,10 +170,10 @@ class RegistroManager extends React.Component {
 		xmlhttp.onreadystatechange = function() {
 			if (this.readyState == 4 && this.status == 200) {
 				let data = JSON.parse(this.responseText);
-				tmp_this.setState({token_inicial: data.token});
+				tmp_this.setState({token_inicial: data.token, distritos: data.distritos});
 			}
 		};
-		xmlhttp.open("GET", "/registro?token=true", true);
+		xmlhttp.open("GET", "/registro?token=get&distritos=get&json=true", true);
 		xmlhttp.send();
 	}
 

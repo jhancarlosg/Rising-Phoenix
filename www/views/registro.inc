@@ -25,6 +25,8 @@ endif;
 </head>
 <body>
     <header></header>
-	<section id="registro-cnt" class="col-sm-10 col-xs-12"></section>
+	<section>
+        <div id="registro-cnt" class="col-sm-9 col-xs-12"></div>
+    </section>
 </body>
 </html>
