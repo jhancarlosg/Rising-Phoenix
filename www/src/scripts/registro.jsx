@@ -50,6 +50,8 @@ class Registro extends React.Component {
 					$("#distrito").val(data.distrito);
 					$("#telefono").val(data.telefono);
 					$("#telefono, #fullname, #distrito").show();
+				} else {
+					$("#fullname").show();
 				}
 			}
 		};
@@ -71,7 +73,7 @@ class Registro extends React.Component {
 					if (new RegExp(patterns.dni).test(event.target.value)) {
 						setSuccess(event);
 						this.setState({dni: event.target.value});
-						$("#fullname").show();
+						searchDNI();
 					} else {
 						setError(event);
 						$("#telefono, #fullname, #distrito").hide();
