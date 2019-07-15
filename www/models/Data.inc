@@ -67,6 +67,19 @@ class Data
 		}
 		return $return;
 	}
+	public static function getClientData($dni) {
+		$return = [];
+		if (isLogged()) {
+			$db = new Conexion();
+			$sql = "SELECT * FROM Cliente WHERE DNI='%s';";
+			$result = $db->query( sprintf($sql, $dni) );
+			if ($result && $result->num_rows>0) {
+				$return = $result->fetch_row();
+				$result->free();
+			}
+		}
+		return $return;
+	}
 }
 
 

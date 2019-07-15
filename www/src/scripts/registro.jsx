@@ -38,6 +38,25 @@ class Registro extends React.Component {
 		this.setState({asesor: value});
 	}
 
+	searchDNI() {
+		let xmlhttp = new XMLHttpRequest();
+		let tmp_this = this;
+		xmlhttp.onreadystatechange = function() {
+			if (this.readyState == 4 && this.status == 200) {
+				let data = JSON.parse(this.responseText);
+				if (typeof data.dni != 'undefined') {
+					tmp_this.setState({ fullname: data.fullname, distrito: data.distrito, telefono: data.telefono, mod_cliente: false});
+					$("#fullname").val(data.fullname);
+					$("#distrito").val(data.distrito);
+					$("#telefono").val(data.telefono);
+					$("#telefono, #fullname, #distrito").show();
+				}
+			}
+		};
+		xmlhttp.open("GET", "/registro?client=get&json=true&dni=" + tmp_this.state.dni, true);
+		xmlhttp.send();
+	}
+
 	iniciar() {
 		console.log(this.dni.current);
 		document.getElementById("form-registro").reset();
@@ -55,6 +74,7 @@ class Registro extends React.Component {
 						$("#fullname").show();
 					} else {
 						setError(event);
+						$("#telefono, #fullname, #distrito").hide();
 					}
 				} else {
 					setWarning(event);

@@ -71,6 +71,10 @@ if (isLogged() && Data::isRegister()) {
 						$json = true;
 						$data['navbar_props'] = Data::getNavbarProps();
 					}
+					if (isset($_GET['client'], $_GET['dni']) && $_GET['client'] == 'get' && strlen($_GET['dni']) == 8) {
+						$json = true;
+						$data = Data::getClientData($_GET['dni']);
+					}
 					header('Content-type:application/json;charset=utf-8');
 					echo json_encode($data);
 					exit();
