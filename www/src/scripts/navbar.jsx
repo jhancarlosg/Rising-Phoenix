@@ -2,6 +2,7 @@ class Navbar extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {navs: null, navbar_props: {}};
+		this.handleClick = this.handleClick.bind(this);
 	}
 
 	componentDidMount() {
@@ -18,9 +19,13 @@ class Navbar extends React.Component {
 		getDataNavs(this);
 	}
 
+	handleClick(e) {
+
+	}
+
 	render() {
 		return (
-			<nav className="navbar navbar-default">
+			<nav className="navbar navbar-default" onClick={this.handleClick}>
 				<div className="container-fluid">
 					<div className="navbar-header">
 						<button type="button" className="navbar-toggle collapsed" data-toggle="collapse" data-target="#nav-collapse" aria-expanded="false">
@@ -30,7 +35,7 @@ class Navbar extends React.Component {
 							<span className="icon-bar"></span>
 						</button>
 					</div>
-					<div className="collapse navbar-collapse" id="nav-collapse">
+					<div className="collapse navbar-collapse" id="nav-collapse" >
 						{this.state.navs}
 					</div>
 				</div>
