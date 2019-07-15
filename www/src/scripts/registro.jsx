@@ -103,7 +103,7 @@ class Registro extends React.Component {
 	}
 
 	render() {
-		let distritos = this.props.distritos.map(distrito => <Distrito val={distrito.pos} nombre={distrito.nombre} />);
+		let distritos = this.props.distritos.map(distrito => <Distrito nombre={distrito} key={distrito} />);
 		// distritos.unshift(<Distrito val={0} nombre="Seleccione un distrito" />)
 		return (
 			<form id="form-registro" className="form-horizontal" onSubmit={this.handleSubmit} onReset={this.handleReset} method="POST" >
