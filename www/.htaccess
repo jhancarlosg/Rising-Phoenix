@@ -33,6 +33,12 @@ RewriteRule ^settings$ /controllers/settings.php [L]
 RewriteEngine on
 RewriteRule ^settings/$ /settings [R=301,L]
 
+RewriteEngine on
+RewriteRule ^datos$ /controllers/datos.php [L]
+
+RewriteEngine on
+RewriteRule ^datos/$ /datos [R=301,L]
+
 <FilesMatch "((\.(lock|cache|db|inc))|CHANGELOG.md|README.md|^(.*\.config|.*\.example)(.*?))$">
 	# Apache < 2.3
 	<IfModule !mod_authz_core.c>
