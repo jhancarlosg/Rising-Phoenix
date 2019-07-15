@@ -134,7 +134,7 @@ class Registro extends React.Component {
 						<div className="form-group">
 							<label htmlFor="distrito" className="col-sm-2 control-label">DISTRITO</label>
 							<div className="col-sm-10">
-								<input type="text" onChange={this.handleInput} className="form-control" list="distritos" id="distrito" name="distrito"  placeholder="Distrito" required={true} />
+								<input type="text" onChange={this.handleInput} className="form-control" list="distritos" id="distrito" name="distrito"  placeholder="¿Dónde vives?" required={true} />
 								<datalist name="distritos" id="distritos">
 									{distritos}
 								</datalist>
