@@ -7,12 +7,12 @@ SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,N
 -- -----------------------------------------------------
 -- Schema RegistroDB
 -- -----------------------------------------------------
-DROP DATABASE IF EXISTS `RegistroDB` ;
+DROP SCHEMA IF EXISTS `RegistroDB` ;
 
 -- -----------------------------------------------------
 -- Schema RegistroDB
 -- -----------------------------------------------------
-CREATE DATABASE IF NOT EXISTS `RegistroDB` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci ;
+CREATE SCHEMA IF NOT EXISTS `RegistroDB` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci ;
 SHOW WARNINGS;
 USE `RegistroDB` ;
 
@@ -22,6 +22,7 @@ USE `RegistroDB` ;
 CREATE TABLE IF NOT EXISTS `RegistroDB`.`Distrito` (
   `idDistrito` SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT,
   `nombre` VARCHAR(50) NOT NULL,
+  `porDefecto` TINYINT(1) NULL DEFAULT NULL,
   PRIMARY KEY (`idDistrito`))
 ENGINE = InnoDB;
 
@@ -36,7 +37,7 @@ CREATE TABLE IF NOT EXISTS `RegistroDB`.`Cliente` (
   `telefono` VARCHAR(12) NULL,
   `idDistrito` SMALLINT UNSIGNED NOT NULL,
   PRIMARY KEY (`DNI`),
-  INDEX `fk_Cliente_Distrito1_idx` (`idDistrito` ASC) ,
+  INDEX `fk_Cliente_Distrito1_idx` (`idDistrito` ASC) VISIBLE,
   CONSTRAINT `fk_Cliente_Distrito1`
     FOREIGN KEY (`idDistrito`)
     REFERENCES `RegistroDB`.`Distrito` (`idDistrito`)
@@ -53,31 +54,6 @@ CREATE TABLE IF NOT EXISTS `RegistroDB`.`AsesorVentas` (
   `idAsesorVentas` SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT,
   `nombreCompleto` VARCHAR(45) NOT NULL,
   PRIMARY KEY (`idAsesorVentas`))
-ENGINE = InnoDB;
-
-SHOW WARNINGS;
-
--- -----------------------------------------------------
--- Table `RegistroDB`.`Atencion`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `RegistroDB`.`Atencion` (
-  `idAtencion` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `fechaHora` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `DNI` CHAR(8) NOT NULL,
-  `idAsesorVentas` SMALLINT UNSIGNED NULL,
-  PRIMARY KEY (`idAtencion`),
-  INDEX `fk_Atencion_Cliente_idx` (`DNI` ASC) ,
-  INDEX `fk_Atencion_AsesorVentas1_idx` (`idAsesorVentas` ASC) ,
-  CONSTRAINT `fk_Atencion_Cliente`
-    FOREIGN KEY (`DNI`)
-    REFERENCES `RegistroDB`.`Cliente` (`DNI`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `fk_Atencion_AsesorVentas1`
-    FOREIGN KEY (`idAsesorVentas`)
-    REFERENCES `RegistroDB`.`AsesorVentas` (`idAsesorVentas`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
 SHOW WARNINGS;
@@ -101,8 +77,8 @@ CREATE TABLE IF NOT EXISTS `RegistroDB`.`UsuarioAsesores` (
   `idAsesorVentas` SMALLINT UNSIGNED NOT NULL,
   `idUsuario` SMALLINT UNSIGNED NOT NULL,
   PRIMARY KEY (`idAsesorVentas`, `idUsuario`),
-  INDEX `fk_AsesorVentas_has_Usuario_Usuario1_idx` (`idUsuario` ASC) ,
-  INDEX `fk_AsesorVentas_has_Usuario_AsesorVentas1_idx` (`idAsesorVentas` ASC) ,
+  INDEX `fk_AsesorVentas_has_Usuario_Usuario1_idx` (`idUsuario` ASC) VISIBLE,
+  INDEX `fk_AsesorVentas_has_Usuario_AsesorVentas1_idx` (`idAsesorVentas` ASC) VISIBLE,
   CONSTRAINT `fk_AsesorVentas_has_Usuario_AsesorVentas1`
     FOREIGN KEY (`idAsesorVentas`)
     REFERENCES `RegistroDB`.`AsesorVentas` (`idAsesorVentas`)
@@ -111,6 +87,33 @@ CREATE TABLE IF NOT EXISTS `RegistroDB`.`UsuarioAsesores` (
   CONSTRAINT `fk_AsesorVentas_has_Usuario_Usuario1`
     FOREIGN KEY (`idUsuario`)
     REFERENCES `RegistroDB`.`Usuario` (`idUsuario`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+SHOW WARNINGS;
+
+-- -----------------------------------------------------
+-- Table `RegistroDB`.`Atencion`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `RegistroDB`.`Atencion` (
+  `idAtencion` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `fechaHora` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `DNI` CHAR(8) NOT NULL,
+  `idAsesorVentas` SMALLINT UNSIGNED NOT NULL,
+  `idUsuario` SMALLINT UNSIGNED NOT NULL,
+  `token` CHAR(8) NOT NULL,
+  PRIMARY KEY (`idAtencion`),
+  INDEX `fk_Atencion_Cliente_idx` (`DNI` ASC) VISIBLE,
+  INDEX `fk_Atencion_UsuarioAsesores1_idx` (`idAsesorVentas` ASC, `idUsuario` ASC) VISIBLE,
+  CONSTRAINT `fk_Atencion_Cliente`
+    FOREIGN KEY (`DNI`)
+    REFERENCES `RegistroDB`.`Cliente` (`DNI`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_Atencion_UsuarioAsesores1`
+    FOREIGN KEY (`idAsesorVentas` , `idUsuario`)
+    REFERENCES `RegistroDB`.`UsuarioAsesores` (`idAsesorVentas` , `idUsuario`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
@@ -127,7 +130,7 @@ CREATE TABLE IF NOT EXISTS `RegistroDB`.`Sesion` (
   `ip` VARCHAR(15) NOT NULL,
   `lastConexion` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`idSesion`),
-  INDEX `fk_Sesion_Usuario1_idx` (`idUsuario` ASC) ,
+  INDEX `fk_Sesion_Usuario1_idx` (`idUsuario` ASC) VISIBLE,
   CONSTRAINT `fk_Sesion_Usuario1`
     FOREIGN KEY (`idUsuario`)
     REFERENCES `RegistroDB`.`Usuario` (`idUsuario`)
@@ -171,7 +174,7 @@ SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
 -- -----------------------------------------------------
 START TRANSACTION;
 USE `RegistroDB`;
-INSERT INTO `RegistroDB`.`Distrito` (`idDistrito`, `nombre`) VALUES (DEFAULT, 'SMP');
+INSERT INTO `RegistroDB`.`Distrito` (`idDistrito`, `nombre`, `porDefecto`) VALUES (DEFAULT, 'SMP', NULL);
 
 COMMIT;
 
@@ -198,19 +201,6 @@ INSERT INTO `RegistroDB`.`AsesorVentas` (`idAsesorVentas`, `nombreCompleto`) VAL
 INSERT INTO `RegistroDB`.`AsesorVentas` (`idAsesorVentas`, `nombreCompleto`) VALUES (DEFAULT, 'LESLIE ESPINOZA');
 INSERT INTO `RegistroDB`.`AsesorVentas` (`idAsesorVentas`, `nombreCompleto`) VALUES (DEFAULT, 'CAJA');
 INSERT INTO `RegistroDB`.`AsesorVentas` (`idAsesorVentas`, `nombreCompleto`) VALUES (DEFAULT, 'SAE');
-
-COMMIT;
-
-
--- -----------------------------------------------------
--- Data for table `RegistroDB`.`Atencion`
--- -----------------------------------------------------
-START TRANSACTION;
-USE `RegistroDB`;
-INSERT INTO `RegistroDB`.`Atencion` (`idAtencion`, `fechaHora`, `DNI`, `idAsesorVentas`) VALUES (DEFAULT, '2019-06-06 13:26:31', '47774578', 1);
-INSERT INTO `RegistroDB`.`Atencion` (`idAtencion`, `fechaHora`, `DNI`, `idAsesorVentas`) VALUES (DEFAULT, '2019-07-05 20:17:05', '70767502', NULL);
-INSERT INTO `RegistroDB`.`Atencion` (`idAtencion`, `fechaHora`, `DNI`, `idAsesorVentas`) VALUES (DEFAULT, '2019-07-05 20:34:19', '47499790', NULL);
-INSERT INTO `RegistroDB`.`Atencion` (`idAtencion`, `fechaHora`, `DNI`, `idAsesorVentas`) VALUES (DEFAULT, DEFAULT, '70767502', NULL);
 
 COMMIT;
 
