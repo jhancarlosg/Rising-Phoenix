@@ -63,6 +63,7 @@ class Registro extends React.Component {
 				}
 				break;
 		}
+		console.log(this.state.token_registros);
 	}
 
 	handleSuccess(token) {
@@ -88,7 +89,6 @@ class Registro extends React.Component {
 			xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 			xmlhttp.send(params);
 		}
-		console.log(this.state.token_registros);
 		
 		event.preventDefault();
 	}
