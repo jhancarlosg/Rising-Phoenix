@@ -11,6 +11,13 @@ function newToken() {
 	return hash('adler32', strval(getIdUser()) . time() . date('Y-m-h-i-s') );
 }
 
+function setDataJSONMsgRegistro($tipo, $msg)
+{
+	$data = setDataJSONMsg($tipo, $msg);
+	$data['token'] = newToken();
+	return $data;
+}
+
 if (isLogged()) {
 	if ( preg_match("/^\/registro/", $_SERVER['REQUEST_URI']) ) {
 		switch ($_SERVER['REQUEST_METHOD']) {
@@ -33,16 +40,15 @@ if (isLogged()) {
 						include_once(MODEL_PATH . 'Registro.inc');
 						$registro = new Registro(getIdUser(), $dni, $fullname, $telefono, $distrito, $token, $asesor, $mod_cliente);
 						if ($registro->registrar()) {
-							$data = setDataJSONMsg("success", "REGISTRO EXITOSO");
+							$data = setDataJSONMsgRegistro("success", "REGISTRO EXITOSO");
 						} else {
-							$data = setDataJSONMsg("danger", "NO SE PUEDO GUARDAR EL REGISTRO");
-							$data["token"] = newToken();
+							$data = setDataJSONMsgRegistro("danger", "NO SE PUEDO GUARDAR EL REGISTRO");
 						}
 					} else {
-						$data = setDataJSONMsg("danger", "Envíe los datos necesarios o complete los espacios correctamente");
+						$data = setDataJSONMsgRegistro("danger", "Envíe los datos necesarios o complete los espacios correctamente");
 					}
 				} else {
-					$data = setDataJSONMsg("danger", "Envíe los datos necesarios");
+					$data = setDataJSONMsgRegistro("danger", "Envíe los datos necesarios");
 				}
 				echo json_encode($data);
 				exit();

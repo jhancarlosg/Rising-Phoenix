@@ -15,7 +15,6 @@ class Registro extends React.Component {
 		this.state = {dni: '', fullname: '', telefono: '', distrito: '', token_registros: props.token_inicial, mod_cliente: null, asesor: null};
 		this.handleInput = this.handleInput.bind(this);
 		this.handleSubmit = this.handleSubmit.bind(this);
-		this.handleSuccess = this.handleSuccess.bind(this);
 	}
 
 	handleInput(event) {
@@ -69,11 +68,6 @@ class Registro extends React.Component {
 		console.log(this.state.token_registros);
 	}
 
-	handleData(data) {
-		$('.alert').alert('close');
-		$("#registro-cnt").prepend(Alerta(data));
-	}
-
 	handleSubmit(event) {
 		if (this.state.dni.length && this.state.fullname.length && this.state.telefono.length && this.state.distrito.length) {
 			let xmlhttp = new XMLHttpRequest();
@@ -87,8 +81,13 @@ class Registro extends React.Component {
 			let tmp_this = this;
 			xmlhttp.onreadystatechange = function() {
 				if (this.readyState == 4 && this.status == 200) {
-					document.getElementById("form-registro").reset();
-					tmp_this.handleData(JSON.parse(this.responseText));
+					let data = JSON.parse(this.responseText);
+					$('.alert').alert('close');
+					$("#registro-cnt").prepend(Alerta(data));
+					tmp_this.setState({token_registros: data.token});
+					if (data.tipo == 'success') {
+						document.getElementById("form-registro").reset();
+					}
 				}
 			};
 			xmlhttp.open("POST", "/registro", true);
