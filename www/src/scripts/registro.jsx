@@ -38,7 +38,7 @@ class Registro extends React.Component {
 		this.setState({asesor: value});
 	}
 
-	searchDNI() {
+	searchDNI(val) {
 		let xmlhttp = new XMLHttpRequest();
 		let tmp_this = this;
 		xmlhttp.onreadystatechange = function() {
@@ -55,7 +55,7 @@ class Registro extends React.Component {
 				}
 			}
 		};
-		xmlhttp.open("GET", "/registro?client=get&json=true&dni=" + tmp_this.state.dni, true);
+		xmlhttp.open("GET", "/registro?client=get&json=true&dni=" + val, true);
 		xmlhttp.send();
 	}
 
@@ -73,7 +73,7 @@ class Registro extends React.Component {
 					if (new RegExp(patterns.dni).test(event.target.value)) {
 						setSuccess(event);
 						this.setState({dni: event.target.value});
-						this.searchDNI();
+						this.searchDNI(event.target.value);
 					} else {
 						setError(event);
 						$("#telefono, #fullname, #distrito").hide();
