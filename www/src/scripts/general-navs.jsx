@@ -1,6 +1,5 @@
 function GenNavs(props) {
-    const asesores = typeof props.asesores == 'object' ? props.asesores.map((val) => <AsesorOption val={val} key={val} />) : null;
-    console.log(props, asesores)
+    const asesores = typeof props.asesores == 'object' ? props.asesores.map((asesor) => <AsesorOption asesor={asesor} key={asesor} />) : null;
     return (
         <React.Fragment>
             <p className="navbar-text">{props.correo}</p>
