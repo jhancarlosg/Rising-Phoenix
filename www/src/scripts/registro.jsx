@@ -12,11 +12,10 @@ let patterns = {
 class Registro extends React.Component {
 	constructor(props) {
 		super(props);
-		this.state = {dni: '', fullname: '', telefono: '', distrito: '', token_registros: '', mod_cliente: null, asesor: null};
+		this.state = {dni: '', fullname: '', telefono: '', distrito: '', token_registros: props.token_inicial, mod_cliente: null, asesor: null};
 		this.handleInput = this.handleInput.bind(this);
 		this.handleSubmit = this.handleSubmit.bind(this);
 		this.handleSuccess = this.handleSuccess.bind(this);
-		this.setState((state, props) => ({token_registros: props.token_inicial}));
 	}
 
 	handleInput(event) {
@@ -116,6 +115,7 @@ class Registro extends React.Component {
 						</div>
 						<div className="form-group">
 							<label htmlFor="fullname" className="col-sm-2 control-label">NOMBRE Y APELLIDO</label>
+
 							<div className="col-sm-10">
 								<input type="text" onChange={this.handleInput} className="form-control" id="fullname" placeholder="Escribe un nombre" required={true} />
 							</div>
