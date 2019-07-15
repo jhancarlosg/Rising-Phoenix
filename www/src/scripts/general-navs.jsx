@@ -29,6 +29,7 @@ class GenNavs extends React.Component {
                     </div>
                 </div>
                 <ul className="nav navbar-nav navbar-right">
+                    <li className=""><a href="/registro">Registro<span className="sr-only">(current)</span></a></li>
                     <li className=""><a href="/datos">Datos<span className="sr-only">(current)</span></a></li>
                 </ul>
             </React.Fragment>

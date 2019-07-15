@@ -6,7 +6,8 @@ class Datos extends React.Component {
 
 	componentDidMount() {
 		let xmlhttp = new XMLHttpRequest();
-		let tmp_this = this;
+		// let tmp_this = this;
+		let params = `export_data=true`;
 		xmlhttp.onreadystatechange = function() {
 			if (this.readyState == 4 && this.status == 200) {
 				let data = JSON.parse(this.responseText);
@@ -17,25 +18,42 @@ class Datos extends React.Component {
 		xmlhttp.send();
 	}
 
+	exportarExcel() {
+		let xmlhttp = new XMLHttpRequest();
+		let tmp_this = this;
+		xmlhttp.onreadystatechange = function() {
+			if (this.readyState == 4 && this.status == 200) {
+				let data = JSON.parse(this.responseText);
+				tmp_this.setState({ rows: data});
+			}
+		}
+		xmlhttp.open("POST", "/datos", true);
+		xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+		xmlhttp.send();
+	}
+
 	render () {
 		const rows = this.state.rows.map((row, id) => <Row key={"row"+id} cols={row} />);
 		return (
-			<table class="table table-hover">
-				<thead>
-					<tr>
-						<th>FECHA - HORA</th>
-						<th>DNI</th>
-						<th>NOMBRE Y APELLIDO</th>
-						<th>TELEFONO</th>
-						<th>DISTRITO</th>
-						<th>ATENDIDO POR</th>
-						<th>USUARIO</th>
-					</tr>
-				</thead>
-				<tbody>
-					{rows}
-				</tbody>
-			</table>
+			<React.Frament>
+				<button onClick={this.exportarExcel} type="button" className="btn btn-default btn-lg">EXPORTAR <i className="glyphicon glyphicon-file"></i></button>
+				<table className="table table-hover">
+					<thead>
+						<tr>
+							<th>FECHA - HORA</th>
+							<th>DNI</th>
+							<th>NOMBRE Y APELLIDO</th>
+							<th>TELEFONO</th>
+							<th>DISTRITO</th>
+							<th>ATENDIDO POR</th>
+							<th>USUARIO</th>
+						</tr>
+					</thead>
+					<tbody>
+						{rows}
+					</tbody>
+				</table>
+			</React.Frament>
 		);
 	}
 }

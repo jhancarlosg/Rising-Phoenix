@@ -90,6 +90,8 @@ if (isLogged() && Data::isRegister()) {
 				break;
 		}
 	}
+} elseif (isLogged()) {
+	header('Location: /datos');
 } else {
 	header('Location: /login');
 }

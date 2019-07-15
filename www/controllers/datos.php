@@ -12,7 +12,27 @@ if (isLogged()) {
 	if ( preg_match("/^\/datos/", $_SERVER['REQUEST_URI']) ) {
 		switch ($_SERVER['REQUEST_METHOD']) {
 			case 'POST':
-				include_once(VIEW_PATH . 'datos.inc');
+				if(isset($_POST["export_data"]) && $_POST["export_data"] == 'true') {
+					$filename = "Datos registro - ".date('Y-m-d H:i') . ".xls";
+					header("Content-Type: application/vnd.ms-excel");
+					header("Content-Disposition: attachment; filename=" . $filename . "");
+					$show_coloumn = false;
+					$rows = isset($_POST['rows']) ? $_POST['rows'] : 50;
+					$data = Data::getDataRows($rows);
+					if(!empty($developer_records)) {
+						foreach($data as $row) {
+							if(!$show_coloumn) {
+							// display field/column names in first row
+								echo implode("t", ['FECHA - HORA', 'DNI', 'NOMBRE Y APELLIDO', 'TELEFONO', 'DIRECCION', 'ATENDIDO POR', 'USUARIO']) . "n";
+								$show_coloumn = true;
+							}
+							echo implode("t", array_values($row)) . "n";
+						}
+					}
+					exit;
+				} else {
+					include_once(VIEW_PATH . 'datos.inc');
+				}
 			case 'GET':
 			default:
 				if ($_SERVER['QUERY_STRING'] && isset($_GET['json']) && $_GET['json']=='true') {
