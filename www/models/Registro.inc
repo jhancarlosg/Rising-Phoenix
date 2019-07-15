@@ -32,11 +32,15 @@ class Registro
     }
 
     public function registrar() {
+        $this->db->init();
         $result = false;
         $this->respuesta = [$result, 'init'];
         if ($this->hasPrivilegios() && $this->checkToken() && $this->manageCliente()) {
             $sql = "INSERT INTO Atencion (DNI, idAsesorVentas, idUsuario, token) VALUES ('%s', %d, %d, '%s');";
             $result = $this->db->query( sprintf($sql, $this->db->escape_string($this->dni), $this->idAsesor, $this->idUser, $this->db->escape_string($this->token) ) );
+            $this->respuesta = [$result, 'REGISTRO EXITOSO'];
+        } else {
+            $this->respuesta = [$result, 'NO SE PUDO COMPLETAR EL REGISTRO'];
         }
         return $this->respuesta;
     }
@@ -60,7 +64,6 @@ class Registro
     }
 
     private function getIdAsesor() {
-        $this->db->init();
         $this->respuesta = [false, 'getIdAsesor init'];
         $sql = "SELECT idAsesorVentas FROM AsesorVentas WHERE nombreCompleto = '%s';";
         $result = $this->db->query( sprintf($sql, $this->db->escape_string($this->asesor)) );
