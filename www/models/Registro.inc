@@ -63,14 +63,13 @@ class Registro
         $this->db->init();
         $this->respuesta = [false, 'getIdAsesor init'];
         $sql = "SELECT idAsesorVentas FROM AsersorVentas WHERE nombreCompleto = '%s';";
+        $this->respuesta = [false, $this->db->escape_string($this->asesor)];
         $result = $this->db->query( sprintf($sql, $this->db->escape_string($this->asesor)) );
         if ($result && $result->num_rows > 0) {
             $row = $result->fetch_row();
             $this->idAsesor = $row[0];
             $result->free();
             $this->respuesta = [true, 'getIdAsesor true'];
-        } else {
-            $this->respuesta = [false, 'getIdAsesor falla sql'];
         }
         return !is_null($this->idAsesor);
     }
