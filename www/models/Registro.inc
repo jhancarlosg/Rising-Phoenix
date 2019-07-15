@@ -62,8 +62,7 @@ class Registro
     private function getIdAsesor() {
         $this->db->init();
         $this->respuesta = [false, 'getIdAsesor init'];
-        $sql = "SELECT idAsesorVentas FROM AsersorVentas WHERE nombreCompleto = '%s';";
-        $this->respuesta = [false, sprintf($sql, $this->db->escape_string($this->asesor))];
+        $sql = "SELECT idAsesorVentas FROM AsesorVentas WHERE nombreCompleto = '%s';";
         $result = $this->db->query( sprintf($sql, $this->db->escape_string($this->asesor)) );
         if ($result && $result->num_rows > 0) {
             $row = $result->fetch_row();
