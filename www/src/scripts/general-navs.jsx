@@ -17,9 +17,6 @@ class GenNavs extends React.Component {
     constructor(props) {
         super(props);
     }
-    handleAsesorChange(e) {
-        if (REGISTRO_REF.current) REGISTRO_REF.current.handleAsesorChange(e.target.value);
-    }
     render () {
         const asesores = typeof this.props.asesores == 'object' ? this.props.asesores.map((asesor) => <AsesorOption asesor={asesor} key={asesor} />) : null;
         return (
@@ -28,7 +25,7 @@ class GenNavs extends React.Component {
                 <button href="/logout" type="button" className="btn btn-default navbar-btn navbar-right">Cerrar sesión</button>
                 <div className="navbar-form navbar-right" role="search">
                     <div className="form-group">
-                    <select className="form-control" onChange={this.handleAsesorChange} ref={this.props.asesor_ref}>{asesores}</select>
+                    <select className="form-control" ref={this.props.asesor_ref}>{asesores}</select>
                     </div>
                 </div>
             </React.Fragment>
