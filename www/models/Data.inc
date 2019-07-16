@@ -9,7 +9,7 @@ class Data
 		$return = [];
 		if (isLogged()) {
 			$db = new Conexion();
-			$sql = "SELECT nombre FROM Distrito WHERE is not null;";
+			$sql = "SELECT nombre FROM Distrito WHERE porDefecto is not null;";
 			$result = $db->query( $sql );
 			if ($result && $result->num_rows>0) {
 				while ($row = $result->fetch_row()) {
