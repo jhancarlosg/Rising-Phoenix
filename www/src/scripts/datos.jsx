@@ -57,7 +57,7 @@ class Datos extends React.Component {
 							<option value="10">10</option>
 							<option value="20">20</option>
 							<option value="30">30</option>
-							<option value="0">hoy</option>
+							{/* <option value="0">hoy</option> */}
 						</select>
                     </div>
 				</form>
