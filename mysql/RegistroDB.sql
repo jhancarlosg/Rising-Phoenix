@@ -3,9 +3,18 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: localhost
--- Tiempo de generación: 15-07-2019 a las 05:18:45
+-- Tiempo de generación: 16-07-2019 a las 00:33:49
 -- Versión del servidor: 10.3.16-MariaDB
 -- Versión de PHP: 7.3.7
+
+DROP DATABASE IF EXISTS `RegistroDB` ;
+
+-- -----------------------------------------------------
+-- DATABASE RegistroDB
+-- -----------------------------------------------------
+CREATE DATABASE IF NOT EXISTS `RegistroDB` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci ;
+SHOW WARNINGS;
+USE `RegistroDB` ;
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET AUTOCOMMIT = 0;
@@ -39,11 +48,12 @@ CREATE TABLE `AsesorVentas` (
 
 INSERT INTO `AsesorVentas` (`idAsesorVentas`, `nombreCompleto`) VALUES
 (1, ''),
-(4, 'CAJA'),
-(6, 'DELIA PEREZ'),
-(2, 'GUSTAVO MANYARI'),
+(2, 'TODO'),
 (3, 'LESLIE ESPINOZA'),
-(5, 'SAE');
+(4, 'CAJA'),
+(5, 'SAE'),
+(6, 'DELIA PEREZ'),
+(7, 'GUSTAVO MANYARI');
 
 -- --------------------------------------------------------
 
@@ -59,6 +69,26 @@ CREATE TABLE `Atencion` (
   `idUsuario` smallint(5) UNSIGNED NOT NULL,
   `token` char(8) COLLATE utf8mb4_unicode_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Volcado de datos para la tabla `Atencion`
+--
+
+INSERT INTO `Atencion` (`idAtencion`, `fechaHora`, `DNI`, `idAsesorVentas`, `idUsuario`, `token`) VALUES
+(20, '2019-07-15 09:58:16', '56756756', 2, 1, '4a660545'),
+(21, '2019-07-15 09:58:16', '56756756', 2, 1, '4a660545'),
+(22, '2019-07-15 10:00:28', '56756756', 2, 1, '4b3c0559'),
+(23, '2019-07-15 10:09:52', '56756756', 6, 1, '4ad8054d'),
+(24, '2019-07-15 10:21:47', '56756756', 2, 1, '49fd053f'),
+(25, '2019-07-15 10:22:16', '56756756', 2, 1, '4a570549'),
+(26, '2019-07-15 11:02:12', '56756756', 2, 1, '4aee0552'),
+(27, '2019-07-15 11:03:49', '56756756', 2, 1, '4aad0549'),
+(28, '2019-07-15 11:38:18', '56756756', 2, 1, '4b70055c'),
+(29, '2019-07-15 11:58:18', '56756750', 2, 1, '4bec0567'),
+(30, '2019-07-15 14:43:49', '56756756', 2, 1, '4b71055a'),
+(31, '2019-07-15 14:43:51', '56756756', 2, 1, '4bcb0564'),
+(32, '2019-07-15 14:44:03', '56756756', 2, 1, '4b4f0556'),
+(33, '2019-07-15 14:48:01', '12345678', 2, 1, '4b7f0557');
 
 -- --------------------------------------------------------
 
@@ -78,9 +108,12 @@ CREATE TABLE `Cliente` (
 --
 
 INSERT INTO `Cliente` (`DNI`, `nombreCompleto`, `telefono`, `idDistrito`) VALUES
+('12345678', 'ESFDDVSAFSA', '982188295', 16),
+('23455566', 'wwertyui', '982188295', 15),
 ('47499790', 'NILA CARRASCO QUEVEDO', '997599757', 1),
 ('47774578', 'IVAN CAMILOAGA COLLANA', '987236016', 1),
-('70767502', 'DIEGO GUERRA', '944237777', 1);
+('56756750', 'tjyjytjtyj', '982188295', 1),
+('56756756', 'rthrthrttrh', '982188295', 1);
 
 -- --------------------------------------------------------
 
@@ -105,16 +138,20 @@ CREATE TABLE `Datos` (
 
 CREATE TABLE `Distrito` (
   `idDistrito` smallint(5) UNSIGNED NOT NULL,
-  `nombre` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL
+  `nombre` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `porDefecto` tinyint(1) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Volcado de datos para la tabla `Distrito`
 --
 
-INSERT INTO `Distrito` (`idDistrito`, `nombre`) VALUES
-(1, 'SMP'),
-(2, 'COMAS');
+INSERT INTO `Distrito` (`idDistrito`, `nombre`, `porDefecto`) VALUES
+(1, 'SMP', 1),
+(2, 'COMAS', 1),
+(3, 'Matute', NULL),
+(15, 'yrtftyuirwesdrftht', NULL),
+(16, 'jkljiliuilui', NULL);
 
 -- --------------------------------------------------------
 
@@ -135,7 +172,10 @@ CREATE TABLE `Sesion` (
 --
 
 INSERT INTO `Sesion` (`idSesion`, `idUsuario`, `session`, `ip`, `lastConexion`) VALUES
-(1, 1, 'fa1e862790a52462ab85c68235dc36c96a4c09ccac3c94fb23b95cbe697f316f', '192.168.0.15', '2019-07-14 07:22:13');
+(1, 1, 'fa1e862790a52462ab85c68235dc36c96a4c09ccac3c94fb23b95cbe697f316f', '192.168.0.15', '2019-07-14 07:22:13'),
+(2, 1, '8242551dfb2ec7a3126ee36dc0e36d381675d79ad37df0bebd2c927c5837c5a0', '192.168.0.15', '2019-07-15 04:43:53'),
+(3, 1, '2eaa2b56904616e5c6cccdc07d2c018f5a643c168a0e31a757fa5baef5ccc185', '192.168.0.15', '2019-07-15 14:42:37'),
+(4, 1, '92f09a4ea4c785b1958524e3d2aa0e0be4e48b54e6d7600217d00b0e0b530ffe', '192.168.0.15', '2019-07-15 15:24:24');
 
 -- --------------------------------------------------------
 
@@ -167,6 +207,14 @@ CREATE TABLE `UsuarioAsesores` (
   `idUsuario` smallint(5) UNSIGNED NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+--
+-- Volcado de datos para la tabla `UsuarioAsesores`
+--
+
+INSERT INTO `UsuarioAsesores` (`idAsesorVentas`, `idUsuario`) VALUES
+(2, 1),
+(6, 1);
+
 -- --------------------------------------------------------
 
 --
@@ -184,15 +232,15 @@ CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW 
 -- Indices de la tabla `AsesorVentas`
 --
 ALTER TABLE `AsesorVentas`
-  ADD PRIMARY KEY (`idAsesorVentas`),
-  ADD UNIQUE KEY `nombreCompleto` (`nombreCompleto`);
+  ADD PRIMARY KEY (`idAsesorVentas`);
 
 --
 -- Indices de la tabla `Atencion`
 --
 ALTER TABLE `Atencion`
   ADD PRIMARY KEY (`idAtencion`),
-  ADD KEY `fk_Atencion_Cliente_idx` (`DNI`);
+  ADD KEY `fk_Atencion_Cliente_idx` (`DNI`),
+  ADD KEY `fk_Atencion_UsuarioAsesores1_idx` (`idAsesorVentas`,`idUsuario`);
 
 --
 -- Indices de la tabla `Cliente`
@@ -236,25 +284,25 @@ ALTER TABLE `UsuarioAsesores`
 -- AUTO_INCREMENT de la tabla `AsesorVentas`
 --
 ALTER TABLE `AsesorVentas`
-  MODIFY `idAsesorVentas` smallint(5) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `idAsesorVentas` smallint(5) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT de la tabla `Atencion`
 --
 ALTER TABLE `Atencion`
-  MODIFY `idAtencion` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `idAtencion` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
 
 --
 -- AUTO_INCREMENT de la tabla `Distrito`
 --
 ALTER TABLE `Distrito`
-  MODIFY `idDistrito` smallint(5) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `idDistrito` smallint(5) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- AUTO_INCREMENT de la tabla `Sesion`
 --
 ALTER TABLE `Sesion`
-  MODIFY `idSesion` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `idSesion` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT de la tabla `Usuario`
@@ -270,7 +318,8 @@ ALTER TABLE `Usuario`
 -- Filtros para la tabla `Atencion`
 --
 ALTER TABLE `Atencion`
-  ADD CONSTRAINT `fk_Atencion_Cliente` FOREIGN KEY (`DNI`) REFERENCES `Cliente` (`DNI`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+  ADD CONSTRAINT `fk_Atencion_Cliente` FOREIGN KEY (`DNI`) REFERENCES `Cliente` (`DNI`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  ADD CONSTRAINT `fk_Atencion_UsuarioAsesores1` FOREIGN KEY (`idAsesorVentas`,`idUsuario`) REFERENCES `UsuarioAsesores` (`idAsesorVentas`, `idUsuario`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 --
 -- Filtros para la tabla `Cliente`
