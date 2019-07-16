@@ -37,7 +37,7 @@ CREATE TABLE IF NOT EXISTS `RegistroDB`.`Cliente` (
   `telefono` VARCHAR(12) NULL,
   `idDistrito` SMALLINT UNSIGNED NOT NULL,
   PRIMARY KEY (`DNI`),
-  INDEX `fk_Cliente_Distrito1_idx` (`idDistrito` ASC) VISIBLE,
+  INDEX `fk_Cliente_Distrito1_idx` (`idDistrito` ASC),
   CONSTRAINT `fk_Cliente_Distrito1`
     FOREIGN KEY (`idDistrito`)
     REFERENCES `RegistroDB`.`Distrito` (`idDistrito`)
@@ -77,8 +77,8 @@ CREATE TABLE IF NOT EXISTS `RegistroDB`.`UsuarioAsesores` (
   `idAsesorVentas` SMALLINT UNSIGNED NOT NULL,
   `idUsuario` SMALLINT UNSIGNED NOT NULL,
   PRIMARY KEY (`idAsesorVentas`, `idUsuario`),
-  INDEX `fk_AsesorVentas_has_Usuario_Usuario1_idx` (`idUsuario` ASC) VISIBLE,
-  INDEX `fk_AsesorVentas_has_Usuario_AsesorVentas1_idx` (`idAsesorVentas` ASC) VISIBLE,
+  INDEX `fk_AsesorVentas_has_Usuario_Usuario1_idx` (`idUsuario` ASC),
+  INDEX `fk_AsesorVentas_has_Usuario_AsesorVentas1_idx` (`idAsesorVentas` ASC),
   CONSTRAINT `fk_AsesorVentas_has_Usuario_AsesorVentas1`
     FOREIGN KEY (`idAsesorVentas`)
     REFERENCES `RegistroDB`.`AsesorVentas` (`idAsesorVentas`)
@@ -104,8 +104,8 @@ CREATE TABLE IF NOT EXISTS `RegistroDB`.`Atencion` (
   `idUsuario` SMALLINT UNSIGNED NOT NULL,
   `token` CHAR(8) NOT NULL,
   PRIMARY KEY (`idAtencion`),
-  INDEX `fk_Atencion_Cliente_idx` (`DNI` ASC) VISIBLE,
-  INDEX `fk_Atencion_UsuarioAsesores1_idx` (`idAsesorVentas` ASC, `idUsuario` ASC) VISIBLE,
+  INDEX `fk_Atencion_Cliente_idx` (`DNI` ASC),
+  INDEX `fk_Atencion_UsuarioAsesores1_idx` (`idAsesorVentas` ASC, `idUsuario` ASC),
   CONSTRAINT `fk_Atencion_Cliente`
     FOREIGN KEY (`DNI`)
     REFERENCES `RegistroDB`.`Cliente` (`DNI`)
@@ -130,7 +130,7 @@ CREATE TABLE IF NOT EXISTS `RegistroDB`.`Sesion` (
   `ip` VARCHAR(15) NOT NULL,
   `lastConexion` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`idSesion`),
-  INDEX `fk_Sesion_Usuario1_idx` (`idUsuario` ASC) VISIBLE,
+  INDEX `fk_Sesion_Usuario1_idx` (`idUsuario` ASC),
   CONSTRAINT `fk_Sesion_Usuario1`
     FOREIGN KEY (`idUsuario`)
     REFERENCES `RegistroDB`.`Usuario` (`idUsuario`)
