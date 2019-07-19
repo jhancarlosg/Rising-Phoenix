@@ -105,6 +105,7 @@ CREATE TABLE `distrito` (
 -- Volcado de datos para la tabla `distrito`
 --
 
+<<<<<<< HEAD
 INSERT INTO `Distrito` (`nombre`, `porDefecto`) VALUES
 ('ATE', 1),
 ('COMAS', 1),
@@ -136,6 +137,7 @@ INSERT INTO `Distrito` (`nombre`, `porDefecto`) VALUES
 ('PACHACÁMAC', 1),
 ('RÍMAC', 1),
 ('ANCÓN', 1);
+>>>>>>> 0bb2ac3674c7367710943066213886f09265a7bf
 
 -- --------------------------------------------------------
 
