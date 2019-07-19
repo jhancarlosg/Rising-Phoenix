@@ -1,3 +1,17 @@
+<?php
+
+require_once(MODEL_PATH . 'DefaultConfig.inc');
+
+function insertScript($name) {
+	if (isEntornoDev()) {
+		echo '<script src="/src/js/' . $name . '.js"></script>';
+	} else {
+		echo '<script src="/src/js/' . $name . '.js"></script>';
+	}
+}
+
+?>
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -5,9 +19,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel='shortcut icon' type='image/x-icon' href='/favicon.ico' />
+<?php
+	if (isEntornoDev()):
+?>
     <script src="https://unpkg.com/react@16/umd/react.development.js" crossorigin></script>
     <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js" crossorigin></script>
-    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+    <!--<script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>-->
+<?php
+	else:
+?>
+	<script crossorigin src="https://unpkg.com/react@16/umd/react.production.min.js"></script>
+	<script crossorigin src="https://unpkg.com/react-dom@16/umd/react-dom.production.min.js"></script>
+<?php
+	endif;
+?>
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous">
 
@@ -19,4 +44,4 @@
     <script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha384-nvAa0+6Qg9clwYCGGPpDQLVpLNn0fRaROjHqs13t4Ggj3Ez50XnGQqc/r8MhnRDZ" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha384-aJ21OjlMXNL5UyIl/XNwTMqvzeRMZH2w8c5cRVpzpU8Y5bApTppSuUkhZXN0VxHd" crossorigin="anonymous"></script>
 
-    <script src="/src/scripts/funciones.js"></script>
+    <script src="/src/js/funciones.js"></script>

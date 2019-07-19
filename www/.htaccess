@@ -1,3 +1,9 @@
+
+# HTID:10121173: DO NOT REMOVE OR MODIFY THIS LINE AND THE LINES BELOW
+php_value display_errors 1
+# DO NOT REMOVE OR MODIFY THIS LINE AND THE LINES ABOVE HTID:10121173:
+
+
 ErrorDocument 404 /404.html
 ErrorDocument 403 /404.html
 
@@ -39,16 +45,30 @@ RewriteRule ^datos$ /controllers/datos.php [L]
 RewriteEngine on
 RewriteRule ^datos/$ /datos [R=301,L]
 
-<FilesMatch "((\.(lock|cache|db|inc))|CHANGELOG.md|README.md|^(.*\.config|.*\.example)(.*?))$">
-	# Apache < 2.3
-	<IfModule !mod_authz_core.c>
-		Order allow,deny
-		Deny from all
-		Satisfy All
-	</IfModule>
+RewriteEngine on
+RewriteRule ^user$ /controllers/user.php [L]
 
-	# Apache ≥ 2.3
-	<IfModule mod_authz_core.c>
-		Require all denied
-	</IfModule>
+RewriteEngine on
+RewriteRule ^user/$ /user [R=301,L]
+
+RewriteEngine on
+RewriteRule ^tmp$ /controllers/tmp.php [L]
+
+RewriteEngine on
+RewriteRule ^tmp/$ /tmp [R=301,L]
+
+
+<FilesMatch "((\.(lock|cache|db|inc))|CHANGELOG.md|README.md|^(.*\.config|.*\.example)(.*?))$">
+        # Apache < 2.3
+        <IfModule !mod_authz_core.c>
+                Order allow,deny
+                Deny from all
+                Satisfy All
+        </IfModule>
+
+        # Apache ≥ 2.3
+        <IfModule mod_authz_core.c>
+                Require all denied
+        </IfModule>
+
 </FilesMatch>

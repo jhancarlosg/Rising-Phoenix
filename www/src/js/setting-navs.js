@@ -1,0 +1,2 @@
+function SettNavs(props){var reg_nav=props.reg_props?React.createElement(RegNavs,Object.assign({},props.reg_props,{asesor_ref:props.asesor_ref})):null;return reg_nav}var Navs=SettNavs;
+//# sourceMappingURL=setting-navs.js.map

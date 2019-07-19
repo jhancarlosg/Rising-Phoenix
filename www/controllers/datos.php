@@ -24,7 +24,7 @@ if (isLogged()) {
 					if(!empty($data)) {
 						foreach ($data as $row) {
 							if (! $show_coloumn) {
-								echo implode("\t", ['FECHA - HORA', 'DNI', 'NOMBRE Y APELLIDO', 'TELEFONO', 'DIRECCION', 'ATENDIDO POR', 'USUARIO']) . "\n";
+								echo implode("\t", ['FECHA - HORA', 'DNI', 'NOMBRE Y APELLIDO', 'TELEFONO', 'DIRECCION', 'ATENDIDO POR']) . "\n";
 								$show_coloumn = true;
 							}
 							echo implode("\t", array_values($row)) . "\n";
@@ -44,7 +44,7 @@ if (isLogged()) {
 						$data = Data::getDataRows($rows);
 					}
 					header('Content-type:application/json;charset=utf-8');
-					echo json_encode($data);
+					echo json_encode($data, JSON_UNESCAPED_UNICODE);
 					exit();
 				} else {
 					include_once(VIEW_PATH . 'datos.inc');

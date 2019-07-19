@@ -6,7 +6,7 @@
 # if (strtolower(strval($_SERVER['REQUEST_URI'])) != '/controllers/login.php') {
 require_once($_SERVER['DOCUMENT_ROOT'].'/dirs.inc');
 require_once(CONTROLLER_PATH . 'Funciones.inc');
-
+require_once(MODEL_PATH . 'SignIn.inc');
 notFound('\/controllers\/login.php');
 
 session_start();
@@ -16,7 +16,7 @@ session_start();
  */
 function isLogged()
 {
-	return isset($_SESSION["session_id_user"]);
+	return isset($_SESSION["session_id_user"]) && $_SESSION["session_id_user"] && SignIn::confirmUser($_SESSION["session_id_user"]);
 }
 
 /**
@@ -62,7 +62,7 @@ if ( preg_match("/^\/login/", $_SERVER['REQUEST_URI']) ) { # cuando están o uti
 						$ip = getUserIP();
 						$sesion = $correo . $pass . $ip . strval(time());
 						$login = new SignIn($correo, $pass, $sesion, $ip);
-						$login->login();
+						$result = $login->login();
 						if ($login->isLogged()) {
 							$_SESSION["session_id_user"] = $login->getIdUser();
 
@@ -77,6 +77,7 @@ if ( preg_match("/^\/login/", $_SERVER['REQUEST_URI']) ) { # cuando están o uti
 							$data = setDataJSONMsg('success','Ingreso exitoso');
 						} else {
 							$data = setDataJSONMsg('warning','Credenciales incorrectas');
+							#$data = setDataJSONMsg('warning','Credenciales incorrectas  ' . $result[0] . '  ' . $result[1] );
 						}
 						unset($correo, $pass, $sesion, $ip, $login);
 					} else {
@@ -89,7 +90,7 @@ if ( preg_match("/^\/login/", $_SERVER['REQUEST_URI']) ) { # cuando están o uti
 				# $data = '{"data": {"tipo": "error", "mensaje": "Datos "}}';
 				$data = setDataJSONMsg('danger','Envía de datos incorrectos');
 			}
-			echo json_encode($data);
+			echo json_encode($data, JSON_UNESCAPED_UNICODE);
 			exit();
 			break;
 		case 'GET':

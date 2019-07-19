@@ -20,7 +20,7 @@ function setDataJSONMsgRegistro($tipo, $msg)
 }
 
 if (isLogged() && Data::isRegister()) {
-	if ( preg_match("/^\/registro/", $_SERVER['REQUEST_URI']) ) {
+	if ( isIn('registro') ) {
 		switch ($_SERVER['REQUEST_METHOD']) {
 			case 'POST':
 
@@ -52,7 +52,7 @@ if (isLogged() && Data::isRegister()) {
 				} else {
 					$data = setDataJSONMsgRegistro("danger", "Envíe los datos necesarios");
 				}
-				echo json_encode($data);
+				echo json_encode($data, JSON_UNESCAPED_UNICODE);
 				exit();
 				break;
 			case 'GET':
@@ -82,7 +82,7 @@ if (isLogged() && Data::isRegister()) {
 						}
 					}
 					header('Content-type:application/json;charset=utf-8');
-					echo json_encode($data);
+					echo json_encode($data, JSON_UNESCAPED_UNICODE);
 					exit();
 				} else {
 					include_once(VIEW_PATH . 'registro.inc');

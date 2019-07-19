@@ -70,7 +70,6 @@ class Datos extends React.Component {
 							<th>TELEFONO</th>
 							<th>DISTRITO</th>
 							<th>ATENDIDO POR</th>
-							<th>USUARIO</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -91,4 +90,6 @@ function Row(props) {
 	);
 }
 
-ReactDOM.render(<Datos />, document.querySelector("#datos-cnt"));
+$(
+	ReactDOM.render(<Datos />, document.querySelector("#datos-cnt"))
+);

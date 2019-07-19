@@ -1,5 +1,7 @@
 <?php
 
+date_default_timezone_set('America/Lima');
+
 function notFound(string $path_file = null)
 {
     if ($path_file == null) @ $path_file =  "";
@@ -8,6 +10,10 @@ function notFound(string $path_file = null)
         readfile('../404.html');
         exit();
     }
+}
+
+function isIn($name) {
+	return preg_match("/^\/{$name}/", $_SERVER['REQUEST_URI']);
 }
 
 function getUserIP()
@@ -39,6 +45,14 @@ function getUserIP()
 
 function setDataJSONMsg(string $tipo, string $msg) {
 	return ['tipo' => $tipo, 'msg' => $msg];
+}
+
+function isEntornoDev() {
+	$return = $_SERVER['SERVER_ADDR'] == '127.0.0.1' || $_SERVER['SERVER_ADDR'] == '192.168.0.6' || $_SERVER['SERVER_NAME'] == 'localhost';
+	if($return && isset($_GET, $_GET['dev']) && $_GET['dev'] == 'false') {
+		$return = false;
+	}
+	return $return;
 }
 
 ?>

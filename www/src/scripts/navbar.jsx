@@ -4,7 +4,7 @@ var ASESOR_REF = React.createRef();
 class Navbar extends React.Component {
 	constructor(props) {
 		super(props);
-		this.state = {navbar_props: {}};
+		this.state = {correo: '', navs: null, def_nav: null};
 		this.handleClick = this.handleClick.bind(this);
 	}
 
@@ -13,11 +13,11 @@ class Navbar extends React.Component {
 		let tmp_this = this;
 		xmlhttp.onreadystatechange = function() {
 			if (this.readyState == 4 && this.status == 200) {
-				let data = JSON.parse(this.responseText);
-				tmp_this.setState({ navbar_props: data.navbar_props});
+				let data = JSON.parse(this.responseText).navbar_props;
+				tmp_this.setState({ navs: data.navs, def_nav: data.def_nav, correo: data.correo});
 			}
 		};
-		xmlhttp.open("GET", "/registro?navbar_props=get&json=true", true);
+		xmlhttp.open("GET", "/user?navbar_props=get&json=true", true);
 		xmlhttp.send();
 	}
 
@@ -38,7 +38,14 @@ class Navbar extends React.Component {
 						</button>
 					</div>
 					<div className="collapse navbar-collapse" id="nav-collapse" >
-						<Navs {...this.state.navbar_props} asesor_ref={ASESOR_REF} />
+						<p className="navbar-text">{this.state.correo}</p>
+                		<a href="/logout" className="btn btn-default navbar-btn navbar-right">Cerrar sesión</a>
+					{ this.state.navs &&
+						<Navs {...this.state.navs} asesor_ref={ASESOR_REF} />
+					}
+					{ this.state.def_nav &&
+						<DefNav {...this.state.def_nav} />
+					}
 					</div>
 				</div>
 			</nav>
@@ -46,4 +53,15 @@ class Navbar extends React.Component {
 	}
 }
 
-ReactDOM.render(<Navbar />, document.querySelector("header"));
+function DefNav(props) {
+    const nav = props.items.map((itm) => <li key={itm.link}><a href={itm.link}>{itm.txt}</a></li>);
+	return (
+		<ul className="nav navbar-nav navbar-right">
+            {nav}
+        </ul>
+	);
+}
+
+$(
+	ReactDOM.render(<Navbar />, document.querySelector("header"))
+);

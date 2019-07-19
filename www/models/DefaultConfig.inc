@@ -10,6 +10,8 @@ class DefaultConfing
 
 	const NAME = "Registro Web | IDAT";
 
+	const BABEL = true;
+
 	public static function includeTitle(string $title) {
 		return $title . ' | ' . DefaultConfing::NAME;
 	}
@@ -21,6 +23,7 @@ class DefaultConfing
 	public static function getPasswordRoot() {
 		return DefaultConfing::$PASSWORD_ROOT;
 	}
+
 }
 
 ?>

@@ -23,7 +23,7 @@ if (isLogged()) {
 				if ($_SERVER['QUERY_STRING'] && isset($_GET['json']) && $_GET['json']=='true') {
 					$data = [];
 					header('Content-type:application/json;charset=utf-8');
-					echo json_encode($data);
+					echo json_encode($data, JSON_UNESCAPED_UNICODE);
 					exit();
 				} else {
 					include_once(VIEW_PATH . 'settings.inc');

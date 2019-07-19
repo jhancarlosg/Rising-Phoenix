@@ -6,10 +6,15 @@ include_once(VIEW_PATH . "head.inc");
 
 ?>
 	<title><?php echo DefaultConfing::includeTitle('Iniciar sesión') ?></title>
-	<script src="/src/scripts/login.jsx" type="text/babel"></script>
 </head>
 <body>
-	<header></header>
+<?php
+	include_once(VIEW_PATH . 'header.inc');
+?>
 	<section id="login-cnt"></section>
+<?php 
+# <script src="/src/scripts/login.jsx" type="text/babel"></script>
+insertScript('login');
+?>
 </body>
 </html>

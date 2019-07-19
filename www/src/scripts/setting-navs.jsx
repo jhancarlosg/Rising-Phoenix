@@ -1,6 +1,7 @@
 function SettNavs(props) {
+	const reg_nav = props.reg_props ? <RegNavs {...props.reg_props} asesor_ref={props.asesor_ref} /> : null;
     return (
-        <GenNavs {...props.gen_props} asesor_ref={props.asesor_ref} />
+        reg_nav
     );
 }
 

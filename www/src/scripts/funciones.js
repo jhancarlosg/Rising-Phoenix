@@ -1,13 +1,17 @@
-function setValidator(e, newTipo) {
-	let grupo = e.target.closest(".form-group");
+var setValidatorEle = function(e, newTipo) {
 	const tipos = ['success', "warning", "error"];
-	tipos.forEach(tipo => {
+	tipos.forEach((tipo) => {
 		if (tipo != newTipo) {
-			grupo.classList.remove("has-"+tipo);
+			e.classList.remove("has-"+tipo);
 		} else {
-			grupo.classList.add("has-"+newTipo);
+			e.classList.add("has-"+newTipo);
 		}
 	});
+}
+
+function setValidator(e, newTipo) {
+	let grupo = e.target.closest(".form-group");
+	setValidatorEle(grupo, newTipo);
 }
 
 function setWarning(e) {

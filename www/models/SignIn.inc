@@ -10,6 +10,7 @@ class SignIn
     private $session;
     private $ip;
     private $id_user;
+    private $respuesta;
 
     /**
      * @param string $correo Correo del usuario
@@ -52,7 +53,7 @@ class SignIn
                 $user = $row[0];
                 $sql = "UPDATE Sesion SET lastConexion='%s' WHERE idSesion=%d;";
                 $fecha = date('Y-m-d H:i:s');
-                $db->query( sprintf( $sql, $db->escape_string($fecha), $row[3] ) );
+                $db->query( sprintf( $sql, $db->escape_string($fecha), $row[2] ) );
             }
             $result->free();
         }
@@ -62,7 +63,9 @@ class SignIn
 
     public function login() {
         $db = new Conexion();
+        $this->respuesta = [false, 'Login init'];
         if ($this->correo === DefaultConfing::getCorreoRoot() && $this->password === DefaultConfing::getPasswordRoot()) {
+            $this->respuesta = [false, 'Login usuario raiz init'];
             $sql = "SELECT * FROM Usuario WHERE idUsuario=1;";
             $result = $db->query( $sql );
             $insert = false;
@@ -73,20 +76,29 @@ class SignIn
                 $insert = true;
             }
             $db->query( sprintf( $sql, $db->escape_string($this->correo), $db->escape_string($this->hashVal($this->password)) ) );
-
+			if ($insert) {
+				$sql = "INSERT INTO UsuarioAsesores VALUES (1, 1);";
+				$db->query($sql);
+			}
         }
+        $this->respuesta = [false, 'Login usuario normal init'];
         $sql = "SELECT idUsuario FROM Usuario WHERE correo='%s' AND password='%s';";
         $result = $db->query( sprintf( $sql, $db->escape_string($this->correo), $db->escape_string($this->hashVal($this->password)) ) );
         if ($result && $result->num_rows == 1) {
+            
+            $this->respuesta = [true, 'Login existe usuario init:  '];
             $row = $result->fetch_row();
             # $sql = "INSERT INTO Sesion (idUsuario, session, ip) VALUES ({$row[0]}, {$this->hashVal($this->session)}, {$this->ip});";
-            $sql = "INSERT INTO Sesion (idUsuario, Sesion.session, ip) VALUES (%d, '%s', '%s');";
+            $sql = "INSERT INTO Sesion (idUsuario, session, ip) VALUES (%d, '%s', '%s');";
+            $this->respuesta[1] .= sprintf( $sql, $row[0], $db->escape_string($this->hashVal($this->session)), $db->escape_string($this->ip) );
             if ( $db->query( sprintf( $sql, $row[0], $db->escape_string($this->hashVal($this->session)), $db->escape_string($this->ip) ) ) ) {
                 $this->id_user = $row[0];
+                $this->respuesta = [true, 'Login sesion creada'];
             }
             $result->free();
         }
         $db->close();
+        return $this->respuesta;
     }
 
     /**
@@ -114,6 +126,19 @@ class SignIn
     public function getSession() {
         return $this->session;
     }
+
+	public static function confirmUser($id_user) {
+		$return = false;
+		$db = new Conexion();
+		$sql = "SELECT idUsuario FROM Usuario WHERE idUsuario=%d";
+		$result = $db->query( sprintf($sql, $id_user) );
+		if ($result && $result->num_rows==1) {
+			$return = true;
+			$result->free();
+		}
+		$db->close();
+		return $return;
+	}
 }
 
 

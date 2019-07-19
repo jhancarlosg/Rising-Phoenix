@@ -25,7 +25,7 @@ class Registro extends React.Component {
 		this.state = {dni: '', fullname: '', telefono: '', distrito: '', token_registros: props.token_inicial, mod_cliente: null, asesor: null};
 		this.handleInput = this.handleInput.bind(this);
 		this.handleSubmit = this.handleSubmit.bind(this);
-		this.handleAsesorChange = this.handleAsesorChange.bind(this);
+		//this.handleAsesorChange = this.handleAsesorChange.bind(this);
 		this.iniciar = this.iniciar.bind(this);
 		this.asesor_ref = ASESOR_REF;
 		this.dni = React.createRef();
@@ -34,8 +34,14 @@ class Registro extends React.Component {
 		this.distrito = React.createRef();
 	}
 
-	handleAsesorChange(value) {
-		this.setState({asesor: value});
+	handleAsesorChange() {
+		if (this.asesor_ref.current && this.asesor_ref.current.value.trim()) {
+			$("#dni, #telefono, #fullname, #distrito").removeAttr("disabled");
+			this.setState({ asesor: this.asesor_ref.current.value.trim() });
+		} else {
+			$("#dni, #telefono, #fullname, #distrito").attr("disabled", "true");
+			this.setState({ asesor: null });
+		}
 	}
 
 	searchDNI(val) {
@@ -50,12 +56,12 @@ class Registro extends React.Component {
 					$("#distrito").val(data.distrito);
 					$("#telefono").val(data.telefono);
 					$("#telefono, #fullname, #distrito").show();
-					$("#telefono, #fullname, #distrito").attr("disabled", "true");
+					$("#telefono, #fullname, #distrito").attr("readonly", "true");
 				} else {
 					if (typeof tmp_this.state.mod_cliente == 'boolean') {
 						tmp_this.setState({mod_cliente: null});
 						$("#telefono, #fullname, #distrito").val("");
-						$("#telefono, #fullname, #distrito").removeAttr("disabled");
+						$("#telefono, #fullname, #distrito").removeAttr("readonly");
 					}
 					$("#fullname").show();
 					if ($("#distrito").val()) $("#distrito").show();
@@ -70,17 +76,20 @@ class Registro extends React.Component {
 	iniciar() {
 		document.getElementById("form-registro").reset();
 		$("#telefono, #fullname, #distrito").hide();
+		this.handleAsesorChange();
+		$(".form-group").removeClass('has-warning has-success has-error');
 	}
 
 	handleInput(event) {
-		let len = event.target.value.length;
+		let val = event.target.value.trim();
 		switch (event.target.id) {
 			case "dni":
-				if (len) {
-					if (new RegExp(patterns.dni).test(event.target.value)) {
+				if (val) {
+					if (new RegExp(patterns.dni).test(val)) {
 						setSuccess(event);
-						this.setState({dni: event.target.value});
-						this.searchDNI(event.target.value);
+						this.setState({dni: val});
+						this.searchDNI(val);
+						$("#telefono, #fullname, #distrito").show();
 					} else {
 						setError(event);
 						$("#telefono, #fullname, #distrito").hide();
@@ -91,11 +100,10 @@ class Registro extends React.Component {
 				}
 				break;
 			case "fullname":
-				if (len) {
-					if (len>=3) {
+				if (val) {
+					if (val.length>=3) {
 						setSuccess(event);
-						this.setState({fullname: event.target.value});
-						$("#distrito").show();
+						this.setState({fullname: val});
 					} else {
 						setError(event);
 					}
@@ -104,10 +112,10 @@ class Registro extends React.Component {
 				}
 				break;
 			case "telefono":
-				if (len) {
-					if (new RegExp(patterns.telefono).test(event.target.value)) {
+				if (val) {
+					if (new RegExp(patterns.telefono).test(val)) {
 						setSuccess(event);
-						this.setState({telefono: event.target.value});
+						this.setState({telefono: val});
 					} else {
 						setError(event);
 					}
@@ -116,14 +124,12 @@ class Registro extends React.Component {
 				}
 				break;
 			case "distrito":
-				if (len) {
-					this.setState({distrito: event.target.value});
-					if (this.props.distritos.some((dist) => event.target.value == dist)) {
+				if (val) {
+					this.setState({distrito: val});
+					if (this.props.distritos.some((dist) => val == dist)) {
 						setSuccess(event);
-						$("#telefono").show();
 					} else {
 						setWarning(event);
-						$("#telefono").show();
 					}
 				} else {
 					setError(event);
@@ -134,29 +140,32 @@ class Registro extends React.Component {
 
 	handleSubmit(event) {
 		event.preventDefault();
-		if (this.state.dni.length && this.state.fullname.length && this.state.distrito.length) {
-			let xmlhttp = new XMLHttpRequest();
-			let params = `dni=${this.state.dni}&token_registros=${this.state.token_registros}&asesor=${this.asesor_ref.current.value}`;
-			if (this.state.fullname) params += `&fullname=${this.state.fullname}`;
-			if (this.state.telefono) params += `&telefono=${this.state.telefono}`;
-			if (this.state.distrito) params += `&distrito=${this.state.distrito}`;
-			if (this.state.mod_cliente) params += `&mod_cliente=${this.state.mod_cliente}`;
-			//if (this.state.asesor) params += `&asesor=${this.state.asesor}`;
-			let tmp_this = this;
-			xmlhttp.onreadystatechange = function() {
-				if (this.readyState == 4 && this.status == 200) {
-					let data = JSON.parse(this.responseText);
-					$('.alert').alert('close');
-					$("#registro-cnt").prepend(Alerta(data));
-					tmp_this.setState({token_registros: data.token});
-					if (data.tipo == 'success') {
-						tmp_this.iniciar();
+		if (this.state.dni && this.state.fullname && this.state.distrito) {
+			let asesor = this.asesor_ref.current.value;
+			if (asesor) {
+				let xmlhttp = new XMLHttpRequest();
+				let params = `dni=${this.state.dni}&token_registros=${this.state.token_registros}&asesor=${asesor}`;
+				if (this.state.fullname) params += `&fullname=${this.state.fullname}`;
+				if (this.state.telefono) params += `&telefono=${this.state.telefono}`;
+				if (this.state.distrito) params += `&distrito=${this.state.distrito}`;
+				if (this.state.mod_cliente) params += `&mod_cliente=${this.state.mod_cliente}`;
+				//if (this.state.asesor) params += `&asesor=${this.state.asesor}`;
+				let tmp_this = this;
+				xmlhttp.onreadystatechange = function() {
+					if (this.readyState == 4 && this.status == 200) {
+						let data = JSON.parse(this.responseText);
+						$('.alert').alert('close');
+						$("#registro-cnt").prepend(Alerta(data));
+						tmp_this.setState({token_registros: data.token});
+						if (data.tipo == 'success') {
+							tmp_this.iniciar();
+						}
 					}
-				}
-			};
-			xmlhttp.open("POST", "/registro", true);
-			xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-			xmlhttp.send(params);
+				};
+				xmlhttp.open("POST", "/registro", true);
+				xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+				xmlhttp.send(params);
+			}
 		}
 	}
 
@@ -166,12 +175,11 @@ class Registro extends React.Component {
 
 	render() {
 		let distritos = this.props.distritos.map(distrito => <Distrito nombre={distrito} key={distrito} />);
-		// distritos.unshift(<Distrito val={0} nombre="Seleccione un distrito" />)
 		return (
 			<form id="form-registro" className="form-horizontal" onSubmit={this.handleSubmit} onReset={this.iniciar}>
-				<div className="panel panel-default">
+				<div className={"panel panel-"+this.state.panel}>
 					<div className="panel-heading">
-						<h3 className="panel-title text-center text-uppercase">BIENVENIDO</h3>
+						<h3 className="panel-title text-center text-uppercase">BIENVENIDO: {this.state.asesor}</h3>
 					</div>
 					<div className="panel-body">
 						<div className="form-group">
@@ -188,18 +196,18 @@ class Registro extends React.Component {
 							</div>
 						</div>
 						<div className="form-group">
-							<label htmlFor="telefono" className="col-sm-2 control-label">TELÉFONO</label>
-							<div className="col-sm-10">
-								<input type="text" onChange={this.handleInput} className="form-control" ref={this.telefono} id="telefono" name="telefono" placeholder="Digita el número (opcional)" pattern={patterns.telefono} minLength={7} maxLength={12} />
-							</div>
-						</div>
-						<div className="form-group">
 							<label htmlFor="distrito" className="col-sm-2 control-label">DISTRITO</label>
 							<div className="col-sm-10">
 								<input type="text" onChange={this.handleInput} className="form-control" list="distritos" ref={this.telefono} id="distrito" name="distrito"  placeholder="¿Dónde vives?" required={true} />
 								<datalist name="distritos" id="distritos">
 									{distritos}
 								</datalist>
+							</div>
+						</div>
+						<div className="form-group">
+							<label htmlFor="telefono" className="col-sm-2 control-label">TELÉFONO</label>
+							<div className="col-sm-10">
+								<input type="text" onChange={this.handleInput} className="form-control" ref={this.distrito} id="telefono" name="telefono" placeholder="Digita el número (opcional)" pattern={patterns.telefono} minLength={7} maxLength={12} />
 							</div>
 						</div>
 					</div>
@@ -241,9 +249,11 @@ class RegistroManager extends React.Component {
 
 	render() {
 		return (
-			<Registro {...this.state} key={this.state.token_inicial} />
+			<Registro {...this.state} key={this.state.token_inicial} ref={REGISTRO_REF} />
 		);
 	}
 }
 
-ReactDOM.render(<RegistroManager />, document.querySelector("#registro-cnt"));
+$(
+	ReactDOM.render(<RegistroManager />, document.querySelector("#registro-cnt"))
+);
