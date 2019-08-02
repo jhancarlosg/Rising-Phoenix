@@ -55,7 +55,7 @@ class Data
 	public function defineDataView($filepath, $value) {
 		$name = basename($filepath, '.inc');
 		#console_log($name, $value, $_SESSION["view-$name"]);
-		if ($this->downloadFullView($name, $value)) {
+		if ($this->downloadFullView($name, $value) || true) {
 			$_SESSION["view-$name"] = md5(toJson($value));
 			$this->setView($name, $value);
 			$this->setView($name, $_SESSION["view-$name"], 'last');
@@ -88,7 +88,7 @@ class Data
 
 	public function getInitialDataScript() {
 		echo "<script id=\"{$this->id}\">".
-			"(function(context) {const __DATA_INIT_PAGE = {$this->toJson()}; context.dataManager(__DATA_INIT_PAGE);".
+			"(function(context) {const __DATA_INIT_PAGE = {$this->toJson()};if(context.dataManager) context.dataManager(__DATA_INIT_PAGE);".
 			(isEntornoDev() ? 'console.log(__DATA_INIT_PAGE);' : '') .
 			"})(this);</script>";
 	}
@@ -178,10 +178,6 @@ class Data
 		return $return;
 	}
 
-	public static function getDataRowsExcel($rows) {
-		
-	}
-
 	public static function isSupervisor() {
 		$return = false;
 		if (isLogged()) {
@@ -212,12 +208,12 @@ class Data
 		return $return;
 	}
 
-	public static function getDataRows($rows, $page=0) {
+	public static function getDataRowsExcel() {
 		$return = [];
 		if (isLogged()) {
 			$db = new Conexion();
-			$sql = "SELECT A.idAtencion, A.fechaHora, C.DNI, C.nombreCompleto, C.telefono, D.nombre, AV.nombreCompleto FROM Atencion A, Cliente C, Distrito D, AsesorVentas AV, Usuario U WHERE A.DNI=C.DNI AND C.idDistrito=D.idDistrito AND A.idAsesorVentas=AV.idAsesorVentas AND AV.nombreCompleto!='%s' AND A.idUsuario=U.idUsuario ORDER BY A.fechaHora DESC LIMIT %d, %d;";
-			$result = $db->query( sprintf($sql, Data::ENTRADA, $page*$rows, $rows) );
+			$sql = "SELECT A.idAtencion, A.fechaHora, C.DNI, C.nombreCompleto, C.telefono, D.nombre, AV.nombreCompleto FROM Atencion A, Cliente C, Distrito D, AsesorVentas AV, Usuario U WHERE A.DNI=C.DNI AND C.idDistrito=D.idDistrito AND A.idAsesorVentas=AV.idAsesorVentas AND A.idUsuario=U.idUsuario ORDER BY A.fechaHora DESC;";
+			$result = $db->query( $sql );
 			if ($result && $result->num_rows>0) {
 				while ($row = $result->fetch_row()) {
 					$row[1] = date('d/m/Y H:i:s', strtotime($row[1])-60*60*5);
@@ -237,6 +233,38 @@ class Data
 		}
 	}
 
+	public static function getDataRows($rows, $page=0) {
+		$return = [];
+		if (isLogged()) {
+			$db = new Conexion();
+			$sql = "SELECT A.idAtencion, A.fechaHora, C.DNI, C.nombreCompleto, C.telefono, D.nombre, AV.nombreCompleto FROM Atencion A, Cliente C, Distrito D, AsesorVentas AV, Usuario U WHERE A.DNI=C.DNI AND C.idDistrito=D.idDistrito AND A.idAsesorVentas=AV.idAsesorVentas AND AV.nombreCompleto!='%s' AND A.idUsuario=U.idUsuario ORDER BY A.fechaHora DESC LIMIT %d, %d;";
+			$result = $db->query( sprintf($sql, Data::ENTRADA, $page*$rows, $rows) );
+			if ($result && $result->num_rows>0) {
+				while ($row = $result->fetch_row()) {
+					$row[1] = date('d/m/Y H:i:s', strtotime($row[1])-60*60*5);
+					$return[] = $row;
+				}
+				$result->free();
+			}
+		}
+		return $return;
+	}
+
+	public static function getPagesData($rows) {
+		$return = [];
+		if (isLogged()) {
+			$db = new Conexion();
+			$sql = "SELECT COUNT(*) FROM Atencion A, Cliente C, Distrito D, AsesorVentas AV, Usuario U WHERE A.DNI=C.DNI AND C.idDistrito=D.idDistrito AND A.idAsesorVentas=AV.idAsesorVentas AND AV.nombreCompleto!='%s' AND A.idUsuario=U.idUsuario ORDER BY A.fechaHora DESC;";
+			$result = $db->query( sprintf($sql, Data::ENTRADA) );
+			if ($result) {
+				$num_rows = $result->fetch_row()[0];
+				$return = ceil($num_rows/$rows);
+				$result->free();
+			}
+		}
+		return $return;
+	}
+
 	public static function getDataIngreso($rows, $page=0) {
 		$return = [];
 		if (isLogged()) {
@@ -254,24 +282,44 @@ class Data
 		return $return;
 	}
 
-	public static function getDataDatos($rows=20, $page=0, $view='', &$data = null) {
+	public static function getPagesIngreso($rows) {
+		$return = 0;
+		if (isLogged()) {
+			$db = new Conexion();
+			$sql = "SELECT COUNT(*) FROM Atencion A, Cliente C, Distrito D, AsesorVentas AV, Usuario U WHERE A.DNI=C.DNI AND C.idDistrito=D.idDistrito AND A.idAsesorVentas=AV.idAsesorVentas AND AV.nombreCompleto='%s' AND A.idUsuario=U.idUsuario ORDER BY A.fechaHora DESC;";
+			$result = $db->query( sprintf($sql, Data::ENTRADA ));
+			if ($result) {
+				$num_rows = $result->fetch_row()[0];
+				$return = ceil($num_rows/$rows);
+				$result->free();
+			}
+		}
+		return $return;
+	}
+
+	public static function getDataDatos($rows=20, $page=0, $view='', $full=false) {
 		switch($view) {
 			case 'ingreso':
 				$tmp_dta = Data::getDataIngreso($rows, $page);
+				$pages = Data::getPagesIngreso($rows);
 				break;
 			default:
+				$view = 'atencion';
 				$tmp_dta = Data::getDataRows($rows, $page);
+				$pages = Data::getPagesData($rows);
 				break;
 		}
 		$new_dta = [];
+		if (!isset($_SESSION['datos'])) @ $_SESSION['datos'] = [];
+		$limits = [
+			'start'=>$tmp_dta[0][0],
+			'end'=>end($tmp_dta)[0],
+			'pages'=>$pages
+		];
 		foreach ($tmp_dta as &$fila) {
 			$new_dta[$fila[0]] = $fila;
 		}
-		if (!is_null($data)) {
-			 $data[$view] = $new_dta;
-		} else {
-			return $new_dta;
-		}
+		return ['rows'=>$new_dta, 'view'=> $view, 'limits'=>$limits];
 	}
 }
 

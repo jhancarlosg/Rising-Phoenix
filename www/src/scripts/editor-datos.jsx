@@ -25,11 +25,17 @@ class AdminRows extends React.Component {
 	handleConfirm(e) {
 		switch(this.state.accion) {
 			case "Borrar":
+				const newDeleteWaitingResponse = [{
+					pos: DATOS_REF.current.state.selectedRow,
+					data: DATOS_REF.current.getRows()[DATOS_REF.current.state.selectedRow],
+					xml: XML_ID(DATOS_REF.current.state.selectedRow + DATOS_REF.current.state.option),
+					option: DATOS_REF.current.state.option
+				}];
+
 				let rows = DATOS_REF.current.getCurrRowsSource();
-				delete rows[rows[DATOS_REF.current.state.selectedRow][0]];
+				delete rows[DATOS_REF.current.getDataSelectedRow()[0]];
 				DATOS_REF.current.setCurrRowsSource(rows);
 
-				const newDeleteWaitingResponse = [{pos: DATOS_REF.current.state.selectedRow, data: DATOS_REF.current.getRows()[DATOS_REF.current.state.selectedRow]}];
 				const deleteWaitingResponse = DATOS_REF.current.state.deleteWaitingResponse ? newDeleteWaitingResponse.concat(DATOS_REF.current.state.deleteWaitingResponse) : newDeleteWaitingResponse;
 				DATOS_REF.current.setState({deleteWaitingResponse: deleteWaitingResponse});
 
@@ -40,7 +46,7 @@ class AdminRows extends React.Component {
 				let xmlhttp = new XMLHttpRequest();
 				let params = `remove=true&idRow=${newDeleteWaitingResponse[0].data[0]}`;
 				xmlhttp.onreadystatechange = function() {
-					if (this.readyState == 4 && this.status == 200) {
+					if (this.readyState == 4) {
 						if (this.status == 200) {
 							let data = JSON.parse(this.responseText);
 							if (data.idRemove) {
@@ -57,7 +63,23 @@ class AdminRows extends React.Component {
 								$("#datos-cnt").prepend(Alerta({tipo: "danger", msg: "No se pudo elimanar el registro, recargue e inténtelo nuevamente"}));
 							}
 						}
-						DATOS_REF.current.setState({deleteResponse: (DATOS_REF.current.state.deleteResponse ? DATOS_REF.current.state.deleteResponse+1 : 1)});
+						let deleteWaitingResponse = DATOS_REF.current.state.deleteWaitingResponse.filter(function(val, idx) {
+							console.log(val, xmlhttp.responseURL);
+							let params = new URLSearchParams(xmlhttp.responseURL);
+							if (params.has("xml") && params.get("xml")==val.xml) {
+								if (val.data) {
+									let rows = DATOS_REF.current.getRowsSource(val.option);
+									rows[val.data[0]] = val.data;
+									DATOS_REF.current.setRowsSource(val.option, rows);
+								}
+								return false;
+							}
+							return true
+						});
+
+						DATOS_REF.current.setState({deleteWaitingResponse: deleteWaitingResponse});
+						
+						/*DATOS_REF.current.setState({deleteResponse: (DATOS_REF.current.state.deleteResponse ? DATOS_REF.current.state.deleteResponse+1 : 1)});
 						if (DATOS_REF.current.state.deleteResponse==DATOS_REF.current.state.deleteWaitingResponse.length) {
 							let posiciones=DATOS_REF.current.state.deleteWaitingResponse.map((val)=>val.pos),
 								tmp_rows = DATOS_REF.current.getRows();
@@ -69,10 +91,11 @@ class AdminRows extends React.Component {
 							});
 							DATOS_REF.current.setState({deleteWaitingResponse: [], deleteResponse: 0});
 							DATOS_REF.current.setCurrRowsSource(tmp_rows);
-						}
+						}*/
+						
 					}
 				}
-				xmlhttp.open("POST", "/datos?json=true", true);
+				xmlhttp.open("POST", "/datos?json=true&xml="+newDeleteWaitingResponse[0].xml, true);
 				xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 				xmlhttp.send(params);
 				break;
@@ -88,6 +111,7 @@ class AdminRows extends React.Component {
 		$('#modalConfirm').on('hidden.bs.modal', function (e) {
 			DATOS_REF.current.setRowTipo("active");
 		});
+		console.log("confirm", 5);
 	}
 	render() {
 		let posY = this.props.posY;

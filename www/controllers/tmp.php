@@ -15,9 +15,9 @@ echo date('d/m/Y H:i:s').'<br>';
 $data = ['distritos'=>Data::getDistritos()];
 echo toJson($data) . '<br>';
 echo md5(toJson($data)) . '<br>';
-$D_I->setView('distritos', $tmp_value = Data::getDistritos());
-echo $D_I->toJson() . '<br>';
-echo $D_I->getInitialDataScript() . '<br>' . __FILE__ . '<br>' . basename(__FILE__, '.inc');
+$DATA->setView('distritos', $tmp_value = Data::getDistritos());
+echo $DATA->toJson() . '<br>';
+echo $DATA->getInitialDataScript() . '<br>' . __FILE__ . '<br>' . basename('hola', '.inc');
 
 
 } else {

@@ -14,7 +14,7 @@ require_once(CONTROLLER_PATH . 'login.php');
 <?php
 	include_once(VIEW_PATH . 'header.inc');
 ?>
-	<section>
+	<section style="align-items: flex-start;">
         <div id="datos-cnt" class="col-sm-10 col-xs-12"></div>
     </section>
 	<?php 
@@ -37,11 +37,11 @@ require_once(CONTROLLER_PATH . 'login.php');
 	unset($tmp_view_data);
 
 	$DATA->getInitialDataScript();
-	insertScript('datos');
 	if (Data::isSupervisor()) {
 		echo '<div id="modal-root"></div>';
 		insertScript('editor-datos');
 	}
+	insertScript('datos');
 	?>
 </body>
 </html>

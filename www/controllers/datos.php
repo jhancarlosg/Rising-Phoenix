@@ -19,9 +19,9 @@ if (isLogged()) {
 					header("Pragma: no-cache");
 					header("Expires: 0");
 					$show_coloumn = false;
-					$rows = isset($_POST['rows']) ? intval($_POST['rows']) : 10;
-					$top = isset($_POST['top']) ? intval($_POST['top']) : 0;
-					$data = Data::getDataRows($rows);
+					//$rows = isset($_POST['rows']) ? intval($_POST['rows']) : 20;
+					//$top = isset($_POST['top']) ? intval($_POST['top']) : 0;
+					$data = Data::getDataRowsExcel();
 					$idx = 0;
 					if(!empty($data)) {
 						foreach ($data as &$row) {
@@ -29,7 +29,7 @@ if (isLogged()) {
 								echo implode("\t", ['#', 'FECHA - HORA', 'DNI', 'NOMBRE Y APELLIDO', 'TELEFONO', 'DIRECCION', 'ATENDIDO POR']) . "\n";
 								$show_coloumn = true;
 							}
-							$row[0] = $top + (++$idx);
+							$row[0] = (++$idx);
 							echo implode("\t", array_values($row)) . "\n";
 						}
 					}
@@ -52,20 +52,28 @@ if (isLogged()) {
 				}
 			case 'GET':
 			default:
-				$data = [];
+				$tmp_dta = null;
 				if ($_SERVER['QUERY_STRING']) {
 					if (!isset($_GET['view']) || $_GET['view']!='false') {
 						$rows = isset($_GET['rows']) ? $_GET['rows'] : 20;
 					    $page = isset($_GET['page']) ? $_GET['page'] : 0;
-						Data::getDataDatos($rows, $page, $_GET['view'], $data);
+						$view = isset($_GET['view']) ? $_GET['view'] : '';
+						$tmp_dta = Data::getDataDatos($rows, $page, $view);
 					}
 					if (isset($_GET['canEdit']) && $_GET['canEdit'] == 'get') {
-						$data['canEdit'] = Data::isSupervisor();
+						$DATA->defineData(__FILE__, ['canEdit'=>Data::isSupervisor()]);
 					}
 				} else {
-					$data['atencion'] = Data::getDataDatos();
+					$tmp_dta = $DATA::getDataDatos();
 				}
-				if (count($data)) $DATA->defineData(__FILE__, $data, true);
+				if ($tmp_dta) {
+					$data = [];
+					$data[$tmp_dta['view']] = $tmp_dta['rows'];
+					$data['limits'] = [$tmp_dta['view']=>$tmp_dta['limits']];
+					#$DATA->defineData(__FILE__, $data);
+					$DATA->defineData('datos-'.$tmp_dta['view'], $tmp_dta['rows']);
+					$DATA->defineData('datos-limits', $data['limits']);
+				}
 				if ($_SERVER['QUERY_STRING'] && isset($_GET['json']) && $_GET['json']=='true') {
 					header('Content-type:application/json;charset=utf-8');
 					echo $DATA->toJson();

@@ -74,7 +74,7 @@ var dataManager = function (data) {
 				}
 				if (data.data[tmp_dta].nuevo) {
 					for (new_key in data.data[tmp_dta].nuevo) {
-						Object.assign(ses_data, data.data[tmp_dta].nuevo[key_upd]);
+						Object.assign(ses_data, data.data[tmp_dta].nuevo);
 					}
 				}
 				sessionStorage.setItem('data-'+tmp_dta, JSON.stringify(ses_data));
