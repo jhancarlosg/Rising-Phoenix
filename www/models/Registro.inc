@@ -11,13 +11,13 @@ class Registro
     private $distrito;
     private $token;
     private $asesor;
-    private $mod_cliente;
     private $idDistrito;
     private $idAsesor;
     private $db;
     private $respuesta;
+	# private $mod_cliente;
 
-    public function __construct(int $idUser, string $dni, string $fullname, string $telefono, string $distrito, string $token, string $asesor, $mod_cliente) {
+    public function __construct(int $idUser, string $dni, string $fullname, string $telefono, string $distrito, string $token, string $asesor, $mod_cliente = null) {
         $this->idUser = $idUser;
         $this->dni = $dni;
         $this->fullname = $fullname;
@@ -25,25 +25,60 @@ class Registro
         $this->distrito = $distrito;
         $this->token = $token;
         $this->asesor = $asesor;
-        $this->mod_cliente = $mod_cliente;
         $this->db = new Conexion();
         $this->idDistrito = null;
         $this->idAsesor = null;
+        # $this->mod_cliente = mod_cliente;
     }
 
     public function registrar() {
         $this->db->init();
         $result = false;
-        $this->respuesta = [$result, 'init'];
+         $this->respuesta = [$result, 'NO SE PUDO COMPLETAR EL REGISTRO'];
         if ($this->hasPrivilegios() && $this->checkToken() && $this->manageCliente()) {
             $sql = "INSERT INTO Atencion (DNI, idAsesorVentas, idUsuario, token) VALUES ('%s', %d, %d, '%s');";
             $result = $this->db->query( sprintf($sql, $this->db->escape_string($this->dni), $this->idAsesor, $this->idUser, $this->db->escape_string($this->token) ) );
-            $this->respuesta = [$result, 'REGISTRO EXISTOSO' ];
-        } else {
-            $this->respuesta = [$result, 'NO SE PUDO COMPLETAR EL REGISTRO'];
+			if ($result) @ $this->respuesta = [$result, 'REGISTRO EXISTOSO' ];
         }
         return $this->respuesta;
     }
+
+	public function actualizarCliente($new_dni) {
+		$this->db->init();
+        $return = false;
+        $this->respuesta = [$return, 'Actualización fallida'];
+        if ($this->hasPrivilegios() && Data::isSupervisor()) {
+			$sql = "SELECT DNI FROM Cliente WHERE DNI='%s';";
+	        $result = $this->db->query( sprintf($sql, $this->db->escape_string($this->dni)) );
+			if ($result && $result->num_rows==1 && $this->getIdDistrito()) {
+				
+		        $sql = "UPDATE Cliente SET nombreCompleto='%s', telefono=%s, idDistrito=%d";
+				$sql = sprintf(
+				    $sql,
+				    $this->db->escape_string($this->fullname),
+				    ($this->telefono ? "'" . $this->db->escape_string($this->telefono) . "'" : 'NULL'),
+				    $this->idDistrito
+				);
+
+				if ($new_dni) { # cambiando el DNI
+					$sql .= ", DNI='%s';";
+					$sql = sprintf(
+						$sql,
+						$this->db->escape_string($new_dni)
+					);
+				}
+
+		        $sql .= " WHERE DNI='%s';";
+				$sql = sprintf(
+				    $sql,
+				    $this->db->escape_string($this->dni)
+				);
+				$return = $this->db->query($sql);
+		        if ($return) @ $this->respuesta = [$return, '¡Actualización exitosa!' ];
+			}
+        }
+        return $this->respuesta;
+	}
 
     # PRIVATE FUNCTIONS
 
@@ -125,17 +160,18 @@ class Registro
 
     private function manageCliente()
     {
-        $result = false;
-        if ($this->getIdDistrito()) {
-            $sql = "SELECT DNI FROM Cliente WHERE DNI='%s';";
-            $result = $this->db->query( sprintf($sql, $this->db->escape_string($this->dni)) );
-            if ($result && $result->num_rows == 0 && is_null($this->mod_cliente)) {
-                $result = $this->insertCliente();
-            } elseif ($this->mod_cliente) {
-                $result = $this->updateCliente();
-            }
-        }
-        return $result;
+        $return = false;
+        $sql = "SELECT DNI FROM Cliente WHERE DNI='%s';";
+        $result = $this->db->query( sprintf($sql, $this->db->escape_string($this->dni)) );
+		if ($result) {
+		    if ($result->num_rows == 0) {
+			    if ($this->getIdDistrito()) @ $return = $this->insertCliente();
+		    } else {
+				$return = true;
+			}
+			$result->free();
+		}
+        return $return;
     }
 
     private function insertCliente() {
@@ -146,18 +182,6 @@ class Registro
             $this->db->escape_string($this->fullname),
             ($this->telefono ? "'" . $this->db->escape_string($this->telefono) . "'" : 'NULL'),
             $this->idDistrito
-        );
-        return $this->db->query($sql);
-    }
-
-    private function updateCliente() {
-        $sql = "UPDATE Cliente SET nombreCompleto='%s', telefono=%s, idDistrito=%d WHERE DNI='%s';";
-        $sql = sprintf(
-            $sql,
-            $this->db->escape_string($this->fullname),
-            ($this->telefono ? "'" . $this->db->escape_string($this->telefono) . "'" : 'NULL'),
-            $this->idDistrito,
-            $this->db->escape_string($this->dni)
         );
         return $this->db->query($sql);
     }

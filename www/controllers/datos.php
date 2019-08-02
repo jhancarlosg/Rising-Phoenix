@@ -19,32 +19,56 @@ if (isLogged()) {
 					header("Pragma: no-cache");
 					header("Expires: 0");
 					$show_coloumn = false;
-					$rows = isset($_POST['rows']) ? int($_POST['rows']) : 50;
+					$rows = isset($_POST['rows']) ? intval($_POST['rows']) : 10;
+					$top = isset($_POST['top']) ? intval($_POST['top']) : 0;
 					$data = Data::getDataRows($rows);
+					$idx = 0;
 					if(!empty($data)) {
-						foreach ($data as $row) {
+						foreach ($data as &$row) {
 							if (! $show_coloumn) {
-								echo implode("\t", ['FECHA - HORA', 'DNI', 'NOMBRE Y APELLIDO', 'TELEFONO', 'DIRECCION', 'ATENDIDO POR']) . "\n";
+								echo implode("\t", ['#', 'FECHA - HORA', 'DNI', 'NOMBRE Y APELLIDO', 'TELEFONO', 'DIRECCION', 'ATENDIDO POR']) . "\n";
 								$show_coloumn = true;
 							}
+							$row[0] = $top + (++$idx);
 							echo implode("\t", array_values($row)) . "\n";
 						}
 					}
-					exit;
+					exit();
+				} elseif (isset($_GET['json']) && $_GET['json']=='true') {
+					//sleep(5);
+					$data = [];
+					if (isset($_POST['remove'], $_POST['idRow']) && $_POST['remove']=='true') {
+						$response = Data::deleteRow(intval($_POST['idRow']));
+						if ($response) {
+							$data['idRemove'] = intval($_POST['idRow']);
+						}
+						#$data['msg'] = $response[1];
+					}
+					header('Content-type:application/json;charset=utf-8');
+					echo json_encode($data, JSON_UNESCAPED_UNICODE);
+					exit();
 				} else {
 					include_once(VIEW_PATH . 'datos.inc');
 				}
 			case 'GET':
 			default:
-				if ($_SERVER['QUERY_STRING'] && isset($_GET['json']) && $_GET['json']=='true') {
-					$data = [];
-					if (isset($_GET['data']) && $_GET['data'] == 'get') {
-						$json = true;
-						$rows = isset($_GET['rows']) ? $_GET['rows'] : 50;
-						$data = Data::getDataRows($rows);
+				$data = [];
+				if ($_SERVER['QUERY_STRING']) {
+					if (!isset($_GET['view']) || $_GET['view']!='false') {
+						$rows = isset($_GET['rows']) ? $_GET['rows'] : 20;
+					    $page = isset($_GET['page']) ? $_GET['page'] : 0;
+						Data::getDataDatos($rows, $page, $_GET['view'], $data);
 					}
+					if (isset($_GET['canEdit']) && $_GET['canEdit'] == 'get') {
+						$data['canEdit'] = Data::isSupervisor();
+					}
+				} else {
+					$data['atencion'] = Data::getDataDatos();
+				}
+				if (count($data)) $DATA->defineData(__FILE__, $data, true);
+				if ($_SERVER['QUERY_STRING'] && isset($_GET['json']) && $_GET['json']=='true') {
 					header('Content-type:application/json;charset=utf-8');
-					echo json_encode($data, JSON_UNESCAPED_UNICODE);
+					echo $DATA->toJson();
 					exit();
 				} else {
 					include_once(VIEW_PATH . 'datos.inc');

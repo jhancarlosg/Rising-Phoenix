@@ -38,3 +38,47 @@ function Alerta(props) {
 		'</div>'
 	);
 }
+
+function normalizar(texto) {
+	return texto.normalize('NFD')
+		.replace(/([aeio])\u0301|(u)[\u0301\u0308]/gi,"$1$2")
+		.normalize();
+}
+
+var XML_ID = function(s) {
+	s += new Date();
+    for(var i = 0, h = 0xdeab3ef; i < s.length; i++)
+        h = Math.imul(h ^ s.charCodeAt(i), 26544357);
+    return (h ^ h >>> 16) >>> 0;
+};
+
+var dataManager = function (data) {
+	if (typeof data == "object") {
+		if (data.views) {
+			for(view in data.views) {
+				const ses_view = sessionStorage.getItem('view-'+view);
+				if (!ses_view || JSON.parse(ses_view).last != data.views[view]) {
+					sessionStorage.setItem('view-'+view, JSON.stringify(data.views[view]));
+				}
+			};
+		}
+		if (data.data) {
+			for(tmp_dta in data.data) {
+				let ses_data = sessionStorage.getItem('data-'+tmp_dta);
+				ses_data = ses_data ? JSON.parse(ses_data) : {};
+				if (data.data[tmp_dta].update) {
+					for (key_upd in data.data[tmp_dta].update) {
+						if (!ses_data[key_upd]) ses_data[key_upd] = {};
+						Object.assign(ses_data[key_upd], data.data[tmp_dta].update[key_upd]);
+					}
+				}
+				if (data.data[tmp_dta].nuevo) {
+					for (new_key in data.data[tmp_dta].nuevo) {
+						Object.assign(ses_data, data.data[tmp_dta].nuevo[key_upd]);
+					}
+				}
+				sessionStorage.setItem('data-'+tmp_dta, JSON.stringify(ses_data));
+			}
+		}
+	}
+}

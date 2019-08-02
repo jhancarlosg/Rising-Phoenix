@@ -6,7 +6,7 @@ function Distrito(props) {
 
 let patterns = {
 	dni: "[0-9]{8}",
-	telefono: "([0-9]{7}|[0-9]{9}|[0-9]{12})",
+	telefono: "^(?:9\\d{8}|[0-8]\\d{6})$",
 	distrito: function (val) {
 		/* let result = false;
 		let datalist = document.getElementById("distritos");
@@ -51,7 +51,7 @@ class Registro extends React.Component {
 			if (this.readyState == 4 && this.status == 200) {
 				let data = JSON.parse(this.responseText);
 				if (typeof data.dni != 'undefined') {
-					tmp_this.setState({ fullname: data.fullname, distrito: data.distrito, telefono: data.telefono, mod_cliente: false});
+					tmp_this.setState({ fullname: data.fullname, distrito: data.distrito, telefono: data.telefono ? data.telefono : '', mod_cliente: false});
 					$("#fullname").val(data.fullname);
 					$("#distrito").val(data.distrito);
 					$("#telefono").val(data.telefono);
@@ -78,61 +78,74 @@ class Registro extends React.Component {
 		$("#telefono, #fullname, #distrito").hide();
 		this.handleAsesorChange();
 		$(".form-group").removeClass('has-warning has-success has-error');
+		$("#dni").focus();
 	}
 
 	handleInput(event) {
-		let val = event.target.value.trim();
+		let val = event.target.value;
 		switch (event.target.id) {
 			case "dni":
-				if (val) {
-					if (new RegExp(patterns.dni).test(val)) {
-						setSuccess(event);
-						this.setState({dni: val});
-						this.searchDNI(val);
-						$("#telefono, #fullname, #distrito").show();
+				if (/^\d{0,8}$/.test(val)) {
+					this.setState({dni: val});
+					if (val) {
+						if (new RegExp(patterns.dni).test(val)) {
+							setSuccess(event);
+							this.searchDNI(val);
+							$("#telefono, #fullname, #distrito").show();
+						} else {
+							setError(event);
+							$("#telefono, #fullname, #distrito").hide();
+						}
 					} else {
-						setError(event);
+						setWarning(event);
 						$("#telefono, #fullname, #distrito").hide();
 					}
-				} else {
-					setWarning(event);
-					$("#telefono, #fullname, #distrito").hide();
 				}
 				break;
 			case "fullname":
-				if (val) {
-					if (val.length>=3) {
-						setSuccess(event);
-						this.setState({fullname: val});
-					} else {
-						setError(event);
-					}
-				} else {
-					setWarning(event);
-				}
-				break;
-			case "telefono":
-				if (val) {
-					if (new RegExp(patterns.telefono).test(val)) {
-						setSuccess(event);
-						this.setState({telefono: val});
-					} else {
-						setError(event);
-					}
-				} else {
-					setValidator(event, "");
-				}
-				break;
-			case "distrito":
-				if (val) {
-					this.setState({distrito: val});
-					if (this.props.distritos.some((dist) => val == dist)) {
-						setSuccess(event);
+				// https://regex101.com/r/mFnoYm/1
+				if (/^[a-zA-Z]+(?:[ ][a-zA-Z]+)*[ ]?$|^$/.test(val)) {
+					if (val) {
+						val = val.split(' ').map((name) => (
+							name && name.charAt(0).toUpperCase() + name.substring(1, val.length).toLowerCase()
+						)).join(' ');
+						if (val.length>=3) {
+							setSuccess(event);
+						} else {
+							setError(event);
+						}
 					} else {
 						setWarning(event);
 					}
-				} else {
-					setError(event);
+					this.setState({fullname: val});
+				}
+				break;
+			case "telefono":
+				if (/^(?:9\d{0,8}|\d{0,7})$/.test(val)) {
+					this.setState({telefono: val});
+					if (val) {
+						if (new RegExp(patterns.telefono).test(val)) {
+							setSuccess(event);
+						} else {
+							setError(event);
+						}
+					} else {
+						setValidator(event, "");
+					}
+				}
+				break;
+			case "distrito":
+				if (this.props.distritos.some((dist) => new RegExp(`^.*${val}.*$`, 'i').test(dist))) {
+					this.setState({distrito: val.toUpperCase()});
+					if (val) {
+						if (this.props.distritos.some((dist) => new RegExp(`^${val}$`, 'i').test(dist))) {
+							setSuccess(event);
+						} else {
+							setError(event);
+						}
+					} else {
+						setWarning(event);
+					}
 				}
 				break;
 		}
@@ -145,7 +158,7 @@ class Registro extends React.Component {
 			if (asesor) {
 				let xmlhttp = new XMLHttpRequest();
 				let params = `dni=${this.state.dni}&token_registros=${this.state.token_registros}&asesor=${asesor}`;
-				if (this.state.fullname) params += `&fullname=${this.state.fullname}`;
+				if (this.state.fullname) params += `&fullname=${this.state.fullname.trim()}`;
 				if (this.state.telefono) params += `&telefono=${this.state.telefono}`;
 				if (this.state.distrito) params += `&distrito=${this.state.distrito}`;
 				if (this.state.mod_cliente) params += `&mod_cliente=${this.state.mod_cliente}`;
@@ -179,26 +192,26 @@ class Registro extends React.Component {
 			<form id="form-registro" className="form-horizontal" onSubmit={this.handleSubmit} onReset={this.iniciar}>
 				<div className={"panel panel-"+this.state.panel}>
 					<div className="panel-heading">
-						<h3 className="panel-title text-center text-uppercase">BIENVENIDO: {this.state.asesor}</h3>
+						<h3 className="panel-title text-center text-uppercase">BIENVENIDO: <strong>{this.state.asesor}</strong></h3>
 					</div>
 					<div className="panel-body">
 						<div className="form-group">
 							<label htmlFor="dni" className="col-sm-2 control-label">DNI</label>
 							<div className="col-sm-10">
-								<input type="text" pattern={patterns.dni} onChange={this.handleInput} className="form-control" ref={this.dni} id="dni" name="dni" placeholder="Ingresa el DNI (i.e. 87654321)" minLength={8} maxLength={8} required={true} />
+								<input type="text" pattern={patterns.dni} onChange={this.handleInput} className="form-control" ref={this.dni} id="dni" name="dni" placeholder="Ingresa el DNI (i.e. 87654321)" minLength={8} maxLength={8} required={true} value={this.state.dni} />
 							</div>
 						</div>
 						<div className="form-group">
 							<label htmlFor="fullname" className="col-sm-2 control-label">NOMBRE Y APELLIDO</label>
 
 							<div className="col-sm-10">
-								<input type="text" onChange={this.handleInput} className="form-control" ref={this.fullname} id="fullname" name="fullname" placeholder="Escribe un nombre" required={true} />
+								<input type="text" onChange={this.handleInput} className="form-control" ref={this.fullname} id="fullname" name="fullname" placeholder="Escribe un nombre" required={true} value={this.state.fullname} />
 							</div>
 						</div>
 						<div className="form-group">
 							<label htmlFor="distrito" className="col-sm-2 control-label">DISTRITO</label>
 							<div className="col-sm-10">
-								<input type="text" onChange={this.handleInput} className="form-control" list="distritos" ref={this.telefono} id="distrito" name="distrito"  placeholder="¿Dónde vives?" required={true} />
+								<input type="text" onChange={this.handleInput} className="form-control" list="distritos" ref={this.telefono} id="distrito" name="distrito"  placeholder="¿Dónde vives?" required={true} value={this.state.distrito} />
 								<datalist name="distritos" id="distritos">
 									{distritos}
 								</datalist>
@@ -207,7 +220,7 @@ class Registro extends React.Component {
 						<div className="form-group">
 							<label htmlFor="telefono" className="col-sm-2 control-label">TELÉFONO</label>
 							<div className="col-sm-10">
-								<input type="text" onChange={this.handleInput} className="form-control" ref={this.distrito} id="telefono" name="telefono" placeholder="Digita el número (opcional)" pattern={patterns.telefono} minLength={7} maxLength={12} />
+								<input type="text" onChange={this.handleInput} className="form-control" ref={this.distrito} id="telefono" name="telefono" placeholder="Digita el número (opcional)" pattern={patterns.telefono} minLength={7} maxLength={12} value={this.state.telefono} />
 							</div>
 						</div>
 					</div>
@@ -218,7 +231,7 @@ class Registro extends React.Component {
 								<button type="reset" id="reset-form" className="btn btn-default">LIMPIAR</button>
 							</div>
 							<div className="btn-group" role="group">
-								<button type="submit" className="btn btn-default">GRABAR</button>
+								<button type="submit" className="btn btn-primary">GRABAR</button>
 							</div>
 						</div>
 					</div>
@@ -235,16 +248,25 @@ class RegistroManager extends React.Component {
 	}
 
 	componentDidMount() {
-		let xmlhttp = new XMLHttpRequest();
 		let tmp_this = this;
+		let xmlhttp = new XMLHttpRequest();
 		xmlhttp.onreadystatechange = function() {
 			if (this.readyState == 4 && this.status == 200) {
 				let data = JSON.parse(this.responseText);
-				tmp_this.setState({token_inicial: data.token, distritos: data.distritos});
+				tmp_this.setState({distritos: data.distritos});
 			}
 		};
-		xmlhttp.open("GET", "/registro?token=get&distritos=get&json=true", true);
+		xmlhttp.open("GET", "/registro?distritos=get&json=true", true);
 		xmlhttp.send();
+		let xmlhttp2 = new XMLHttpRequest();
+		xmlhttp2.onreadystatechange = function() {
+			if (this.readyState == 4 && this.status == 200) {
+				let data = JSON.parse(this.responseText);
+				tmp_this.setState({token_inicial: data.token});
+			}
+		};
+		xmlhttp2.open("GET", "/registro?token=get&json=true", true);
+		xmlhttp2.send();
 	}
 
 	render() {

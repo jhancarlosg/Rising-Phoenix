@@ -2,6 +2,19 @@
 
 date_default_timezone_set('America/Lima');
 
+function console_log() {
+	if (isEntornoDev()) {
+		$args = func_get_args();
+		#$js_code = 'console.log(' . json_encode($output, JSON_HEX_TAG) . ');';
+		$js_code = '<script>console.log("PHP_LOG:"';
+		foreach ($args as &$arg) {
+			$js_code .= ', ' . json_encode($arg);
+		}
+		$js_code .= ');</script>';
+		echo $js_code;
+	}
+}
+
 function notFound(string $path_file = null)
 {
     if ($path_file == null) @ $path_file =  "";
@@ -53,6 +66,29 @@ function isEntornoDev() {
 		$return = false;
 	}
 	return $return;
+}
+
+function toJson(&$val) {
+	return json_encode($val, JSON_UNESCAPED_UNICODE);
+}
+
+function returnJson(&$data, $headers) {
+	if (!isset($headers['canNotModified'])) @ $headers['canNotModified'] = true;
+	if (!isset($headers['withNotModified'])) @ $headers['withNotModified'] = false;
+	if (!isset($headers['public'])) @ $headers['public'] = false;
+	header('Content-type:application/json;charset=utf-8');
+	$return = toJson($data);
+	if ($headers['withNotModified'] && $headers['canNotModified']) {
+		$etag = md5($return);
+		header("Etag: $etag");
+		header('Cache-Control: ' . ($headers['public'] ? 'public' : 'private'));
+		if (isset($_SERVER['HTTP_IF_NONE_MATCH']) && trim($_SERVER['HTTP_IF_NONE_MATCH']) == $etag) {
+			header("HTTP/1.1 304 Not Modified");
+            exit();
+		}
+	}
+	echo $return;
+	exit();
 }
 
 ?>

@@ -22,17 +22,16 @@ if ( preg_match("/^\/user/", $_SERVER['REQUEST_URI']) ) {
 		case 'GET':
 		default:
 			if ($_SERVER['QUERY_STRING'] && isset($_GET['json']) && $_GET['json']=='true') {
+				$headers = ['withNotModified' => false];
 				if (isLogged()) {
 					if (isset($_GET['navbar_props']) && $_GET['navbar_props'] == 'get') {
-						$json = true;
+						$headers['withNotModified'] = true;
 						$data['navbar_props'] = Data::getNavbarProps();
 					}
 				} else {
 					$data = ['error' => 'Necesitas iniciar sesión'];
 				}
-				header('Content-type:application/json;charset=utf-8');
-				echo json_encode($data, JSON_UNESCAPED_UNICODE);
-				exit();
+				returnJson($data, $headers);
 			} else {
 				if (isLogged()) {
 					

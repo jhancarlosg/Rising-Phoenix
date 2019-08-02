@@ -25,7 +25,7 @@ if (isLogged() && Data::isRegister()) {
 			case 'POST':
 
 			function testData($tmpDni, $tmpToken, $tmpNam, $tmpTel, $tmpDist, $tmpMod, $tmpAse) {
-				return ($tmpDni && strlen($tmpDni) == 8 && $tmpToken && $tmpAse) && ( ( !is_null($tmpMod) && !$tmpMod) || ($tmpNam && $tmpDist && strlen($tmpTel)) <= 12);
+				return ($tmpDni && strlen($tmpDni) == 8 && $tmpToken && $tmpAse) && ( ( !is_null($tmpMod) && !$tmpMod) || ($tmpNam && $tmpDist && (!$tmpTel || strlen($tmpTel) == 9 || strlen($tmpTel) == 7)) );
 			}
 				header('Content-type:application/json;charset=utf-8');
 				$data = [];
@@ -37,10 +37,16 @@ if (isLogged() && Data::isRegister()) {
 					$telefono = isset($_POST['telefono']) ? trim($_POST['telefono']) : '';
 					$distrito = isset($_POST['distrito']) ? trim($_POST['distrito']) : '';
 					$mod_cliente = isset($_POST['mod_cliente']) ? (is_bool($_POST['mod_cliente']) ? $_POST['mod_cliente'] : (trim($_POST['mod_cliente']) == 'true')) : null;
+
 					if (testData($dni, $token_registros, $fullname, $telefono, $distrito, $mod_cliente, $asesor)) {
 						include_once(MODEL_PATH . 'Registro.inc');
 						$registro = new Registro(getIdUser(), $dni, $fullname, $telefono, $distrito, $token_registros, $asesor, $mod_cliente);
-						$respuesta = $registro->registrar();
+						if (is_null($mod_cliente) || !$mod_cliente) {
+							$respuesta = $registro->registrar();
+						} else {
+							$new_dni = isset($_POST['new_dni']) ? trim($_POST['new_dni']) : '';
+							$respuesta = $registro->actualizarCliente($new_dni);
+						}
 						if ($respuesta[0]) {
 							$data = setDataJSONMsgRegistro("success", $respuesta[1]);
 						} else {
@@ -59,20 +65,22 @@ if (isLogged() && Data::isRegister()) {
 			default:
 				if ($_SERVER['QUERY_STRING'] && isset($_GET['json']) && $_GET['json']=='true') {
 					$data = [];
+					$headers = ['withNotModified' => false, 'canNotModified'=> true];
 					if (isset($_GET['token']) && $_GET['token'] == 'get') {
-						$json = true;
+						$headers['canNotModified'] = false;
 						$data['token'] = newToken();
 					}
 					if (isset($_GET['distritos']) && $_GET['distritos'] == 'get') {
-						$json = true;
+						$headers['withNotModified'] = true;
+						$headers['public'] = true;
 						$data['distritos'] = Data::getDistritos();
 					}
 					if (isset($_GET['navbar_props']) && $_GET['navbar_props'] == 'get') {
-						$json = true;
+						$headers['withNotModified'] = true;
 						$data['navbar_props'] = Data::getNavbarProps();
 					}
 					if (isset($_GET['client'], $_GET['dni']) && $_GET['client'] == 'get' && strlen($_GET['dni']) == 8) {
-						$json = true;
+						$headers['withNotModified'] = true;
 						$tmp = Data::getClientData($_GET['dni']);
 						if (count($tmp)>0) {
 							$data['dni'] = $tmp[0];
@@ -81,9 +89,7 @@ if (isLogged() && Data::isRegister()) {
 							$data['distrito'] = $tmp[3];
 						}
 					}
-					header('Content-type:application/json;charset=utf-8');
-					echo json_encode($data, JSON_UNESCAPED_UNICODE);
-					exit();
+					returnJson($data, $headers);
 				} else {
 					include_once(VIEW_PATH . 'registro.inc');
 				}
