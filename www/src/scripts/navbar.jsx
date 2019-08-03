@@ -40,7 +40,7 @@ class Navbar extends React.Component {
 					<div className="collapse navbar-collapse" id="nav-collapse" >
 						<p className="navbar-text">{this.state.correo}</p>
                 		<a href="/logout" className="btn btn-default navbar-btn navbar-right">Cerrar sesión</a>
-					{ this.state.navs &&
+					{ this.state.navs && (Array.isArray(this.state.navs) ? this.state.navs.length>0 : true) &&
 						<Navs {...this.state.navs} asesor_ref={ASESOR_REF} />
 					}
 					{ this.state.def_nav &&

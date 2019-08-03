@@ -75,10 +75,6 @@ class EditorRegistro extends React.Component {
 		return false;
 	}
 
-	successManage() {
-		this.setState({save: {}});
-	}
-
 	render() {
 		return (
 			<div className="form-inline" style={{display:'flex', alignItems: 'center', justifyContent: 'center'}}>

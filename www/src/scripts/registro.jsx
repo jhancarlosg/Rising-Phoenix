@@ -52,6 +52,9 @@ class Registro extends React.Component {
 					tmp_this.props.editor.ref.current.handleDniFound(data);
 				} else {
 					if (typeof data.dni != 'undefined') {
+						data.fullname = data.fullname.split(' ').map((name) => (
+							name && name.charAt(0).toUpperCase() + name.substring(1, name.length).toLowerCase()
+						)).join(' ');
 						tmp_this.setState({
 							fullname: data.fullname, distrito: data.distrito, telefono: data.telefono ? data.telefono : '',
 							dni_found: true
@@ -93,7 +96,7 @@ class Registro extends React.Component {
 					if(this.props.editor) this.props.editor.ref.current.handleInputsChange(event);
 					if (val) {
 						val = val.split(' ').map((name) => (
-							name && name.charAt(0).toUpperCase() + name.substring(1, val.length).toLowerCase()
+							name && name.charAt(0).toUpperCase() + name.substring(1, name.length).toLowerCase()
 						)).join(' ');
 						if (val.length>=3) {
 							setSuccess(event);
@@ -166,8 +169,7 @@ class Registro extends React.Component {
 					$('.alert').alert('close');
 					$("#registro-cnt").prepend(Alerta(data));
 					tmp_this.setState({token_registros: data.token});
-					if (data.tipo == 'success') {						
-						if (tmp_this.props.editor && !tmp_this.props.editor.ref.current) tmp_this.props.editor.ref.current.successManage();
+					if (data.tipo == 'success') {
 						tmp_this.iniciar(true);
 					}
 				}
@@ -241,7 +243,7 @@ class Registro extends React.Component {
 						<div className="form-group">
 							<label htmlFor="distrito" className="col-sm-2 control-label">DISTRITO</label>
 							<div className="col-sm-10">
-								<input type="text" onChange={this.handleInput} className="form-control" list="distritos" ref={this.telefono} id="distrito" name="distrito"  placeholder="¿Dónde vives?" required={true} value={this.state.distrito} />
+								<input type="text" onChange={this.handleInput} className="form-control" list="distritos" ref={this.telefono} id="distrito" name="distrito"  placeholder="¿Dónde vives?" required={true} value={this.state.distrito} style={{textTransform: "uppercase"}} />
 								<datalist name="distritos" id="distritos">
 									{distritos}
 								</datalist>

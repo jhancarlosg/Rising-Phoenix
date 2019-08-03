@@ -12,6 +12,8 @@ if (isEntornoDev()){
 
 echo date_default_timezone_get().'<br>';
 echo date('d/m/Y H:i:s').'<br>';
+echo filemtime(SRC_PATH."js/datos.js").'<br>';
+echo SRC_PATH."js/datos.js".'<br>';
 $data = ['distritos'=>Data::getDistritos()];
 echo toJson($data) . '<br>';
 echo md5(toJson($data)) . '<br>';

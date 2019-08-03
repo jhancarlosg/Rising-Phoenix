@@ -4,9 +4,9 @@ require_once(MODEL_PATH . 'DefaultConfig.inc');
 
 function insertScript($name) {
 	if (isEntornoDev()) {
-		echo '<script src="/src/js/' . $name . '.js"></script>';
+		echo '<script src="/src/js/' . $name . '.js?v=' . filemtime(SRC_PATH."js/$name.js") .'"></script>';
 	} else {
-		echo '<script src="/src/js/' . $name . '.js"></script>';
+		echo '<script src="/src/js/' . $name . '.js?v=' . filemtime(SRC_PATH."js/$name.js") .'"></script>';
 	}
 }
 
