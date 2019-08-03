@@ -15,6 +15,7 @@ class Datos extends React.Component {
 		this.exportarExcel = this.exportarExcel.bind(this);
 		this.handleOptionDataChange = this.handleOptionDataChange.bind(this);
 		this.dataLocalManager = this.dataLocalManager.bind(this);
+		this.handlerPages = this.handlerPages.bind(this);
 
 		//this.ATENCION_NAME = "lista-atencion-data";
 		//this.INGRESO_ATENCION = "lista-ingreso-data";
@@ -139,19 +140,26 @@ class Datos extends React.Component {
 	}
 
 	getDownloadDataParams(config) {
-		if (!config) config = {};
-		if (!config.option) config.option=this.state.option;
+		config = this.getDefaultConfig(config);
 		let params = new URLSearchParams();
 		params.append("json", true);
 		if (this.row_opcion.current.value!=20) params.append("rows", this.row_opcion.current.value);
 		if (config.option!=this.opciones[0]) params.append("view", config.option);
-		if (this.state.page>0) params.append("page", this.state.page);
+		if (config.page>0) params.append("page", config.page);
+		console.log(config, params.toString());
 		return params.toString();
 		//return `json=true&rows=${this.row_opcion.current.value}&json=true${view}`;
 		
 	}
 
-	handleChange(e) {
+	getDefaultConfig(config) {
+		if (!config) config = {};
+		if (!config.option) config.option=this.state.option;
+		if (!Number.isInteger(config.page)) config.page=this.state.page;
+		return config;
+	}
+
+	handleChange() {
 		this.setState({cargando: true, selectedRow:0});
 		let xmlhttp = new XMLHttpRequest();
 		let this_tmp = this;
@@ -163,6 +171,22 @@ class Datos extends React.Component {
 		}
 		let view = this.state.option!=this.opciones[0] ? "&view="+this.state.option : "";
 		xmlhttp.open("GET", "/datos?"+this.getDownloadDataParams(), true);
+		xmlhttp.send();
+	}
+	
+	manageChange(config) {
+		config = this.getDefaultConfig(config);
+		this.setState({cargando: true, selectedRow:0});
+		let xmlhttp = new XMLHttpRequest();
+		let this_tmp = this;
+		xmlhttp.onreadystatechange = function() {
+			if (this.readyState == 4 && this.status == 200) {
+				this_tmp.dataLocalManager(JSON.parse(this.responseText));
+				this_tmp.setState({cargando: false});
+			}
+		}
+		let view = this.state.option!=this.opciones[0] ? "&view="+this.state.option : "";
+		xmlhttp.open("GET", "/datos?"+this.getDownloadDataParams(config), true);
 		xmlhttp.send();
 	}
 
@@ -202,6 +226,31 @@ class Datos extends React.Component {
 		let limits = sessionStorage.getItem("data-datos-limits");
 		if (limits) {
 			limits = JSON.parse(limits);
+			if (limits[this.state.option]) {
+				return limits[this.state.option].pages;
+			}
+		}
+		return 1;
+	}
+
+	handlerPages(e, dir) {
+		e.preventDefault();
+		let new_page = this.state.page;
+		switch(dir) {
+			case 'next':
+				new_page += 1;
+				break;
+			case 'prev':
+				new_page -= 1;
+				break;
+			default:
+				if (!isNaN(parseInt(dir))) new_page = parseInt(dir);
+				break;
+		}
+		//console.log(dir, new_page, this.state.page);
+		if (new_page!=this.state.page) {
+			this.manageChange({page: new_page});
+			this.setState({page: new_page});
 		}
 	}
 
@@ -209,13 +258,16 @@ class Datos extends React.Component {
 		let thead = this.props.opciones[this.state.option].thead.map((val)=>(<th key={val}>{val}</th>));
 		const rows = !this.state.cargando ?
 				(this.getRows().map((row, id) => (
-					<Row key={"row"+id} tipo={id==this.state.selectedRow ? this.state.rowTipo : null} onMouseOver={this.handleMouseover} cols={row} pos={id} idAtencion={row[0]} />
+					<Row key={"row"+id} tipo={id==this.state.selectedRow ? this.state.rowTipo : null} onMouseOver={this.handleMouseover} cols={row} pos={id} idAtencion={row[0]} page={this.state.page} num_rows={this.row_opcion.current ? this.row_opcion.current.value : 20} />
 				))) :
 				(<tr><td className="text-center" colSpan={thead.length}>Cargando ...</td></tr>);
 					
 		let tblHei = this.state.tblHei;
 		let options = this.opciones.map((opt)=>(
 			<OpcionesDatos onHandler={this.handleOptionDataChange} active={opt==this.state.option} id={opt} txt={this.props.opciones[opt].txt} key={opt} />
+		));
+		let pages = this.getPages()>1 && new Array(this.getPages()).fill(null).map((val, idx)=>(
+			<GoToPage handler={this.handlerPages} h_url={idx+1} lbl={"Página "+(idx+1)} txt={idx+1} dir={idx} key={"p-"+idx} />
 		));
 		return (
 			<React.Fragment>
@@ -253,36 +305,40 @@ class Datos extends React.Component {
 						</table>
 					</div>
 				</div>
-				{/*<nav aria-label="Page navigation">
+				{this.getPages()>1 && <nav aria-label="Page navigation" style={{display:"flex", justifyContent: "center"}}>
 				  <ul className="pagination">
-					
-					<li><a href="#">1</a></li>
-					<li><a href="#">2</a></li>
-					<li><a href="#">3</a></li>
-					<li><a href="#">4</a></li>
-					<li><a href="#">5</a></li>
-					<li>
+					{this.state.page>0 &&
+						<GoToPage handler={this.handlerPages} h_url="anterior" lbl="Página anterior" txt="&laquo;" dir="prev" key="prev" />
+					}
+					{pages}
+					{this.state.page<this.getPages()-1 && 
+						<GoToPage handler={this.handlerPages} h_url="siguiente" lbl="Página siguiente" txt="&raquo;" dir="next" key="next" />
+					}
+					{/*<li>
 					  <a href="#" aria-label="Next">
 						<span aria-hidden="true">&raquo;</span>
 					  </a>
-					</li>
+					</li>*/}
 				  </ul>
-				</nav>*/}
+				</nav>}
 			</React.Fragment>
 		);
 	}
 }
 
-function goTo(props) {
-	<li>
-	  <a href="#" aria-label="">
-		<span aria-hidden="true">&laquo;</span>
-	  </a>
-	</li>
+function GoToPage(props) {
+	return (
+		<li>
+		  <a href={"#"+(props.h_url?props.h_url:"")} onClick={(e)=>!!props.handler ? props.handler(e, props.dir) : e.preventDefault()} aria-label={props.lbl}>
+			<span aria-hidden="true">{props.txt}</span>
+			{/*<span aria-hidden="true">{props.dir===-1 ? "&laquo;" : "&raquo;"}</span>*/}
+		  </a>
+		</li>
+	);
 }
 
 function Row(props) {
-	const columns = props.cols.map((col, id) => (id==0 ? <td key={"col"+id}>{props.pos+1}</td> : <td key={"col"+id}>{col}</td>));
+	const columns = props.cols.map((col, id) => (id==0 ? <td key={"col"+id}>{props.pos+1+(props.page*props.num_rows)}</td> : <td key={"col"+id}>{col}</td>));
 	const optionalAttrs = props.tipo ? {className: props.tipo} : {};
 	return (
 		<tr onMouseOver={props.onMouseOver} {...optionalAttrs}>

@@ -73,6 +73,10 @@ var dataManager = function (data) {
 					}
 				}
 				if (data.data[tmp_dta].nuevo) {
+					if (data.data[tmp_dta].remove_all) {
+						//delete data.data[tmp_dta].remove_all;
+						ses_data = {};
+					}
 					for (new_key in data.data[tmp_dta].nuevo) {
 						Object.assign(ses_data, data.data[tmp_dta].nuevo);
 					}

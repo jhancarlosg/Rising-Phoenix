@@ -64,22 +64,23 @@ class Data
 		}
 	}
 
-	public function setData($name, $value, $update=false) {
+	public function setData($name, $value, $config=[]) {
 		if(!isset($this->data)) @ $this->data = [];
 		if(!isset($this->init['data'][$name])) @ $this->init['data'][$name] = [];
-		if ($update) {
+		if ( (is_bool($config) && $config) || (isset($config['update']) && $config['update'])) {
 			if(!isset($this->init['data'][$name]['update'])) @ $this->init['data'][$name]['update'] = [];
 			$this->init['data'][$name]['update'] = array_merge($this->init['data'][$name]['update'], $value);
 			#console_log($this->init);
 		} else {
 			$this->init['data'][$name]['nuevo'] = $value;
+			if (isset($config['remove_all']) && $config['remove_all']) $this->init['data'][$name]['remove_all'] =true;
 		}
 	}
 
-	public function defineData($filepath, $value, $update=false) {
+	public function defineData($filepath, $value, $config=[]) {
 		$name = basename($filepath, '.php');
 		#console_log($name, $value, $_SESSION["view-$name"]);
-		$this->setData($name,$value, $update);
+		$this->setData($name,$value, $config);
 	}
 
 	public function toJson() {
