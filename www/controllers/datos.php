@@ -59,7 +59,7 @@ if (isLogged()) {
 					    $page = isset($_GET['page']) ? intval($_GET['page']) : 0;
 						$view = isset($_GET['view']) ? $_GET['view'] : '';
 						$tmp_dta = Data::getDataDatos($rows, $page, $view);
-						$DATA->tmp_page_rows=[$page, $page==false, $page|20, $rows, 10 | 20];
+						#$DATA->tmp_page_rows=[$page, $page==false, $page|20, $rows, 10 | 20];
 					}
 					if (isset($_GET['canEdit']) && $_GET['canEdit'] == 'get') {
 						$DATA->defineData(__FILE__, ['canEdit'=>Data::isSupervisor()]);
@@ -73,7 +73,7 @@ if (isLogged()) {
 					$data['limits'] = [$tmp_dta['view']=>$tmp_dta['limits']];
 					#$DATA->defineData(__FILE__, $data);
 					$DATA->defineData('datos-'.$tmp_dta['view'], $tmp_dta['rows'], ['remove_all'=>true]);
-					$DATA->defineData('datos-limits', $data['limits']);
+					$DATA->defineData('datos-limits', $data['limits'], true);
 				}
 				if ($_SERVER['QUERY_STRING'] && isset($_GET['json']) && $_GET['json']=='true') {
 					header('Content-type:application/json;charset=utf-8');

@@ -111,7 +111,6 @@ class AdminRows extends React.Component {
 		$('#modalConfirm').on('hidden.bs.modal', function (e) {
 			DATOS_REF.current.setRowTipo("active");
 		});
-		console.log("confirm", 5);
 	}
 	render() {
 		let posY = this.props.posY;

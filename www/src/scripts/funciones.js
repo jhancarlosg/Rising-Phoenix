@@ -53,7 +53,7 @@ var XML_ID = function(s) {
 };
 
 var dataManager = function (data) {
-	if (typeof data == "object") {
+	if (data) {
 		if (data.views) {
 			for(view in data.views) {
 				const ses_view = sessionStorage.getItem('view-'+view);

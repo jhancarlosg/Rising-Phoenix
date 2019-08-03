@@ -18,6 +18,7 @@ require_once(CONTROLLER_PATH . 'login.php');
     </section>
 	<?php 
 	# <script src="/src/scripts/registro.jsx" type="text/babel"></script>
+	if (Data::isSupervisor()) @ insertScript('editor-registro');
 	insertScript('registro');
 	?>
 </body>

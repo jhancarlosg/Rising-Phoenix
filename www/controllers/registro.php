@@ -25,7 +25,7 @@ if (isLogged() && Data::isRegister()) {
 			case 'POST':
 
 			function testData($tmpDni, $tmpToken, $tmpNam, $tmpTel, $tmpDist, $tmpMod, $tmpAse) {
-				return ($tmpDni && strlen($tmpDni) == 8 && $tmpToken && $tmpAse) && ( ( !is_null($tmpMod) && !$tmpMod) || ($tmpNam && $tmpDist && (!$tmpTel || strlen($tmpTel) == 9 || strlen($tmpTel) == 7)) );
+				return ($tmpDni && strlen($tmpDni) == 8 && $tmpToken && $tmpAse) && ( !is_null($tmpMod) || ($tmpNam && $tmpDist && (!$tmpTel || strlen($tmpTel) == 9 || strlen($tmpTel) == 7)) );
 			}
 				header('Content-type:application/json;charset=utf-8');
 				$data = [];
@@ -40,12 +40,14 @@ if (isLogged() && Data::isRegister()) {
 
 					if (testData($dni, $token_registros, $fullname, $telefono, $distrito, $mod_cliente, $asesor)) {
 						include_once(MODEL_PATH . 'Registro.inc');
-						$registro = new Registro(getIdUser(), $dni, $fullname, $telefono, $distrito, $token_registros, $asesor, $mod_cliente);
+						$registro = new Registro(getIdUser(), $dni, $fullname, $telefono, $distrito, $token_registros, $asesor);
 						if (is_null($mod_cliente) || !$mod_cliente) {
 							$respuesta = $registro->registrar();
-						} else {
+						} elseif(Data::isSupervisor()) {
 							$new_dni = isset($_POST['new_dni']) ? trim($_POST['new_dni']) : '';
 							$respuesta = $registro->actualizarCliente($new_dni);
+						} else {
+							$respuesta = [false, 'No tiene el permiso para actualizar información'];
 						}
 						if ($respuesta[0]) {
 							$data = setDataJSONMsgRegistro("success", $respuesta[1]);

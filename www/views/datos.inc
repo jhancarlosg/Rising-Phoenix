@@ -8,7 +8,7 @@ require_once(CONTROLLER_PATH . 'login.php');
 
 ?>
     <title><?php echo DefaultConfing::includeTitle('Datos') ?></title>
-	<script src="https://unpkg.com/xlsx/dist/xlsx.full.min.js" async></script>
+	<!--<script src="https://unpkg.com/xlsx/dist/xlsx.full.min.js" async></script>-->
 </head>
 <body>
 <?php

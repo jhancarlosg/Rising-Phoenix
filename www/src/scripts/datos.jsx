@@ -3,7 +3,10 @@ class Datos extends React.Component {
 		super(props);
 
 		this.opciones = Object.keys(props.opciones);
-		this.state = {selectedRow: 0, tblHei: 0, rowTipo: null, option: this.opciones[0], cargando: false, page: 0};
+		this.num_pages_view = 5;
+		this.mounted= false;
+		this.state = {selectedRow: 0, tblHei: 0, rowTipo: null, option: this.getOption(), cargando: false, page: 0};
+		this.state.page = this.getPage();
 		//console.log(this.state);
 		this.row_opcion = React.createRef();
 		this.getRows = this.getRows.bind(this);
@@ -16,6 +19,8 @@ class Datos extends React.Component {
 		this.handleOptionDataChange = this.handleOptionDataChange.bind(this);
 		this.dataLocalManager = this.dataLocalManager.bind(this);
 		this.handlerPages = this.handlerPages.bind(this);
+		this.getNumPages = this.getNumPages.bind(this);
+		
 
 		//this.ATENCION_NAME = "lista-atencion-data";
 		//this.INGRESO_ATENCION = "lista-ingreso-data";
@@ -23,6 +28,7 @@ class Datos extends React.Component {
 
 	componentDidMount() {
 		this.setTableHeight();
+		this.mounted = true;
 	}
 
 	componentDidUpdate(prevProps, prevState) {
@@ -146,7 +152,7 @@ class Datos extends React.Component {
 		if (this.row_opcion.current.value!=20) params.append("rows", this.row_opcion.current.value);
 		if (config.option!=this.opciones[0]) params.append("view", config.option);
 		if (config.page>0) params.append("page", config.page);
-		console.log(config, params.toString());
+		//console.log(config, params.toString());
 		return params.toString();
 		//return `json=true&rows=${this.row_opcion.current.value}&json=true${view}`;
 		
@@ -155,17 +161,23 @@ class Datos extends React.Component {
 	getDefaultConfig(config) {
 		if (!config) config = {};
 		if (!config.option) config.option=this.state.option;
-		if (!Number.isInteger(config.page)) config.page=this.state.page;
+		if (!Number.isInteger(config.page)) config.page=this.state.page>=0 && this.state.page<=this.getPages(config.option) ? this.state.page : this.getPage(config.option);
 		return config;
 	}
 
-	handleChange() {
+	handleChange(e) {
+		//let new_page = 
+		//this.setPage();
 		this.setState({cargando: true, selectedRow:0});
 		let xmlhttp = new XMLHttpRequest();
 		let this_tmp = this;
 		xmlhttp.onreadystatechange = function() {
 			if (this.readyState == 4 && this.status == 200) {
-				this_tmp.dataLocalManager(JSON.parse(this.responseText));
+				let data = JSON.parse(this.responseText);
+				if (!data) {
+					this_tmp.setPage(0);
+				}
+				this_tmp.dataLocalManager(data);
 				this_tmp.setState({cargando: false});
 			}
 		}
@@ -202,7 +214,8 @@ class Datos extends React.Component {
 
 	handleOptionDataChange(e) {
 		let option = e.target.querySelector("input").id;
-		this.setState({option: option, cargando: true, selectedRow:0});
+		this.setOption(option);
+		this.setState({cargando: true, selectedRow:0, page: this.getPage(option)});
 		let xmlhttp = new XMLHttpRequest();
 		//let view = option!=this.opciones[0] ? "&view="+option : "";
 		//let params = `rows=${this.row_opcion.current.value}&json=true${view}`;
@@ -222,16 +235,68 @@ class Datos extends React.Component {
 		return this.getRows()[this.state.selectedRow];
 	}
 
-	getPages() {
+	getPages(option) {
 		let limits = sessionStorage.getItem("data-datos-limits");
 		if (limits) {
 			limits = JSON.parse(limits);
-			if (limits[this.state.option]) {
-				return limits[this.state.option].pages;
+			option = option ? option : this.state.option;
+			if (limits[option] && limits[option].pages) {
+				return limits[option].pages;
 			}
 		}
 		return 1;
 	}
+
+	getPage(option) {
+		let limits = sessionStorage.getItem("data-datos-limits");
+		if (limits) {
+			limits = JSON.parse(limits);
+			option = option ? option : this.state.option;
+			if (limits[option] && limits[option].page) {
+				return limits[option].page;
+			}
+		}
+		this.setPage(0, option);
+		return 0;
+	}
+
+	setPage(page, option) {
+		let limits = sessionStorage.getItem("data-datos-limits");
+		if (limits) {
+			limits = JSON.parse(limits);
+			option = option ? option : this.state.option;
+			if (limits[option]) {
+				limits[option].page = page;
+				if (this.mounted) this.setState({page: page});
+				sessionStorage.setItem("data-datos-limits", JSON.stringify(limits));
+			}
+		}
+	}
+
+	getOption() {
+		let limits = sessionStorage.getItem("data-datos-limits");
+		if (limits) {
+			limits = JSON.parse(limits);
+			if (limits.default_option && this.opciones.includes(limits.default_option)) {
+				return limits.default_option;
+			}
+		}
+		this.setOption(this.opciones[0]);
+		return this.opciones[0];
+	}
+
+	setOption(option) {
+		let limits = sessionStorage.getItem("data-datos-limits");
+		if (limits) {
+			limits = JSON.parse(limits);
+			if (limits) {
+				limits.default_option = option;
+				if (this.mounted) this.setState({option: option});
+				sessionStorage.setItem("data-datos-limits", JSON.stringify(limits));
+			}
+		}
+	}
+
 
 	handlerPages(e, dir) {
 		e.preventDefault();
@@ -244,14 +309,47 @@ class Datos extends React.Component {
 				new_page -= 1;
 				break;
 			default:
-				if (!isNaN(parseInt(dir))) new_page = parseInt(dir);
+				if (!isNaN(parseInt(dir))) new_page = parseInt(dir)>=0 && parseInt(dir)<this.getPages() ? parseInt(dir) : 0;
 				break;
 		}
 		//console.log(dir, new_page, this.state.page);
 		if (new_page!=this.state.page) {
 			this.manageChange({page: new_page});
 			this.setState({page: new_page});
+			this.setPage(new_page);
 		}
+	}
+
+	getNumPages() {
+		let total_pages = this.getPages();
+		let max_pages = total_pages>this.num_pages_view ? this.num_pages_view : total_pages;
+		let pages = [], left=true, right=true, mid_num=parseInt(max_pages/2), pag_num=this.state.page;
+		let counter=0;
+		pages.push(pag_num);
+		/*while(pages.length<max_pages&&(left||right)&&counter<50) {
+			
+			
+			++counter;
+		}*/
+		right = new Array(mid_num).fill().every(()=>(
+			++pag_num<total_pages ? pages.push(pag_num) : false
+		));
+		pag_num = Math.min(...pages);
+		left = new Array(max_pages-pages.length).fill().every(()=>(
+			//pag_num-=(val);
+			--pag_num>=0 ? pages.push(pag_num) : false
+		));
+		if (!left && right) {
+			pag_num = Math.max(...pages);
+			new Array(max_pages-pages.length).fill().every(()=>(
+				//pag_num-=(val);
+				++pag_num<total_pages ? pages.push(pag_num) : false
+			));
+		}
+		pages.sort(function(a, b) {
+			return a - b;
+		});
+		return pages;
 	}
 
 	render () {
@@ -266,8 +364,9 @@ class Datos extends React.Component {
 		let options = this.opciones.map((opt)=>(
 			<OpcionesDatos onHandler={this.handleOptionDataChange} active={opt==this.state.option} id={opt} txt={this.props.opciones[opt].txt} key={opt} />
 		));
-		let pages = this.getPages()>1 && new Array(this.getPages()).fill(null).map((val, idx)=>(
-			<GoToPage handler={this.handlerPages} h_url={idx+1} lbl={"Página "+(idx+1)} txt={idx+1} dir={idx} key={"p-"+idx} />
+		
+		let pages = this.getPages()>1 && this.getNumPages().map((val)=>(
+			<GoToPage handler={this.handlerPages} h_url={val+1} active={val==this.state.page} lbl={"Página "+(val+1)} txt={val+1} dir={val} key={"p-"+val} />
 		));
 		return (
 			<React.Fragment>
@@ -307,12 +406,18 @@ class Datos extends React.Component {
 				</div>
 				{this.getPages()>1 && <nav aria-label="Page navigation" style={{display:"flex", justifyContent: "center"}}>
 				  <ul className="pagination">
-					{this.state.page>0 &&
-						<GoToPage handler={this.handlerPages} h_url="anterior" lbl="Página anterior" txt="&laquo;" dir="prev" key="prev" />
+					{this.state.page>parseInt(this.num_pages_view/2) &&
+						(<GoToPage handler={this.handlerPages} h_url="inicio" lbl="Página inicial" txt="1" dir={0} key="inicio" />)
+					}
+					{this.state.page>parseInt(this.num_pages_view/2) &&
+						(<GoToPage handler={this.handlerPages} h_url="anterior" lbl="Página anterior" txt="&laquo;" dir="prev" key="prev" />)
 					}
 					{pages}
-					{this.state.page<this.getPages()-1 && 
+					{this.state.page<this.getPages()-Math.ceil(this.num_pages_view/2) && 
 						<GoToPage handler={this.handlerPages} h_url="siguiente" lbl="Página siguiente" txt="&raquo;" dir="next" key="next" />
+					}
+					{this.state.page<this.getPages()-Math.ceil(this.num_pages_view/2) &&
+						(<GoToPage handler={this.handlerPages} h_url="fin" lbl="Página final" txt={this.getPages()} dir={this.getPages()-1} key="fin" />)
 					}
 					{/*<li>
 					  <a href="#" aria-label="Next">
@@ -328,9 +433,9 @@ class Datos extends React.Component {
 
 function GoToPage(props) {
 	return (
-		<li>
+		<li {...(props.active) ? {className:"active"} : {}}>
 		  <a href={"#"+(props.h_url?props.h_url:"")} onClick={(e)=>!!props.handler ? props.handler(e, props.dir) : e.preventDefault()} aria-label={props.lbl}>
-			<span aria-hidden="true">{props.txt}</span>
+			<span aria-hidden="true">{props.txt}{props.active && <span className="sr-only">(current)</span>}</span>
 			{/*<span aria-hidden="true">{props.dir===-1 ? "&laquo;" : "&raquo;"}</span>*/}
 		  </a>
 		</li>

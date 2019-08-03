@@ -8,6 +8,7 @@ class Registro
     private $dni;
     private $fullname;
     private $telefono;
+    private $sin_telefono;
     private $distrito;
     private $token;
     private $asesor;
@@ -15,20 +16,19 @@ class Registro
     private $idAsesor;
     private $db;
     private $respuesta;
-	# private $mod_cliente;
 
-    public function __construct(int $idUser, string $dni, string $fullname, string $telefono, string $distrito, string $token, string $asesor, $mod_cliente = null) {
+    public function __construct(int $idUser, string $dni, string $fullname, string $telefono, string $distrito, string $token, string $asesor, $sin_telefono=false) {
         $this->idUser = $idUser;
         $this->dni = $dni;
         $this->fullname = $fullname;
         $this->telefono = $telefono;
+        $this->sin_telefono = $sin_telefono;
         $this->distrito = $distrito;
         $this->token = $token;
         $this->asesor = $asesor;
         $this->db = new Conexion();
         $this->idDistrito = null;
         $this->idAsesor = null;
-        # $this->mod_cliente = mod_cliente;
     }
 
     public function registrar() {
@@ -50,9 +50,10 @@ class Registro
         if ($this->hasPrivilegios() && Data::isSupervisor()) {
 			$sql = "SELECT DNI FROM Cliente WHERE DNI='%s';";
 	        $result = $this->db->query( sprintf($sql, $this->db->escape_string($this->dni)) );
+			$con_cambio = false;
 			if ($result && $result->num_rows==1 && $this->getIdDistrito()) {
 				
-		        $sql = "UPDATE Cliente SET nombreCompleto='%s', telefono=%s, idDistrito=%d";
+		        $sql = "UPDATE Cliente SET "; # nombreCompleto='%s', telefono=%s, idDistrito=%d
 				$sql = sprintf(
 				    $sql,
 				    $this->db->escape_string($this->fullname),
@@ -60,22 +61,43 @@ class Registro
 				    $this->idDistrito
 				);
 
-				if ($new_dni) { # cambiando el DNI
-					$sql .= ", DNI='%s';";
-					$sql = sprintf(
-						$sql,
-						$this->db->escape_string($new_dni)
-					);
+				if ($this->fullname) {
+					if ($con_cambio) @$sql.=', ';
+					$sql .= "nombreCompleto='{$this->db->escape_string($this->fullname)}'";
+					$con_cambio=true;
 				}
 
-		        $sql .= " WHERE DNI='%s';";
-				$sql = sprintf(
-				    $sql,
-				    $this->db->escape_string($this->dni)
-				);
-				$return = $this->db->query($sql);
-		        if ($return) @ $this->respuesta = [$return, '¡Actualización exitosa!' ];
+				if ($this->idDistrito) {
+					if ($con_cambio) @$sql.=', ';
+					$sql .= "idDistrito={$this->db->escape_string($this->idDistrito)}";
+					$con_cambio=true;
+				}
+
+				if ($this->telefono) {
+					if ($con_cambio) @$sql.=', ';
+					$sql .= "telefono='{$this->db->escape_string($this->telefono)}'";
+					$con_cambio=true;
+				} elseif ($this->sin_telefono) {
+					if ($con_cambio) @$sql.=', ';
+					$sql .= "telefono=NULL";
+					$con_cambio=true;
+				}
+
+				if ($new_dni) { # cambiando el DNI					
+					if ($con_cambio) @$sql.=', ';
+					$sql .= "DNI='{$this->db->escape_string($new_dni)}'";
+				}
+				if ($con_cambio) {
+				    $sql .= " WHERE DNI='%s';";
+					$sql = sprintf(
+						$sql,
+						$this->db->escape_string($this->dni)
+					);
+					$return = $this->db->query($sql);
+				    if ($return) @ $this->respuesta = [$return, '¡Actualización exitosa!' ];
+				}
 			}
+			$result->free();
         }
         return $this->respuesta;
 	}

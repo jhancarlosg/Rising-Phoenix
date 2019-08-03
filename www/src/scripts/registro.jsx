@@ -22,7 +22,7 @@ let patterns = {
 class Registro extends React.Component {
 	constructor(props) {
 		super(props);
-		this.state = {dni: '', fullname: '', telefono: '', distrito: '', token_registros: props.token_inicial, mod_cliente: null, asesor: null};
+		this.state = {dni: '', fullname: '', telefono: '', distrito: '', token_registros: props.token_inicial, mod_cliente: null, asesor: null, dni_found: false, dni_success: false, dni_readonly: false};
 		this.handleInput = this.handleInput.bind(this);
 		this.handleSubmit = this.handleSubmit.bind(this);
 		//this.handleAsesorChange = this.handleAsesorChange.bind(this);
@@ -36,10 +36,8 @@ class Registro extends React.Component {
 
 	handleAsesorChange() {
 		if (this.asesor_ref.current && this.asesor_ref.current.value.trim()) {
-			$("#dni, #telefono, #fullname, #distrito").removeAttr("disabled");
 			this.setState({ asesor: this.asesor_ref.current.value.trim() });
 		} else {
-			$("#dni, #telefono, #fullname, #distrito").attr("disabled", "true");
 			this.setState({ asesor: null });
 		}
 	}
@@ -50,22 +48,17 @@ class Registro extends React.Component {
 		xmlhttp.onreadystatechange = function() {
 			if (this.readyState == 4 && this.status == 200) {
 				let data = JSON.parse(this.responseText);
-				if (typeof data.dni != 'undefined') {
-					tmp_this.setState({ fullname: data.fullname, distrito: data.distrito, telefono: data.telefono ? data.telefono : '', mod_cliente: false});
-					$("#fullname").val(data.fullname);
-					$("#distrito").val(data.distrito);
-					$("#telefono").val(data.telefono);
-					$("#telefono, #fullname, #distrito").show();
-					$("#telefono, #fullname, #distrito").attr("readonly", "true");
+				if(tmp_this.props.editor) {
+					tmp_this.props.editor.ref.current.handleDniFound(data);
 				} else {
-					if (typeof tmp_this.state.mod_cliente == 'boolean') {
-						tmp_this.setState({mod_cliente: null});
-						$("#telefono, #fullname, #distrito").val("");
-						$("#telefono, #fullname, #distrito").removeAttr("readonly");
+					if (typeof data.dni != 'undefined') {
+						tmp_this.setState({
+							fullname: data.fullname, distrito: data.distrito, telefono: data.telefono ? data.telefono : '',
+							dni_found: true
+						});
+					} else {
+						if (tmp_this.state.dni_found) tmp_this.setState({dni_found: false, fullname: '', distrito: '', telefono: ''});
 					}
-					$("#fullname").show();
-					if ($("#distrito").val()) $("#distrito").show();
-					if ($("#telefono").val()) $("#telefono").show();
 				}
 			}
 		};
@@ -73,38 +66,31 @@ class Registro extends React.Component {
 		xmlhttp.send();
 	}
 
-	iniciar() {
-		document.getElementById("form-registro").reset();
-		$("#telefono, #fullname, #distrito").hide();
-		this.handleAsesorChange();
-		$(".form-group").removeClass('has-warning has-success has-error');
-		$("#dni").focus();
-	}
-
 	handleInput(event) {
 		let val = event.target.value;
 		switch (event.target.id) {
 			case "dni":
-				if (/^\d{0,8}$/.test(val)) {
+				if (/^\d{0,8}$/.test(val) && !this.state.dni_readonly) {
+					if(this.props.editor) this.props.editor.ref.current.handleInputsChange(event);
 					this.setState({dni: val});
+					this.setState({dni_success: false});
 					if (val) {
 						if (new RegExp(patterns.dni).test(val)) {
 							setSuccess(event);
+							this.setState({dni_success: true});
 							this.searchDNI(val);
-							$("#telefono, #fullname, #distrito").show();
 						} else {
 							setError(event);
-							$("#telefono, #fullname, #distrito").hide();
 						}
 					} else {
 						setWarning(event);
-						$("#telefono, #fullname, #distrito").hide();
 					}
 				}
 				break;
 			case "fullname":
 				// https://regex101.com/r/mFnoYm/1
 				if (/^[a-zA-Z]+(?:[ ][a-zA-Z]+)*[ ]?$|^$/.test(val)) {
+					if(this.props.editor) this.props.editor.ref.current.handleInputsChange(event);
 					if (val) {
 						val = val.split(' ').map((name) => (
 							name && name.charAt(0).toUpperCase() + name.substring(1, val.length).toLowerCase()
@@ -122,6 +108,7 @@ class Registro extends React.Component {
 				break;
 			case "telefono":
 				if (/^(?:9\d{0,8}|\d{0,7})$/.test(val)) {
+					if(this.props.editor) this.props.editor.ref.current.handleInputsChange(event);
 					this.setState({telefono: val});
 					if (val) {
 						if (new RegExp(patterns.telefono).test(val)) {
@@ -135,61 +122,104 @@ class Registro extends React.Component {
 				}
 				break;
 			case "distrito":
-				if (this.props.distritos.some((dist) => new RegExp(`^.*${val}.*$`, 'i').test(dist))) {
+				//if (this.props.distritos.some((dist) => new RegExp(`^.*${val}.*$`, 'i').test(dist))) {
+					if(this.props.editor) this.props.editor.ref.current.handleInputsChange(event);
 					this.setState({distrito: val.toUpperCase()});
 					if (val) {
 						if (this.props.distritos.some((dist) => new RegExp(`^${val}$`, 'i').test(dist))) {
 							setSuccess(event);
 						} else {
-							setError(event);
+							setWarning(event);
 						}
 					} else {
-						setWarning(event);
+						setError(event);
 					}
-				}
+				//}
 				break;
+		}
+	}
+
+	iniciar(option) {
+		let isBoolean = typeof option == "boolean";
+		if (!this.props.editor || !this.props.editor.ref.current || !this.props.editor.ref.current.getPreventDefaultReset() || (isBoolean && option) ) {
+			document.getElementById("form-registro").reset();
+			this.setState({dni: '', fullname: '', distrito: '', telefono: '', dni_success: false, dni_found: false});
+			$(".form-group").removeClass('has-warning has-success has-error');
+			$("#dni").focus();
 		}
 	}
 
 	handleSubmit(event) {
 		event.preventDefault();
-		if (this.state.dni && this.state.fullname && this.state.distrito) {
-			let asesor = this.asesor_ref.current.value;
-			if (asesor) {
-				let xmlhttp = new XMLHttpRequest();
-				let params = `dni=${this.state.dni}&token_registros=${this.state.token_registros}&asesor=${asesor}`;
-				if (this.state.fullname) params += `&fullname=${this.state.fullname.trim()}`;
-				if (this.state.telefono) params += `&telefono=${this.state.telefono}`;
-				if (this.state.distrito) params += `&distrito=${this.state.distrito}`;
-				if (this.state.mod_cliente) params += `&mod_cliente=${this.state.mod_cliente}`;
-				//if (this.state.asesor) params += `&asesor=${this.state.asesor}`;
-				let tmp_this = this;
-				xmlhttp.onreadystatechange = function() {
-					if (this.readyState == 4 && this.status == 200) {
-						let data = JSON.parse(this.responseText);
-						$('.alert').alert('close');
-						$("#registro-cnt").prepend(Alerta(data));
-						tmp_this.setState({token_registros: data.token});
-						if (data.tipo == 'success') {
-							tmp_this.iniciar();
-						}
+		if (this.state.dni && this.state.fullname && this.state.distrito && this.state.asesor) {
+			let xmlhttp = new XMLHttpRequest();
+			let params = `dni=${this.state.dni}&token_registros=${this.state.token_registros}&asesor=${this.state.asesor}`;
+			if (this.state.fullname) params += `&fullname=${this.state.fullname.trim()}`;
+			if (this.state.telefono) params += `&telefono=${this.state.telefono}`;
+			if (this.state.distrito) params += `&distrito=${this.state.distrito}`;
+			if (this.state.mod_cliente) params += `&mod_cliente=${this.state.mod_cliente}`;
+			$("#send_btn").button('loading');
+			let tmp_this = this;
+			xmlhttp.onreadystatechange = function() {
+				if (this.readyState == 4 && this.status == 200) {
+					let data = JSON.parse(this.responseText);
+					$('.alert').alert('close');
+					$("#registro-cnt").prepend(Alerta(data));
+					tmp_this.setState({token_registros: data.token});
+					if (data.tipo == 'success') {						
+						if (tmp_this.props.editor && !tmp_this.props.editor.ref.current) tmp_this.props.editor.ref.current.successManage();
+						tmp_this.iniciar(true);
 					}
-				};
-				xmlhttp.open("POST", "/registro", true);
-				xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-				xmlhttp.send(params);
-			}
+				}
+				if (this.readyState == 4) {
+					$("#send_btn").button('reset');
+				}
+			};
+			xmlhttp.open("POST", "/registro", true);
+			xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+			xmlhttp.send(params);
 		}
 	}
 
 	componentDidMount () {
+		this.handleAsesorChange();
 		this.iniciar();
+	}
+	
+	getReadOnly() {
+		return !this.state.others_not_readonly && this.state.dni_found;
+	}
+
+	inputManageAttributes() {
+		let can_show = this.state.dni_success || this.state.mod_cliente && !this.state.dni_readonly;
+		if (this.dni.current) {
+			//this.dni.current.style.visibility = can_show ? 'visible' : 'hidden';
+			this.dni.current.disabled = !this.state.asesor;
+			this.dni.current.readOnly = this.state.dni_readonly;
+		}
+		if (this.fullname.current) {
+			this.fullname.current.style.visibility = can_show ? 'visible' : 'hidden';
+			this.fullname.current.disabled = !this.state.asesor;
+			this.fullname.current.readOnly = this.getReadOnly();
+		}
+		if (this.distrito.current) {
+			this.distrito.current.style.visibility = can_show ? 'visible' : 'hidden';
+			this.distrito.current.disabled = !this.state.asesor;
+			this.distrito.current.readOnly = this.getReadOnly();
+		}
+		if (this.telefono.current) {
+			this.telefono.current.style.visibility = can_show ? 'visible' : 'hidden';
+			this.telefono.current.disabled = !this.state.asesor;
+			this.telefono.current.readOnly = this.getReadOnly();
+		}
 	}
 
 	render() {
 		let distritos = this.props.distritos.map(distrito => <Distrito nombre={distrito} key={distrito} />);
+		this.inputManageAttributes();
 		return (
 			<form id="form-registro" className="form-horizontal" onSubmit={this.handleSubmit} onReset={this.iniciar}>
+				{this.props.editor}
 				<div className={"panel panel-"+this.state.panel}>
 					<div className="panel-heading">
 						<h3 className="panel-title text-center text-uppercase">BIENVENIDO: <strong>{this.state.asesor}</strong></h3>
@@ -220,7 +250,7 @@ class Registro extends React.Component {
 						<div className="form-group">
 							<label htmlFor="telefono" className="col-sm-2 control-label">TELÉFONO</label>
 							<div className="col-sm-10">
-								<input type="text" onChange={this.handleInput} className="form-control" ref={this.distrito} id="telefono" name="telefono" placeholder="Digita el número (opcional)" pattern={patterns.telefono} minLength={7} maxLength={12} value={this.state.telefono} />
+								<input type="text" onChange={this.handleInput} className="form-control" ref={this.distrito} id="telefono" name="telefono" placeholder="Digita el número (opcional)" pattern={patterns.telefono} minLength={7} maxLength={12} value={this.state.telefono==null ? '' : this.state.telefono} />
 							</div>
 						</div>
 					</div>
@@ -228,10 +258,10 @@ class Registro extends React.Component {
 						<div className="btn-group btn-group-justified" role="group" aria-label="...">
 							<div className="btn-group" role="group">
 								<input type="hidden" name="toke_inicial" name="token" value={this.state.token_registros} />
-								<button type="reset" id="reset-form" className="btn btn-default">LIMPIAR</button>
+								<button type="reset" id="reset-form" className="btn btn-danger">LIMPIAR</button>
 							</div>
 							<div className="btn-group" role="group">
-								<button type="submit" className="btn btn-primary">GRABAR</button>
+								<button type="submit" id="send_btn" className="btn btn-primary" data-loading-text="Enviando...">GRABAR</button>
 							</div>
 						</div>
 					</div>
@@ -240,6 +270,8 @@ class Registro extends React.Component {
 		);
 	}
 }
+
+var REGISTRO_MANAGER_REF = React.createRef();
 
 class RegistroManager extends React.Component {
 	constructor(props) {
@@ -267,6 +299,9 @@ class RegistroManager extends React.Component {
 		};
 		xmlhttp2.open("GET", "/registro?token=get&json=true", true);
 		xmlhttp2.send();
+		if (typeof EditorRegistro != 'undefined' && typeof EDITOR_REGISTRO_REF != 'undefined' && !EDITOR_REGISTRO_REF.current) {
+			this.setState({editor: <EditorRegistro ref={EDITOR_REGISTRO_REF} />});
+		}
 	}
 
 	render() {
@@ -277,5 +312,5 @@ class RegistroManager extends React.Component {
 }
 
 $(
-	ReactDOM.render(<RegistroManager />, document.querySelector("#registro-cnt"))
+	ReactDOM.render(<RegistroManager ref={REGISTRO_MANAGER_REF} />, document.querySelector("#registro-cnt"))
 );

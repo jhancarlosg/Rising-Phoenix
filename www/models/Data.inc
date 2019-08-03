@@ -302,25 +302,27 @@ class Data
 		switch($view) {
 			case 'ingreso':
 				$tmp_dta = Data::getDataIngreso($rows, $page);
-				$pages = Data::getPagesIngreso($rows);
+				if ($tmp_dta) @ $pages = Data::getPagesIngreso($rows);
 				break;
 			default:
 				$view = 'atencion';
 				$tmp_dta = Data::getDataRows($rows, $page);
-				$pages = Data::getPagesData($rows);
+				if ($tmp_dta) @ $pages = Data::getPagesData($rows);
 				break;
 		}
-		$new_dta = [];
-		if (!isset($_SESSION['datos'])) @ $_SESSION['datos'] = [];
-		$limits = [
-			'start'=>$tmp_dta[0][0],
-			'end'=>end($tmp_dta)[0],
-			'pages'=>$pages
-		];
-		foreach ($tmp_dta as &$fila) {
-			$new_dta[$fila[0]] = $fila;
+		if ($tmp_dta) {
+			$new_dta = [];
+			$limits = [
+				'start'=>$tmp_dta[0][0],
+				'end'=>end($tmp_dta)[0],
+				'pages'=>$pages
+			];
+			foreach ($tmp_dta as &$fila) {
+				$new_dta[$fila[0]] = $fila;
+			}
+			return ['rows'=>$new_dta, 'view'=> $view, 'limits'=>$limits];
 		}
-		return ['rows'=>$new_dta, 'view'=> $view, 'limits'=>$limits];
+		return null;
 	}
 }
 
