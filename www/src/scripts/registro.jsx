@@ -6,7 +6,7 @@ function Distrito(props) {
 
 let patterns = {
 	dni: "[0-9]{8}",
-	telefono: "^(?:9\\d{8}|[0-8]\\d{6})$",
+	telefono: "^(?:\\d{9}|[0-8]{7})$",
 	distrito: function (val) {
 		/* let result = false;
 		let datalist = document.getElementById("distritos");
@@ -110,7 +110,7 @@ class Registro extends React.Component {
 				}
 				break;
 			case "telefono":
-				if (/^(?:9\d{0,8}|\d{0,7})$/.test(val)) {
+				if (/^?:\d{0,9}$/.test(val)) {
 					if(this.props.editor) this.props.editor.ref.current.handleInputsChange(event);
 					this.setState({telefono: val});
 					if (val) {
@@ -220,7 +220,7 @@ class Registro extends React.Component {
 		let distritos = this.props.distritos.map(distrito => <Distrito nombre={distrito} key={distrito} />);
 		this.inputManageAttributes();
 		return (
-			<form id="form-registro" className="form-horizontal" onSubmit={this.handleSubmit} onReset={this.iniciar}>
+			<form id="form-registro" className="form-horizontal" onSubmit={this.handleSubmit} onReset={this.iniciar} autoComplete="off">
 				{this.props.editor}
 				<div className={"panel panel-"+this.state.panel}>
 					<div className="panel-heading">
